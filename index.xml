@@ -2,7 +2,7 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title></title>
-    <link>http://localhost:52034/</link>
+    <link>http://localhost:1313/</link>
     <description>Recent content from </description>
     <generator>Hugo</generator>
     <language>zh-CN</language>
@@ -15,7 +15,7 @@
     <lastBuildDate>Fri, 16 Oct 2026 17:08:40 +0800</lastBuildDate>
     
     
-    <atom:link href="http://localhost:52034/index.xml" rel="self" type="application/rss&#43;xml" />
+    <atom:link href="http://localhost:1313/index.xml" rel="self" type="application/rss&#43;xml" />
     
 
     
@@ -23,10 +23,10 @@
 
     <item>
       <title>IIC通信总线</title>
-      <link>http://localhost:52034/post/iic%E9%80%9A%E4%BF%A1%E6%80%BB%E7%BA%BF/</link>
+      <link>http://localhost:1313/post/iic%E9%80%9A%E4%BF%A1%E6%80%BB%E7%BA%BF/</link>
       <pubDate>Fri, 16 Oct 2026 17:08:40 &#43;0800</pubDate>
       <author>zennaro.zhang@outlook.com (云想衣裳花想荣)</author>
-      <guid>http://localhost:52034/post/iic%E9%80%9A%E4%BF%A1%E6%80%BB%E7%BA%BF/</guid>
+      <guid>http://localhost:1313/post/iic%E9%80%9A%E4%BF%A1%E6%80%BB%E7%BA%BF/</guid>
       <description>
         <![CDATA[<h1>IIC通信总线</h1><p>作者：云想衣裳花想荣（zennaro.zhang@outlook.com）</p>
         
@@ -38,7 +38,7 @@ IIC的发展历史
 ……<br>
 1992年IIC第一次升级，地址扩展到10位，通信速率增加到400kbps。</p>
         
-        <hr><p>本文2026-10-16首发于<a href='http://localhost:52034/'></a>，最后修改于2026-10-16</p>]]>
+        <hr><p>本文2026-10-16首发于<a href='http://localhost:1313/'></a>，最后修改于2026-10-16</p>]]>
       </description>
       
         <category>通信总线</category>
@@ -49,10 +49,10 @@ IIC的发展历史
 
     <item>
       <title>开发者工具速查</title>
-      <link>http://localhost:52034/post/%E5%BC%80%E5%8F%91%E8%80%85%E5%B7%A5%E5%85%B7%E9%80%9F%E6%9F%A5/</link>
+      <link>http://localhost:1313/post/%E5%BC%80%E5%8F%91%E8%80%85%E5%B7%A5%E5%85%B7%E9%80%9F%E6%9F%A5/</link>
       <pubDate>Fri, 16 Oct 2026 16:20:00 &#43;0800</pubDate>
       <author>zennaro.zhang@outlook.com (云想衣裳花想荣)</author>
-      <guid>http://localhost:52034/post/%E5%BC%80%E5%8F%91%E8%80%85%E5%B7%A5%E5%85%B7%E9%80%9F%E6%9F%A5/</guid>
+      <guid>http://localhost:1313/post/%E5%BC%80%E5%8F%91%E8%80%85%E5%B7%A5%E5%85%B7%E9%80%9F%E6%9F%A5/</guid>
       <description>
         <![CDATA[<h1>开发者工具速查</h1><p>作者：云想衣裳花想荣（zennaro.zhang@outlook.com）</p>
         
@@ -61,7 +61,7 @@ IIC的发展历史
 Markdown语法教程
 </h1><p>点击<a href="https://markdown.com.cn/">Markdown官网链接</a>查看相关语法</p>
         
-        <hr><p>本文2026-10-16首发于<a href='http://localhost:52034/'></a>，最后修改于2026-10-16</p>]]>
+        <hr><p>本文2026-10-16首发于<a href='http://localhost:1313/'></a>，最后修改于2026-10-16</p>]]>
       </description>
       
         <category>语言语法类技能</category>
