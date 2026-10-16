@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Categories on </title>
+    <link>http://localhost:52034/categories/</link>
+    <description>Recent content from </description>
+    <generator>Hugo</generator>
+    <language>zh-CN</language>
+    
+    <managingEditor>zennaro.zhang@outlook.com (云想衣裳花想荣)</managingEditor>
+    <webMaster>zennaro.zhang@outlook.com (云想衣裳花想荣)</webMaster>
+    
+    <copyright>本博客所有文章除特别声明外，均采用 BY-NC-SA 许可协议。转载请注明出处！</copyright>
+    
+    <lastBuildDate></lastBuildDate>
+    
+    
+    <atom:link href="http://localhost:52034/categories/index.xml" rel="self" type="application/rss&#43;xml" />
+    
+
+    
+  </channel>
+</rss>

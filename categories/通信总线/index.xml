@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>通信总线 on </title>
+    <link>http://localhost:52034/categories/%E9%80%9A%E4%BF%A1%E6%80%BB%E7%BA%BF/</link>
+    <description>Recent content from </description>
+    <generator>Hugo</generator>
+    <language>zh-CN</language>
+    
+    <managingEditor>zennaro.zhang@outlook.com (云想衣裳花想荣)</managingEditor>
+    <webMaster>zennaro.zhang@outlook.com (云想衣裳花想荣)</webMaster>
+    
+    <copyright>本博客所有文章除特别声明外，均采用 BY-NC-SA 许可协议。转载请注明出处！</copyright>
+    
+    <lastBuildDate>Fri, 16 Oct 2026 17:08:40 +0800</lastBuildDate>
+    
+    
+    <atom:link href="http://localhost:52034/categories/%E9%80%9A%E4%BF%A1%E6%80%BB%E7%BA%BF/index.xml" rel="self" type="application/rss&#43;xml" />
+    
+
+    
+    
+
+    <item>
+      <title>IIC通信总线</title>
+      <link>http://localhost:52034/post/iic%E9%80%9A%E4%BF%A1%E6%80%BB%E7%BA%BF/</link>
+      <pubDate>Fri, 16 Oct 2026 17:08:40 &#43;0800</pubDate>
+      <author>zennaro.zhang@outlook.com (云想衣裳花想荣)</author>
+      <guid>http://localhost:52034/post/iic%E9%80%9A%E4%BF%A1%E6%80%BB%E7%BA%BF/</guid>
+      <description>
+        <![CDATA[<h1>IIC通信总线</h1><p>作者：云想衣裳花想荣（zennaro.zhang@outlook.com）</p>
+        
+          <h2 id="iic的发展历史">
+<a class="header-anchor" href="#iic%e7%9a%84%e5%8f%91%e5%b1%95%e5%8e%86%e5%8f%b2"></a>
+IIC的发展历史
+</h2><p>1981年为了解决电视机内多芯片通信时<strong>布线复杂，引脚开销过大</strong>的问题，IIC被首次构思出来。<br>
+1982年IIC总线通信正式推出，只有7位地址，100kbps的通信速率。但是其大大简化了多芯片间通信的困扰。<br>
+……<br>
+1992年IIC第一次升级，地址扩展到10位，通信速率增加到400kbps。</p>
+        
+        <hr><p>本文2026-10-16首发于<a href='http://localhost:52034/'></a>，最后修改于2026-10-16</p>]]>
+      </description>
+      
+        <category>通信总线</category>
+      
+    </item>
+    
+  </channel>
+</rss>
