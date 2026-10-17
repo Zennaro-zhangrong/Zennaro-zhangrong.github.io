@@ -5,6 +5,9 @@
     <loc>http://localhost:1313/</loc>
     <lastmod>2026-10-16T17:08:40+08:00</lastmod>
   </url><url>
+    <loc>http://localhost:1313/friend/</loc>
+    <lastmod>2022-06-09T20:12:52+08:00</lastmod>
+  </url><url>
     <loc>http://localhost:1313/categories/</loc>
     <lastmod>2026-10-16T17:08:40+08:00</lastmod>
   </url><url>
@@ -29,13 +32,10 @@
     <loc>http://localhost:1313/categories/%E8%AF%AD%E8%A8%80%E8%AF%AD%E6%B3%95%E7%B1%BB%E6%8A%80%E8%83%BD/</loc>
     <lastmod>2026-10-16T16:20:00+08:00</lastmod>
   </url><url>
+    <loc>http://localhost:1313/about/</loc>
+    <lastmod>2026-10-16T16:00:00+08:00</lastmod>
+  </url><url>
     <loc>http://localhost:1313/archives/</loc>
     <lastmod>2022-07-26T21:46:25+08:00</lastmod>
-  </url><url>
-    <loc>http://localhost:1313/about/</loc>
-    <lastmod>2022-06-09T20:12:52+08:00</lastmod>
-  </url><url>
-    <loc>http://localhost:1313/friend/</loc>
-    <lastmod>2022-06-09T20:12:52+08:00</lastmod>
   </url>
 </urlset>
