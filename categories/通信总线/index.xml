@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>通信总线 on </title>
+    <title>通信总线 on 博客首页</title>
     <link>http://localhost:1313/categories/%E9%80%9A%E4%BF%A1%E6%80%BB%E7%BA%BF/</link>
-    <description>Recent content from </description>
+    <description>Recent content from 博客首页</description>
     <generator>Hugo</generator>
     <language>zh-CN</language>
     
@@ -38,7 +38,7 @@ IIC的发展历史
 ……<br>
 1992年IIC第一次升级，地址扩展到10位，通信速率增加到400kbps。</p>
         
-        <hr><p>本文2026-10-16首发于<a href='http://localhost:1313/'></a>，最后修改于2026-10-16</p>]]>
+        <hr><p>本文2026-10-16首发于<a href='http://localhost:1313/'>博客首页</a>，最后修改于2026-10-16</p>]]>
       </description>
       
         <category>通信总线</category>

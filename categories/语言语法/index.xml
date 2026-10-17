@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>语言语法 on 博客首页</title>
+    <link>http://localhost:1313/categories/%E8%AF%AD%E8%A8%80%E8%AF%AD%E6%B3%95/</link>
+    <description>Recent content from 博客首页</description>
+    <generator>Hugo</generator>
+    <language>zh-CN</language>
+    
+    <managingEditor>zennaro.zhang@outlook.com (云想衣裳花想荣)</managingEditor>
+    <webMaster>zennaro.zhang@outlook.com (云想衣裳花想荣)</webMaster>
+    
+    <copyright>本博客所有文章除特别声明外，均采用 BY-NC-SA 许可协议。转载请注明出处！</copyright>
+    
+    <lastBuildDate>Fri, 16 Oct 2026 16:20:00 +0800</lastBuildDate>
+    
+    
+    <atom:link href="http://localhost:1313/categories/%E8%AF%AD%E8%A8%80%E8%AF%AD%E6%B3%95/index.xml" rel="self" type="application/rss&#43;xml" />
+    
+
+    
+    
+
+    <item>
+      <title>开发者工具速查</title>
+      <link>http://localhost:1313/post/%E5%BC%80%E5%8F%91%E8%80%85%E5%B7%A5%E5%85%B7%E9%80%9F%E6%9F%A5/</link>
+      <pubDate>Fri, 16 Oct 2026 16:20:00 &#43;0800</pubDate>
+      <author>zennaro.zhang@outlook.com (云想衣裳花想荣)</author>
+      <guid>http://localhost:1313/post/%E5%BC%80%E5%8F%91%E8%80%85%E5%B7%A5%E5%85%B7%E9%80%9F%E6%9F%A5/</guid>
+      <description>
+        <![CDATA[<h1>开发者工具速查</h1><p>作者：云想衣裳花想荣（zennaro.zhang@outlook.com）</p>
+        
+          <h1 id="markdown语法教程">
+<a class="header-anchor" href="#markdown%e8%af%ad%e6%b3%95%e6%95%99%e7%a8%8b"></a>
+Markdown语法教程
+</h1><p>点击<a href="https://markdown.com.cn/">Markdown官网链接</a>查看相关语法</p>
+        
+        <hr><p>本文2026-10-16首发于<a href='http://localhost:1313/'>博客首页</a>，最后修改于2026-10-16</p>]]>
+      </description>
+      
+        <category>语言语法</category>
+      
+    </item>
+    
+  </channel>
+</rss>
