@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>PID on 博客首页</title>
+    <link>http://localhost:1313/tags/pid/</link>
+    <description>Recent content from 博客首页</description>
+    <generator>Hugo</generator>
+    <language>zh-CN</language>
+    
+    <managingEditor>zennaro.zhang@outlook.com (云想衣裳花想荣)</managingEditor>
+    <webMaster>zennaro.zhang@outlook.com (云想衣裳花想荣)</webMaster>
+    
+    <copyright>本博客所有文章除特别声明外，均采用 BY-NC-SA 许可协议。转载请注明出处！</copyright>
+    
+    <lastBuildDate>Tue, 20 Oct 2026 00:00:00 +0000</lastBuildDate>
+    
+    
+    <atom:link href="http://localhost:1313/tags/pid/index.xml" rel="self" type="application/rss&#43;xml" />
+    
+
+    
+    
+
+    <item>
+      <title>PID参数整定方法</title>
+      <link>http://localhost:1313/post/pid%E5%8F%82%E6%95%B0%E6%95%B4%E5%AE%9A%E6%96%B9%E6%B3%95/</link>
+      <pubDate>Tue, 20 Oct 2026 15:00:00 &#43;0800</pubDate>
+      <author>zennaro.zhang@outlook.com (云想衣裳花想荣)</author>
+      <guid>http://localhost:1313/post/pid%E5%8F%82%E6%95%B0%E6%95%B4%E5%AE%9A%E6%96%B9%E6%B3%95/</guid>
+      <description>
+        <![CDATA[<h1>PID参数整定方法</h1><p>作者：云想衣裳花想荣（zennaro.zhang@outlook.com）</p>
+        
+          <p>这篇文章的目标，是让你能够解释每一次调参的原因，并通过计算、波形和实测频响验证它。我们会从误差与负反馈出发，推导 PI/PID 参数，再把公式落实到控制中断和扫频数据处理中。</p>
+        
+        <hr><p>本文2026-10-20首发于<a href='http://localhost:1313/'>博客首页</a>，最后修改于2026-10-20</p>]]>
+      </description>
+      
+        <category>算法</category>
+      
+    </item>
+    
+  </channel>
+</rss>

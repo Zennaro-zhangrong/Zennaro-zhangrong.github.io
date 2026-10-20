@@ -1,0 +1,2184 @@
+<!doctype html>
+<html
+  lang="zh-CN"data-theme-mode="auto"
+>
+  <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8" />
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1, shrink-to-fit=no"
+/><title>
+  PID参数整定方法 | 云想衣裳花想荣
+</title>
+<meta name="description" content="从 PID 原理与 KaTeX 数学推导，到带宽、相位裕度设计、电机三环整定与闭环正弦注入扫频的完整教程。"/><script>
+  window.siteConfig = JSON.parse("{\"anchor\":{\"auto\":{\"enable\":false,\"length\":60},\"explicit\":{\"enable\":false,\"marker\":\"{#anchor-\",\"prefix\":\"anchor-\"}},\"anchor_icon\":null,\"base\":\"http://localhost:1313/\",\"clipboard\":{\"copyright\":{\"count\":50,\"enable\":false,\"license_type\":\"by-nc-sa\"},\"fail\":{\"en\":\"Copy failed (ﾟ⊿ﾟ)ﾂ\",\"ja\":\"コピー失敗 (ﾟ⊿ﾟ)ﾂ\",\"pt-br\":\"Falha ao copiar (ﾟ⊿ﾟ)ﾂ\",\"zh-cn\":\"复制失败 (ﾟ⊿ﾟ)ﾂ\",\"zh-tw\":\"複製失敗 (ﾟ⊿ﾟ)ﾂ\"},\"success\":{\"en\":\"Copy successfully (*^▽^*)\",\"ja\":\"コピー成功 (*^▽^*)\",\"pt-br\":\"Copiado com sucesso (*^▽^*)\",\"zh-cn\":\"复制成功 (*^▽^*)\",\"zh-tw\":\"複製成功 (*^▽^*)\"}},\"code_block\":{\"expand\":30},\"dark_mode\":{\"button\":true,\"mode\":\"auto\"},\"icon_font\":\"4552607_ex15nbittbh\",\"outdate\":{\"daysago\":180,\"enable\":false,\"message\":{\"en\":\"This article was last updated on {time}. Please note that the content may no longer be applicable.\",\"ja\":\"この記事は最終更新日：{time}。記載内容が現在有効でない可能性がありますのでご注意ください。\",\"pt-br\":\"Este artigo foi atualizado pela última vez em {time}. Observe que o conteúdo pode não ser mais aplicável.\",\"zh-cn\":\"本文最后更新于 {time}，请注意文中内容可能已不适用。\",\"zh-tw\":\"本文最後更新於 {time}，請注意文中內容可能已不適用。\"}}}");
+  
+</script>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+  rel="preload"
+  as="style"
+  href="https://fonts.googleapis.com/css?family=Mulish:400,400italic,700,700italic%7cNoto%20Serif%20SC:400,400italic,700,700italic%7c&amp;display=swap"
+/>
+<link
+  rel="stylesheet"
+  href="https://fonts.googleapis.com/css?family=Mulish:400,400italic,700,700italic%7cNoto%20Serif%20SC:400,400italic,700,700italic%7c&amp;display=swap"
+  media="print"
+  onload="this.media='all'"
+/>
+<link
+    rel="preload"
+    href="//at.alicdn.com/t/c/font_4552607_ex15nbittbh.woff2"
+    as="font"
+    type="font/woff2"
+    crossorigin="anonymous"
+  /><link rel="stylesheet" href="/css/loader.css" /><meta property="og:type" content="website" />
+  <meta property="og:title" content="PID参数整定方法 | 云想衣裳花想荣" />
+  <meta
+    property="og:description"
+    content="从 PID 原理与 KaTeX 数学推导，到带宽、相位裕度设计、电机三环整定与闭环正弦注入扫频的完整教程。"
+  />
+  <meta property="og:url" content="http://localhost:1313/post/pid%E5%8F%82%E6%95%B0%E6%95%B4%E5%AE%9A%E6%96%B9%E6%B3%95/" />
+  <meta
+    property="og:site_name"
+    content="博客首页"
+  />
+  <meta property="og:image" content="http://localhost:1313/images/cover/%E5%88%9D%E8%A7%81%E7%B4%AB%E7%81%B5.jpg" />
+  <meta property="article:author" content="云想衣裳花想荣" />
+  <meta property="article:published_time" content="2026-10-20T15:00:00&#43;08:00" />
+  <meta property="article:modified_time" content="2026-10-20T00:00:00&#43;00:00" /><meta property="article:tag" content="PID, 伯德图, 频率响应, 电机控制" /><meta name="twitter:card" content="summary" /><meta name="twitter:image" content="http://localhost:1313/images/cover/%E5%88%9D%E8%A7%81%E7%B4%AB%E7%81%B5.jpg" />
+<link rel="shortcut icon" href="/favicon.ico"><link rel="stylesheet" href="/css/main.css" /><link
+    rel="preload"
+    as="style"
+    href="https://npm.webcache.cn/photoswipe@5.4.4/dist/photoswipe.css"
+    integrity="sha384-IfxC36XL/toUyJ939C73PcgMuRzAZuIzZxE38drsmO5p6jD7ei&#43;Zx/1oA/0l8ysE" crossorigin="anonymous"
+    onload="this.onload=null;this.rel='stylesheet'"
+  /><link
+    rel="preload"
+    as="style"
+    href="https://npm.webcache.cn/katex@0.16.47/dist/katex.min.css"
+    integrity="sha384-nH0MfJ44wi1dd7w6jinlyBgljjS8EJAh2JBoRad8a3VDw2K69vfaaqm4WnR&#43;gXtA" crossorigin="anonymous"
+    onload="this.onload=null;this.rel='stylesheet'"
+  /><script
+    src="https://npm.webcache.cn/pace-js@1.2.4/pace.min.js"
+    
+    
+    
+    
+    integrity="sha384-k6YtvFUEIuEFBdrLKJ3YAUbBki333tj1CSUisai5Cswsg9wcLNaPzsTHDswp4Az8" crossorigin="anonymous"></script><link
+    rel="stylesheet"
+    href="https://npm.webcache.cn/@reimujs/aos@0.1.3/dist/aos.css"
+    integrity="sha384-GMRP93c6Hkz9JVKGAuRR3nTS7M07RwPgTFenXiosjq2VbVgvdDNcz1g6Mkj8AONa" crossorigin="anonymous"/></head>
+  <body><div id='loader'>
+    <div class="loading-left-bg loading-bg"></div>
+    <div class="loading-right-bg loading-bg"></div>
+    <div class="spinner-box">
+      <div class="loading-taichi rotate"><svg width="150" height="150" viewBox="0 0 1024 1024" class="icon" version="1.1" xmlns="https://www.w3.org/2000/svg" shape-rendering="geometricPrecision">
+            <path d="M303.5 432A80 80 0 0 1 291.5 592A80 80 0 0 1 303.5 432z" fill="var(--red-1, #ff5252)" />
+            <path d="M512 65A447 447 0 0 1 512 959L512 929A417 417 0 0 0 512 95A417 417 0 0 0 512 929L512 959A447 447 0 0 1 512 65z 
+          M512 95A417 417 0 0 1 929 512A208.5 208.5 0 0 1 720.5 720.5L720.5 592A80 80 0 0 0 720.5 432A80 80 0 0 0 720.5 592L720.5 720.5A208.5 208.5 0 0 1 512 512A208.5 208.5 0 0 0 303.5 303.5A208.5 208.5 0 0 0 95 512A417 417 0 0 1 512 95z" fill="var(--red-1, #ff5252)" />
+          </svg></div><div class="loading-word">左风右雷，可随心意而动...</div>
+    </div>
+  </div>
+  </div>
+  <script>
+    var time = null;
+    var loaderEl = document.getElementById('loader');
+    var startLoading = () => {
+      time = Date.now();
+      loaderEl.classList.remove("loading");
+    }
+    var hideLoader = () => {
+      document.body.style.overflow = 'auto';
+      loader.classList.add('loading');
+    };
+
+    var endLoading = () => {
+      if (!time) {
+        hideLoader();
+      } else {
+        if (Date.now() - time > 500) {
+          time = null;
+          hideLoader();
+        } else {
+          setTimeout(endLoading, 500 - (Date.now() - time));
+          time = null;
+        }
+      }
+    }
+    window.addEventListener('DOMContentLoaded', endLoading);
+    loaderEl.addEventListener('click', endLoading);
+  </script><div id="copy-tooltip"></div>
+<div id="lang-tooltip">
+本文章没有找到对应的语言版本
+</div>
+<div id="heatmap-tooltip"></div><div id="container">
+      <div id="wrap"><div id="header-nav">
+  <nav id="main-nav" aria-label="Primary navigation"><a class="main-nav-link-wrap" href="/"><span class="main-nav-link">首页</span>
+      </a><a class="main-nav-link-wrap" href="/archives"><span class="main-nav-link">归档</span>
+      </a><a class="main-nav-link-wrap" href="/about"><span class="main-nav-link">关于</span>
+      </a><a class="main-nav-link-wrap" href="/friend"><span class="main-nav-link">友链</span>
+      </a><a id="main-nav-toggle" class="nav-icon" aria-label="Toggle navigation" role="button"></a>
+  </nav>
+  <nav id="sub-nav" aria-label="Secondary navigation"></nav><a href="https://github.com/Zennaro-zhangrong" class="triangle-badge" title="github" target="_blank" rel="noopener nofollow noreferrer">
+      <div class="icon icon-github triangle-badge-icon"></div>
+    </a></div>
+<header id="header" aria-label="Site header"><picture></picture>
+    <img crossorigin="anonymous" fetchpriority="high" src="/images/cover/%e5%88%9d%e8%a7%81%e7%b4%ab%e7%81%b5.jpg" alt="PID参数整定方法"><div id="header-outer">
+    <div id="header-title"><span id="logo">
+            <h1 data-aos="slide-up">PID参数整定方法</h1>
+          </span><h2 id="subtitle-wrap" data-aos="slide-down"></h2></div>
+  </div>
+</header><div id="content"
+          aria-label="Page content"
+          class="sidebar-left"
+            ><aside id="sidebar" aria-label="Sidebar"><div class="sidebar-wrapper-container sticky"><div class="sidebar-wrapper">
+    <div
+      class="sidebar-wrap"
+      data-aos="fade-up"
+    ><div class="sidebar-toc-sidebar"><h3 class="toc-title">文章目录</h3>
+<div class="sidebar-toc-wrapper toc-div-class">
+  <nav id="TableOfContents">
+  <ul>
+    <li><a href="#pid-toc">阅读导航</a></li>
+    <li><a href="#pid-basics">1. 从“误差”到“反馈系统”</a>
+      <ul>
+        <li><a href="#11-先把信号名字分清">1.1 先把信号名字分清</a></li>
+        <li><a href="#12-为什么反馈能减小误差">1.2 为什么反馈能减小误差</a></li>
+      </ul>
+    </li>
+    <li><a href="#pid-law">2. PID 到底做了什么</a>
+      <ul>
+        <li><a href="#21-从时域写到频域">2.1 从时域写到频域</a></li>
+        <li><a href="#22-p按当前误差出力">2.2 P：按当前误差出力</a></li>
+        <li><a href="#23-i累积误差提供低频增益">2.3 I：累积误差，提供低频增益</a></li>
+        <li><a href="#24-d提供相位超前但会放大高频噪声">2.4 D：提供相位超前，但会放大高频噪声</a></li>
+      </ul>
+    </li>
+    <li><a href="#pid-bode">3. 伯德图是“正弦试验结果的总表”</a>
+      <ul>
+        <li><a href="#31-一个频率点意味着什么">3.1 一个频率点意味着什么</a></li>
+        <li><a href="#32-常用积木">3.2 常用积木</a></li>
+      </ul>
+    </li>
+    <li><a href="#pid-margins">4. 带宽、交越频率、相位裕度不是一回事</a>
+      <ul>
+        <li><a href="#41-开环增益交越频率">4.1 开环增益交越频率</a></li>
+        <li><a href="#42-闭环带宽">4.2 闭环带宽</a></li>
+        <li><a href="#43-相位裕度-pm">4.3 相位裕度 PM</a></li>
+        <li><a href="#44-增益裕度-gm">4.4 增益裕度 GM</a></li>
+        <li><a href="#45-一个有用的推导交越处闭环幅值">4.5 一个有用的推导：交越处闭环幅值</a></li>
+      </ul>
+    </li>
+    <li><a href="#pid-spec">5. 先选指标，再调参数</a>
+      <ul>
+        <li><a href="#51-从需要跟踪的信号出发">5.1 从需要跟踪的信号出发</a></li>
+        <li><a href="#52-用相位预算限制目标交越频率">5.2 用相位预算限制目标交越频率</a></li>
+        <li><a href="#53-一个可执行的指标清单">5.3 一个可执行的指标清单</a></li>
+      </ul>
+    </li>
+    <li><a href="#pid-tuning">6. 常见整定方法怎么选</a>
+      <ul>
+        <li><a href="#61-手动调参应做成小实验">6.1 手动调参应做成小实验</a></li>
+        <li><a href="#62-临界比例法认识它但不要盲目使用">6.2 临界比例法：认识它，但不要盲目使用</a></li>
+        <li><a href="#63-一阶惯性加延时与-simc-pi">6.3 一阶惯性加延时与 SIMC PI</a></li>
+      </ul>
+    </li>
+    <li><a href="#pid-pi-example">7. 从目标交越频率与 PM 算出 PI：完整算例</a>
+      <ul>
+        <li><a href="#71-先推导通用公式">7.1 先推导通用公式</a></li>
+        <li><a href="#72-带延时的教学对象">7.2 带延时的教学对象</a></li>
+        <li><a href="#73-反算不要只相信算出来的参数">7.3 反算，不要只相信算出来的参数</a></li>
+      </ul>
+    </li>
+    <li><a href="#pid-pid-design">8. PI 不够时，怎样设计 PID 的相位补偿</a>
+      <ul>
+        <li><a href="#81-理想-pid-的两个约束与一个自由度">8.1 理想 PID 的两个约束与一个自由度</a></li>
+        <li><a href="#82-把微分滤波直接纳入设计">8.2 把微分滤波直接纳入设计</a></li>
+        <li><a href="#83-怎样知道自己需要相位超前">8.3 怎样知道自己需要相位超前</a></li>
+      </ul>
+    </li>
+    <li><a href="#pid-motor">9. 电机电流环、速度环、位置环怎样对应</a>
+      <ul>
+        <li><a href="#91-电流环从电压方程得到-pi">9.1 电流环：从电压方程得到 PI</a></li>
+        <li><a href="#92-速度环先看内电流环是否足够快">9.2 速度环：先看内电流环是否足够快</a></li>
+        <li><a href="#93-位置环常用-p先不急着堆-pid">9.3 位置环：常用 P，先不急着堆 PID</a></li>
+      </ul>
+    </li>
+    <li><a href="#pid-digital">10. 连续 PID 怎样变成闭环软件</a>
+      <ul>
+        <li><a href="#101-采样周期是参数的一部分">10.1 采样周期是参数的一部分</a></li>
+        <li><a href="#102-抗积分饱和">10.2 抗积分饱和</a></li>
+        <li><a href="#103-用实际离散环路检查频响">10.3 用实际离散环路检查频响</a></li>
+      </ul>
+    </li>
+    <li><a href="#pid-injection">11. 闭环运行时，怎样测到开环伯德图</a>
+      <ul>
+        <li><a href="#111-最推荐的教学接法控制器输出后注入">11.1 最推荐的教学接法：控制器输出后注入</a></li>
+        <li><a href="#112-每一种比值测的是什么">11.2 每一种比值测的是什么</a></li>
+        <li><a href="#113-也可以在误差加法器处注入">11.3 也可以在误差加法器处注入</a></li>
+        <li><a href="#114-为什么从参考端测到闭环后反算容易出错">11.4 为什么从参考端测到闭环后反算容易出错</a></li>
+      </ul>
+    </li>
+    <li><a href="#pid-sweep">12. 正弦逐点扫频：从实验参数到中断程序</a>
+      <ul>
+        <li><a href="#121-先规定实验的有效条件">12.1 先规定实验的有效条件</a></li>
+        <li><a href="#122-频率范围与对数网格">12.2 频率范围与对数网格</a></li>
+        <li><a href="#123-注入幅值怎么选">12.3 注入幅值怎么选</a></li>
+        <li><a href="#124-暂态等待与整周期窗口">12.4 暂态等待与整周期窗口</a></li>
+        <li><a href="#125-输出注入的固件伪代码">12.5 输出注入的固件伪代码</a></li>
+      </ul>
+    </li>
+    <li><a href="#pid-estimation">13. 从采样数据提取复数频响</a>
+      <ul>
+        <li><a href="#131-相量约定先统一">13.1 相量约定先统一</a></li>
+        <li><a href="#132-整周期同步检波">13.2 整周期同步检波</a></li>
+        <li><a href="#133-非整周期或有直流偏置最小二乘更方便">13.3 非整周期或有直流偏置：最小二乘更方便</a></li>
+        <li><a href="#134-闭环噪声相关性与外部注入参考">13.4 闭环噪声相关性与外部注入参考</a></li>
+        <li><a href="#135-一个可复核的闭环扫频演示">13.5 一个可复核的闭环扫频演示</a></li>
+      </ul>
+    </li>
+    <li><a href="#pid-validation">14. 怎样用实测伯德图完成整定闭环</a>
+      <ul>
+        <li><a href="#141-先检查代数和时序再读裕度">14.1 先检查代数和时序，再读裕度</a></li>
+        <li><a href="#142-从离散频点估计交越">14.2 从离散频点估计交越</a></li>
+        <li><a href="#143-看到问题时优先怎样改">14.3 看到问题时优先怎样改</a></li>
+        <li><a href="#144-验收必须覆盖时间域和工作范围">14.4 验收必须覆盖时间域和工作范围</a></li>
+      </ul>
+    </li>
+    <li><a href="#pid-over-bandwidth">15. 输入信号超过带宽会发生什么</a>
+      <ul>
+        <li><a href="#151-参考输入衰减与滞后不是自动失稳">15.1 参考输入：衰减与滞后，不是自动失稳</a></li>
+        <li><a href="#152-同样的频率不同注入位置结论不同">15.2 同样的频率，不同注入位置结论不同</a></li>
+        <li><a href="#153-小信号带宽与大信号能力不同">15.3 小信号带宽与大信号能力不同</a></li>
+      </ul>
+    </li>
+    <li><a href="#pid-mistakes">16. 常见误区与正确检查方式</a></li>
+    <li><a href="#pid-practice">17. 把知识变成可重复的工程能力</a>
+      <ul>
+        <li><a href="#171-一张完整工作清单">17.1 一张完整工作清单</a></li>
+        <li><a href="#172-六道练习与答案">17.2 六道练习与答案</a></li>
+        <li><a href="#173-建议做的三个动手实验">17.3 建议做的三个动手实验</a></li>
+      </ul>
+    </li>
+    <li><a href="#pid-references">18. 参考资料与使用边界</a></li>
+  </ul>
+</nav>
+</div></div>
+          <div class="sidebar-common-sidebar hidden"><div class="sidebar-author">
+  <img
+    data-src="/avatar/avatar.webp"
+    data-sizes="auto"
+    alt="云想衣裳花想荣"
+    class="lazyload"
+  />
+  <div class="sidebar-author-name">云想衣裳花想荣</div>
+  <div class="sidebar-description">嵌入式开发学习笔记，技术分享</div>
+</div>
+<div class="sidebar-state">
+  <div class="sidebar-state-article">
+    <div>文章</div><div class="sidebar-state-number">5</div>
+  </div>
+  <a class="sidebar-state-category" href="/categories/" aria-label="sidebar-state-category-link">
+    <div>分类</div>
+    <div class="sidebar-state-number">
+      5
+    </div>
+  </a>
+  <a class="sidebar-state-tag" href="/tags/" aria-label="sidebar-state-tag-link">
+    <div>标签</div>
+    <div class="sidebar-state-number">13</div>
+  </a>
+</div>
+<div class="sidebar-social" ></div><div class="sidebar-menu"><div class="sidebar-menu-link-wrap">
+      <a
+        class="sidebar-menu-link-dummy"
+        href="/"
+        aria-label="首页"
+      ></a><div class="sidebar-menu-link">首页</div>
+    </div><div class="sidebar-menu-link-wrap">
+      <a
+        class="sidebar-menu-link-dummy"
+        href="/archives"
+        aria-label="归档"
+      ></a><div class="sidebar-menu-link">归档</div>
+    </div><div class="sidebar-menu-link-wrap">
+      <a
+        class="sidebar-menu-link-dummy"
+        href="/about"
+        aria-label="关于"
+      ></a><div class="sidebar-menu-link">关于</div>
+    </div><div class="sidebar-menu-link-wrap">
+      <a
+        class="sidebar-menu-link-dummy"
+        href="/friend"
+        aria-label="友链"
+      ></a><div class="sidebar-menu-link">友链</div>
+    </div></div></div><div class="sidebar-btn-wrapper" style="position:static">
+            <div class="sidebar-toc-btn current"></div>
+            <div class="sidebar-common-btn"></div>
+          </div></div>
+  </div><div class="sidebar-widget"></div></div></aside>
+<section id="main" aria-label="Main content"><article
+  class="h-entry article"
+  itemscope
+  itemtype="https://schema.org/BlogPosting"
+>
+  <div
+    class="article-inner"
+    data-aos="fade-up"
+  >
+    <div class="article-meta"><div class="article-date">
+  <span
+    class="article-date-link icon-calendar"
+    data-aos="zoom-in"
+  >
+    <time datetime="2026-10-20 15:00:00 &#43;0800 CST" itemprop="datePublished"
+      >2026-10-20</time
+    >
+    <time style="display: none;" id="post-update-time"
+      >2026-10-20</time
+    >
+  </span></div>
+</div><div class="hr-line"></div><div class="e-content article-entry" itemprop="articleBody"><p>这篇文章的目标，是让你能够解释每一次调参的原因，并通过计算、波形和实测频响验证它。我们会从误差与负反馈出发，推导 PI/PID 参数，再把公式落实到控制中断和扫频数据处理中。</p>
+<p><strong>先记住三句话：带宽描述响应速度；相位裕度描述距离振荡边界的余量；扫频必须先说明“从哪个信号到哪个信号”。</strong> 一次漂亮的阶跃响应，还不足以证明整个工作范围都可靠。</p>
+<p>本文默认讨论单输入单输出、负反馈、固定工作点附近的小信号系统。公式中的对象包括你划定边界内的执行器、传感器、滤波和延时。大信号限幅、多轴耦合、增益调度另需验证，不能直接套用小信号结论。</p>
+<h2 id="pid-toc">
+<a class="header-anchor" href="#pid-toc"></a>
+阅读导航
+</h2><table>
+	<thead>
+			<tr>
+					<th>学习阶段</th>
+					<th>阅读位置</th>
+					<th>学完应能回答</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td>入门</td>
+					<td><a href="/post/pid%E5%8F%82%E6%95%B0%E6%95%B4%E5%AE%9A%E6%96%B9%E6%B3%95/#pid-basics">1. 信号与反馈</a>、<a href="/post/pid%E5%8F%82%E6%95%B0%E6%95%B4%E5%AE%9A%E6%96%B9%E6%B3%95/#pid-law">2. PID 数学</a>、<a href="/post/pid%E5%8F%82%E6%95%B0%E6%95%B4%E5%AE%9A%E6%96%B9%E6%B3%95/#pid-bode">3. 伯德图</a></td>
+					<td>P、I、D 分别改变了什么？</td>
+			</tr>
+			<tr>
+					<td>设计</td>
+					<td><a href="/post/pid%E5%8F%82%E6%95%B0%E6%95%B4%E5%AE%9A%E6%96%B9%E6%B3%95/#pid-margins">4. 带宽与裕度</a>、<a href="/post/pid%E5%8F%82%E6%95%B0%E6%95%B4%E5%AE%9A%E6%96%B9%E6%B3%95/#pid-spec">5. 选择指标</a>、<a href="/post/pid%E5%8F%82%E6%95%B0%E6%95%B4%E5%AE%9A%E6%96%B9%E6%B3%95/#pid-tuning">6. 整定方法</a></td>
+					<td>速度和稳定性如何同时约束？</td>
+			</tr>
+			<tr>
+					<td>计算</td>
+					<td><a href="/post/pid%E5%8F%82%E6%95%B0%E6%95%B4%E5%AE%9A%E6%96%B9%E6%B3%95/#pid-pi-example">7. PI 完整算例</a>、<a href="/post/pid%E5%8F%82%E6%95%B0%E6%95%B4%E5%AE%9A%E6%96%B9%E6%B3%95/#pid-pid-design">8. PID 相位补偿</a></td>
+					<td>如何从目标频率与相位算出增益？</td>
+			</tr>
+			<tr>
+					<td>落地</td>
+					<td><a href="/post/pid%E5%8F%82%E6%95%B0%E6%95%B4%E5%AE%9A%E6%96%B9%E6%B3%95/#pid-motor">9. 电机三环</a>、<a href="/post/pid%E5%8F%82%E6%95%B0%E6%95%B4%E5%AE%9A%E6%96%B9%E6%B3%95/#pid-digital">10. 离散实现</a></td>
+					<td>连续公式如何变成软件参数？</td>
+			</tr>
+			<tr>
+					<td>测量</td>
+					<td><a href="/post/pid%E5%8F%82%E6%95%B0%E6%95%B4%E5%AE%9A%E6%96%B9%E6%B3%95/#pid-injection">11. 注入位置与推导</a>、<a href="/post/pid%E5%8F%82%E6%95%B0%E6%95%B4%E5%AE%9A%E6%96%B9%E6%B3%95/#pid-sweep">12. 扫频程序</a>、<a href="/post/pid%E5%8F%82%E6%95%B0%E6%95%B4%E5%AE%9A%E6%96%B9%E6%B3%95/#pid-estimation">13. 数据处理</a></td>
+					<td>如何在闭环运行时得到开环伯德图？</td>
+			</tr>
+			<tr>
+					<td>验证</td>
+					<td><a href="/post/pid%E5%8F%82%E6%95%B0%E6%95%B4%E5%AE%9A%E6%96%B9%E6%B3%95/#pid-validation">14. 读实测曲线</a>、<a href="/post/pid%E5%8F%82%E6%95%B0%E6%95%B4%E5%AE%9A%E6%96%B9%E6%B3%95/#pid-over-bandwidth">15. 超带宽输入</a></td>
+					<td>曲线异常究竟是系统问题还是测量问题？</td>
+			</tr>
+			<tr>
+					<td>进阶</td>
+					<td><a href="/post/pid%E5%8F%82%E6%95%B0%E6%95%B4%E5%AE%9A%E6%96%B9%E6%B3%95/#pid-mistakes">16. 常见误区</a>、<a href="/post/pid%E5%8F%82%E6%95%B0%E6%95%B4%E5%AE%9A%E6%96%B9%E6%B3%95/#pid-practice">17. 练习与流程</a>、<a href="/post/pid%E5%8F%82%E6%95%B0%E6%95%B4%E5%AE%9A%E6%96%B9%E6%B3%95/#pid-references">18. 资料</a></td>
+					<td>如何建立可重复的工程判断？</td>
+			</tr>
+	</tbody>
+</table>
+<p><strong>推荐路线：</strong> 第一次顺序阅读 1～7 节；有正在运行的硬件时，重点反复阅读 10～14 节；最后用第 17 节的练习检查自己是否真正理解。</p>
+<p>文中所有曲线均为教学模型计算或仿真，<strong>不是你的设备实测数据</strong>。每张图都注明其用途。</p>
+<h2 id="pid-basics">
+<a class="header-anchor" href="#pid-basics"></a>
+1. 从“误差”到“反馈系统”
+</h2><h3 id="11-先把信号名字分清">
+<a class="header-anchor" href="#11-%e5%85%88%e6%8a%8a%e4%bf%a1%e5%8f%b7%e5%90%8d%e5%ad%97%e5%88%86%e6%b8%85"></a>
+1.1 先把信号名字分清
+</h3><table>
+	<thead>
+			<tr>
+					<th>符号</th>
+					<th>含义</th>
+					<th>电流环例子</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td>$r$</td>
+					<td>参考值，即希望达到的量</td>
+					<td>电流指令，A</td>
+			</tr>
+			<tr>
+					<td>$y$</td>
+					<td>真实物理输出</td>
+					<td>实际电流，A</td>
+			</tr>
+			<tr>
+					<td>$y_m$</td>
+					<td>测量并标定后的反馈</td>
+					<td>ADC 测得并滤波后的电流</td>
+			</tr>
+			<tr>
+					<td>$e=r-y_m$</td>
+					<td>反馈误差</td>
+					<td>电流差</td>
+			</tr>
+			<tr>
+					<td>$u_c$</td>
+					<td>控制器输出</td>
+					<td>电压指令，V</td>
+			</tr>
+			<tr>
+					<td>$u$</td>
+					<td>对象输入边界处的总命令</td>
+					<td>加入测试扰动后的电压命令</td>
+			</tr>
+			<tr>
+					<td>$P(s)$</td>
+					<td>对象：输入到真实输出</td>
+					<td>电压到电流的动态</td>
+			</tr>
+			<tr>
+					<td>$H(s)$</td>
+					<td>反馈测量链</td>
+					<td>采样、标定、数字滤波等</td>
+			</tr>
+			<tr>
+					<td>$C(s)$</td>
+					<td>控制器的反馈通道</td>
+					<td>PI 或 PID</td>
+			</tr>
+			<tr>
+					<td>$L(s)=C(s)P(s)H(s)$</td>
+					<td>环路传递函数，通常称开环增益</td>
+					<td>沿反馈环绕一圈的增益</td>
+			</tr>
+	</tbody>
+</table>
+<p>这里的“开环传递函数”是数学对象，<strong>测它不要求真的把物理闭环断开</strong>。</p>
+<p>负反馈采用：</p>
+$$
+E=R-HY,\qquad U_c=CE,\qquad Y=PU_c.
+$$<p>代入并整理：</p>
+$$
+Y=PC(R-HY)
+\quad\Longrightarrow\quad
+(1+PCH)Y=PC\,R.
+$$<p>所以真实输出到参考的传递函数是：</p>
+$$
+\frac{Y}{R}=\frac{PC}{1+PCH}.
+$$<p>如果直接使用测量坐标 $Y_m=HY$，则：</p>
+$$
+T(s)=\frac{Y_m}{R}=\frac{L}{1+L},
+\qquad
+S(s)=\frac{E}{R}=\frac{1}{1+L},
+\qquad S+T=1.
+$$<p>$T$ 称为互补灵敏度，$S$ 称为灵敏度。后面为了便于推导，令 $G=PH$，把对象和反馈链合在一起，于是 $L=CG$。<strong>此时 $G$ 的输出是 $y_m$，不一定是真实物理输出 $y$。</strong></p>
+<h3 id="12-为什么反馈能减小误差">
+<a class="header-anchor" href="#12-%e4%b8%ba%e4%bb%80%e4%b9%88%e5%8f%8d%e9%a6%88%e8%83%bd%e5%87%8f%e5%b0%8f%e8%af%af%e5%b7%ae"></a>
+1.2 为什么反馈能减小误差
+</h3><p>在某个频率上，如果 $|L|\gg1$ 且闭环稳定，则 $S\approx 1/L$，误差较小，$T\approx1$。</p>
+<p>在高频，如果 $|L|\ll1$，则 $S\approx1$、$T\approx L$。控制器来不及有效纠正快速变化，输出通常无法紧跟参考。</p>
+<p>关键是复数加法 $1+L$：即使 $|L|$ 不小，如果 $L$ 接近 $-1$，分母也会很小，响应被放大。因此，“增益越大越好”并不成立。</p>
+<p><a href="/post/pid%E5%8F%82%E6%95%B0%E6%95%B4%E5%AE%9A%E6%96%B9%E6%B3%95/#pid-toc">返回目录</a></p>
+<h2 id="pid-law">
+<a class="header-anchor" href="#pid-law"></a>
+2. PID 到底做了什么
+</h2><h3 id="21-从时域写到频域">
+<a class="header-anchor" href="#21-%e4%bb%8e%e6%97%b6%e5%9f%9f%e5%86%99%e5%88%b0%e9%a2%91%e5%9f%9f"></a>
+2.1 从时域写到频域
+</h3><p>理想并联 PID 为：</p>
+$$
+u_c(t)=K_p e(t)+K_i\int_0^t e(\tau)\,\mathrm d\tau
++K_d\frac{\mathrm de(t)}{\mathrm dt}.
+$$<p>在零初始条件下，积分与微分的拉普拉斯变换分别对应除以 $s$、乘以 $s$，因此：</p>
+$$
+C(s)=\frac{U_c(s)}{E(s)}
+=K_p+\frac{K_i}{s}+K_d s.
+$$<p>另一种常见形式是：</p>
+$$
+C(s)=K_p\left(1+\frac{1}{T_i s}+T_d s\right),
+\qquad
+K_i=\frac{K_p}{T_i},\quad K_d=K_p T_d.
+$$<p><strong>不要把 $K_i$ 与 $T_i$ 混用：</strong> $K_i$ 增大意味着积分增强，$T_i$ 增大却意味着积分减弱。上式是理想并联形式与标准形式的换算，不适用于直接照搬串联式 PID 参数。</p>
+<p>若误差单位为 A、输出单位为 V，则：</p>
+$$
+[K_p]=\mathrm{V/A},\quad
+[K_i]=\mathrm{V/(A\cdot s)},\quad
+[K_d]=\mathrm{V\cdot s/A}.
+$$<p>单位检查经常比观察波形更早发现参数错误。</p>
+<h3 id="22-p按当前误差出力">
+<a class="header-anchor" href="#22-p%e6%8c%89%e5%bd%93%e5%89%8d%e8%af%af%e5%b7%ae%e5%87%ba%e5%8a%9b"></a>
+2.2 P：按当前误差出力
+</h3>$$
+u_P=K_p e.
+$$<p>P 让控制器立即响应误差。增大 $K_p$ 往往使交越频率升高，但也会把交越点推向对象相位更差的频段。比例控制能否消除稳态误差，要看对象是否已经含有积分环节，不能只看控制器名字。</p>
+<h3 id="23-i累积误差提供低频增益">
+<a class="header-anchor" href="#23-i%e7%b4%af%e7%a7%af%e8%af%af%e5%b7%ae%e6%8f%90%e4%be%9b%e4%bd%8e%e9%a2%91%e5%a2%9e%e7%9b%8a"></a>
+2.3 I：累积误差，提供低频增益
+</h3>$$
+C_I(j\omega)=\frac{K_i}{j\omega}=-j\frac{K_i}{\omega}.
+$$<p>积分环节的幅值随频率按 $-20\,\mathrm{dB/dec}$ 下降，相位为 $-90^\circ$。它在低频提供较大增益，但会消耗相位余量。</p>
+<p>以单位阶跃参考 $R(s)=1/s$ 为例，在满足终值定理条件、闭环稳定且没有饱和时：</p>
+$$
+e_\infty=\lim_{s\to0}sE(s)
+=\lim_{s\to0}\frac{1}{1+L(s)}.
+$$<p>若 $L(s)$ 在原点具有未被抵消的积分作用，使 $|L(0)|\to\infty$，则 $e_\infty=0$。这不是“积分能解决一切误差”：执行器长期饱和、传感器偏置、斜坡跟踪都需要另行分析。</p>
+<h3 id="24-d提供相位超前但会放大高频噪声">
+<a class="header-anchor" href="#24-d%e6%8f%90%e4%be%9b%e7%9b%b8%e4%bd%8d%e8%b6%85%e5%89%8d%e4%bd%86%e4%bc%9a%e6%94%be%e5%a4%a7%e9%ab%98%e9%a2%91%e5%99%aa%e5%a3%b0"></a>
+2.4 D：提供相位超前，但会放大高频噪声
+</h3><p>理想微分：</p>
+$$
+C_D(j\omega)=jK_d\omega.
+$$<p>频率越高，增益越大，因此工程中通常用带低通的微分：</p>
+$$
+C(s)=K_p+\frac{K_i}{s}+\frac{K_d s}{1+T_f s}.
+$$<p>当 $\omega\to\infty$ 时，微分支路趋于 $K_d/T_f$，不再无限增大，但仍可能很吵。滤波也会改变交越附近的相位，因此需要连同 $T_f$ 一起设计。</p>
+<p>通常让微分作用于测量值：</p>
+$$
+u_c=K_p(r-y_m)+I-\frac{K_d s}{1+T_f s}\,y_m.
+$$<p>参考突变不会直接产生微分冲击，而反馈通道仍包含微分。注意：此时参考通道与反馈通道不同，不能再无条件用 $Y_m/R=L/(1+L)$；第 11 节会解释对扫频的影响。</p>
+<p><a href="/post/pid%E5%8F%82%E6%95%B0%E6%95%B4%E5%AE%9A%E6%96%B9%E6%B3%95/#pid-toc">返回目录</a></p>
+<h2 id="pid-bode">
+<a class="header-anchor" href="#pid-bode"></a>
+3. 伯德图是“正弦试验结果的总表”
+</h2><h3 id="31-一个频率点意味着什么">
+<a class="header-anchor" href="#31-%e4%b8%80%e4%b8%aa%e9%a2%91%e7%8e%87%e7%82%b9%e6%84%8f%e5%91%b3%e7%9d%80%e4%bb%80%e4%b9%88"></a>
+3.1 一个频率点意味着什么
+</h3><p>向稳定线性系统输入：</p>
+$$
+x(t)=A\cos(\omega t).
+$$<p>等待暂态衰减后，输出是同频正弦：</p>
+$$
+y(t)=A|F(j\omega)|\cos\!\left(\omega t+\angle F(j\omega)\right).
+$$<p>只改变幅值和相位，不改变频率。非线性系统则可能产生谐波，这也是扫频质量的重要线索。</p>
+$$
+M_{\mathrm{dB}}(\omega)=20\log_{10}|F(j\omega)|,
+\qquad
+\phi(\omega)=\arg F(j\omega).
+$$<p>幅值比为 1、2、0.5，分别对应约 $0$、$6.02$、$-6.02\,\mathrm{dB}$。这里是幅值比，用 $20\log_{10}$；功率比才通常用 $10\log_{10}$。</p>
+<h3 id="32-常用积木">
+<a class="header-anchor" href="#32-%e5%b8%b8%e7%94%a8%e7%a7%af%e6%9c%a8"></a>
+3.2 常用积木
+</h3><table>
+	<thead>
+			<tr>
+					<th>环节</th>
+					<th>幅值规律</th>
+					<th>相位</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td>常数 $K>0$</td>
+					<td>$20\log_{10}K$</td>
+					<td>$0^\circ$</td>
+			</tr>
+			<tr>
+					<td>积分 $1/s$</td>
+					<td>每十倍频率下降 20 dB</td>
+					<td>$-90^\circ$</td>
+			</tr>
+			<tr>
+					<td>一阶极点 $1/(1+\tau s)$</td>
+					<td>高频每十倍下降 20 dB</td>
+					<td>$-\arctan(\omega\tau)$</td>
+			</tr>
+			<tr>
+					<td>一阶零点 $1+\tau s$</td>
+					<td>高频每十倍上升 20 dB</td>
+					<td>$+\arctan(\omega\tau)$</td>
+			</tr>
+			<tr>
+					<td>纯延时 $e^{-sT_d}$</td>
+					<td>0 dB</td>
+					<td>$-\omega T_d$，单位 rad</td>
+			</tr>
+	</tbody>
+</table>
+<p>例如：</p>
+$$
+G(s)=\frac{K e^{-sT_d}}{(1+\tau_1s)(1+\tau_2s)}
+$$<p>对应：</p>
+$$
+|G(j\omega)|=
+\frac{|K|}{\sqrt{1+(\omega\tau_1)^2}\sqrt{1+(\omega\tau_2)^2}},
+$$$$
+\angle G(j\omega)=
+-\arctan(\omega\tau_1)-\arctan(\omega\tau_2)-\omega T_d
+$$<p>（这里假设 $K>0$）。相乘的传递函数，在伯德图上表现为 dB 相加、相位相加。</p>
+<p>务必区分：</p>
+$$
+\omega=2\pi f,\qquad
+f\text{ 的单位为 Hz},\quad
+\omega\text{ 的单位为 rad/s}.
+$$<p>把 100 Hz 当成 100 rad/s，会造成 $2\pi$ 倍的设计错误。</p>
+<p><a href="/post/pid%E5%8F%82%E6%95%B0%E6%95%B4%E5%AE%9A%E6%96%B9%E6%B3%95/#pid-toc">返回目录</a></p>
+<h2 id="pid-margins">
+<a class="header-anchor" href="#pid-margins"></a>
+4. 带宽、交越频率、相位裕度不是一回事
+</h2><h3 id="41-开环增益交越频率">
+<a class="header-anchor" href="#41-%e5%bc%80%e7%8e%af%e5%a2%9e%e7%9b%8a%e4%ba%a4%e8%b6%8a%e9%a2%91%e7%8e%87"></a>
+4.1 开环增益交越频率
+</h3>$$
+|L(j\omega_c)|=1
+\quad\Longleftrightarrow\quad
+20\log_{10}|L(j\omega_c)|=0.
+$$<p>$\omega_c$ 是开环 0 dB 交越频率。工程上有人把它简称“环路带宽”，但写报告时应明确标为 $f_c$。</p>
+<h3 id="42-闭环带宽">
+<a class="header-anchor" href="#42-%e9%97%ad%e7%8e%af%e5%b8%a6%e5%ae%bd"></a>
+4.2 闭环带宽
+</h3><p>对于具有有限、非零直流增益的稳定低通闭环，通常把幅值首次降到直流值约 $1/\sqrt2$ 的频率定义为半功率带宽：</p>
+$$
+|T(j\omega_{\mathrm{BW}})|=\frac{|T(0)|}{\sqrt2}.
+$$<p>严格半功率点为 $-3.0103\,\mathrm{dB}$，常简称 $-3\,\mathrm{dB}$。部分软件按恰好 $-3\,\mathrm{dB}$ 计算，会有很小数值差异。参见 <a href="https://www.mathworks.com/help/control/ref/dynamicsystem.bandwidth.html">MathWorks 的 bandwidth 定义</a>。</p>
+<p><strong>$f_c$ 与 $f_{\mathrm{BW}}$ 经常同数量级，但不是定义上相等。</strong> 有前置滤波、二自由度 PID、明显共振时，更应直接计算真实参考到输出的频响。</p>
+<h3 id="43-相位裕度-pm">
+<a class="header-anchor" href="#43-%e7%9b%b8%e4%bd%8d%e8%a3%95%e5%ba%a6-pm"></a>
+4.3 相位裕度 PM
+</h3><p>对常见的单交越负反馈系统：</p>
+$$
+\mathrm{PM}=180^\circ+\angle L(j\omega_c).
+$$<p>在 0 dB 处相位为 $-120^\circ$，则 PM 为 $60^\circ$。它表示在该交越点，再增加约 $60^\circ$ 相位滞后就会到达 $-180^\circ$ 边界。</p>
+<p>为什么危险点是 $-180^\circ$？因为：</p>
+$$
+|L|=1,\quad\angle L=-180^\circ
+\quad\Longrightarrow\quad L=-1
+\quad\Longrightarrow\quad1+L=0.
+$$<p><strong>PM 不是闭环输出相对于输入的相位，也不是“允许输入信号超前多少度”。</strong></p>
+<h3 id="44-增益裕度-gm">
+<a class="header-anchor" href="#44-%e5%a2%9e%e7%9b%8a%e8%a3%95%e5%ba%a6-gm"></a>
+4.4 增益裕度 GM
+</h3><p>在相位穿过 $-180^\circ$ 的频率 $\omega_\pi$：</p>
+$$
+\mathrm{GM}=\frac{1}{|L(j\omega_\pi)|},
+\qquad
+\mathrm{GM}_{\mathrm{dB}}=-20\log_{10}|L(j\omega_\pi)|.
+$$<p>若此处开环幅值为 $-8\,\mathrm{dB}$，则通常还允许约 8 dB 的整体增益上升才到临界状态。PM 与 GM 的定义可核对 <a href="https://www.mathworks.com/help/control/ref/dynamicsystem.margin.html">MathWorks 的 margin 文档</a>。</p>
+<p>对于多交越、开环不稳定、非最小相位或不稳定极零抵消的系统，不能仅凭某一个正 PM 就宣布稳定，应结合完整 Nyquist 判据或闭环极点检查。Nyquist 方法需要同时知道开环右半平面极点数，并统计围绕 $-1$ 点的绕行。</p>
+<h3 id="45-一个有用的推导交越处闭环幅值">
+<a class="header-anchor" href="#45-%e4%b8%80%e4%b8%aa%e6%9c%89%e7%94%a8%e7%9a%84%e6%8e%a8%e5%af%bc%e4%ba%a4%e8%b6%8a%e5%a4%84%e9%97%ad%e7%8e%af%e5%b9%85%e5%80%bc"></a>
+4.5 一个有用的推导：交越处闭环幅值
+</h3><p>令 $L(j\omega_c)=e^{j(-\pi+\phi_m)}$，其中 $\phi_m$ 用弧度表示，则：</p>
+$$
+|1+L|^2
+=2+2\cos(-\pi+\phi_m)
+=4\sin^2\frac{\phi_m}{2}.
+$$<p>因此对于 $T=L/(1+L)$：</p>
+$$
+|T(j\omega_c)|=\frac{1}{2\sin(\phi_m/2)}.
+$$<p>PM 为 $60^\circ$ 时，$|T(j\omega_c)|=1$；PM 为 $90^\circ$ 时，才得到 $1/\sqrt2$。这直接说明：<strong>0 dB 开环交越点一般不是闭环 -3 dB 点。</strong></p>
+<p>还可检查：</p>
+$$
+M_s=\max_\omega|S(j\omega)|,\qquad
+M_t=\max_\omega|T(j\omega)|.
+$$<p>它们揭示全频段的放大峰值，能补充单个交越点的信息。不要把 PM 直接换算成固定超调百分比；只有特定二阶近似才有较紧密的对应关系。</p>
+<p><a href="/post/pid%E5%8F%82%E6%95%B0%E6%95%B4%E5%AE%9A%E6%96%B9%E6%B3%95/#pid-toc">返回目录</a></p>
+<h2 id="pid-spec">
+<a class="header-anchor" href="#pid-spec"></a>
+5. 先选指标，再调参数
+</h2><h3 id="51-从需要跟踪的信号出发">
+<a class="header-anchor" href="#51-%e4%bb%8e%e9%9c%80%e8%a6%81%e8%b7%9f%e8%b8%aa%e7%9a%84%e4%bf%a1%e5%8f%b7%e5%87%ba%e5%8f%91"></a>
+5.1 从需要跟踪的信号出发
+</h3><p>假设闭环可近似为一阶：</p>
+$$
+T(s)=\frac{\omega_b}{s+\omega_b}.
+$$<p>则：</p>
+$$
+|T(j\omega)|=\frac{1}{\sqrt{1+(\omega/\omega_b)^2}},
+\qquad
+\angle T(j\omega)=-\arctan(\omega/\omega_b).
+$$<p>如果只要求在信号频率 $\omega_r$ 处幅值下降不超过 5%，则：</p>
+$$
+|T(j\omega_r)|\ge0.95
+\quad\Longrightarrow\quad
+\omega_b\ge
+\frac{\omega_r}{\sqrt{0.95^{-2}-1}}
+\approx3.04\,\omega_r.
+$$<p>但这不等于总跟踪误差小于 5%。误差正弦的幅值比为：</p>
+$$
+\left|\frac{E}{R}\right|=|1-T|
+=\frac{\omega/\omega_b}{\sqrt{1+(\omega/\omega_b)^2}}.
+$$<p>若要求这个误差比不超过 5%，需：</p>
+$$
+\omega_b\ge\omega_r\frac{\sqrt{1-0.05^2}}{0.05}
+\approx19.97\,\omega_r.
+$$<p><strong>只看输出幅值，可能漏掉很大的相位误差。</strong> 跟踪指标应说明是幅值、相位、误差峰值，还是轨迹 RMS 误差。</p>
+<p>一阶近似下，10%～90% 上升时间为：</p>
+$$
+t_r=\frac{\ln9}{\omega_b}\approx\frac{2.197}{\omega_b},
+\qquad f_{\mathrm{BW}}\approx\frac{0.35}{t_r}.
+$$<p>这只是初始估算，不能直接套到有明显超调、时延和共振的系统。</p>
+<h3 id="52-用相位预算限制目标交越频率">
+<a class="header-anchor" href="#52-%e7%94%a8%e7%9b%b8%e4%bd%8d%e9%a2%84%e7%ae%97%e9%99%90%e5%88%b6%e7%9b%ae%e6%a0%87%e4%ba%a4%e8%b6%8a%e9%a2%91%e7%8e%87"></a>
+5.2 用相位预算限制目标交越频率
+</h3><p>设采样周期为 $T_s$，实际计算与更新额外延时为 $T_{\mathrm{comp}}$。在远低于采样频率的频段，零阶保持可近似贡献 $T_s/2$ 的延时：</p>
+$$
+T_{\mathrm{eff}}\approx T_{\mathrm{comp}}+\frac{T_s}{2}
++T_{\mathrm{other}}.
+$$<p>在 $f_c$ 处消耗的相位为：</p>
+$$
+\phi_{\mathrm{delay}}\approx-360^\circ f_cT_{\mathrm{eff}}.
+$$<p>例如 $T_{\mathrm{eff}}=150\,\mu\mathrm{s}$、$f_c=500\,\mathrm{Hz}$，仅延时就消耗 $27^\circ$。如只允许这部分占用 $20^\circ$：</p>
+$$
+f_c\le\frac{20^\circ}{360^\circ T_{\mathrm{eff}}}
+\approx370\,\mathrm{Hz}.
+$$<p>若使用的是完整实测频响，采样、保持和计算延时通常已在曲线里，<strong>不要再重复加一次</strong>。</p>
+<h3 id="53-一个可执行的指标清单">
+<a class="header-anchor" href="#53-%e4%b8%80%e4%b8%aa%e5%8f%af%e6%89%a7%e8%a1%8c%e7%9a%84%e6%8c%87%e6%a0%87%e6%b8%85%e5%8d%95"></a>
+5.3 一个可执行的指标清单
+</h3><p>先写下目标跟踪频率与误差容限，再写执行器最大输出、最大变化率、传感器噪声、结构共振、采样周期和允许超调。</p>
+<p>对于普通、单交越、低通型伺服，可把 PM 约 $50^\circ$～$65^\circ$、GM 至少约 6 dB 作为初次设计的经验起点，但它们不是通用验收标准。模型误差大、运行点跨度大时，应给出更大的设计余量并实测。</p>
+<p>交越频率取采样频率的 $1/10$～$1/20$ 以下只是常见起步经验。真正的上限由延时相位、未建模共振、噪声和执行器能力共同决定，不能靠一个比例保证。</p>
+<p><a href="/post/pid%E5%8F%82%E6%95%B0%E6%95%B4%E5%AE%9A%E6%96%B9%E6%B3%95/#pid-toc">返回目录</a></p>
+<h2 id="pid-tuning">
+<a class="header-anchor" href="#pid-tuning"></a>
+6. 常见整定方法怎么选
+</h2><table>
+	<thead>
+			<tr>
+					<th>方法</th>
+					<th>需要什么</th>
+					<th>适合用途</th>
+					<th>主要限制</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td>手动 P→PI→PID</td>
+					<td>可重复的小阶跃与日志</td>
+					<td>获得初始稳定参数</td>
+					<td>无法直接证明频域裕度</td>
+			</tr>
+			<tr>
+					<td>Ziegler–Nichols 临界比例法</td>
+					<td>临界增益与振荡周期</td>
+					<td>教学、与其他方法对比</td>
+					<td>常偏激进，主动逼近振荡边界</td>
+			</tr>
+			<tr>
+					<td>阶跃辨识 + IMC/SIMC</td>
+					<td>低阶对象模型</td>
+					<td>慢过程、延时对象</td>
+					<td>模型不适合时效果会变差</td>
+			</tr>
+			<tr>
+					<td>交越频率 + PM 设计</td>
+					<td>对象模型或复数频响</td>
+					<td>电机、电源、伺服</td>
+					<td>需检查全频段与非线性</td>
+			</tr>
+			<tr>
+					<td>自动整定/优化</td>
+					<td>目标函数、约束与验证集</td>
+					<td>多工况参数筛选</td>
+					<td>优化结果取决于模型与指标</td>
+			</tr>
+	</tbody>
+</table>
+<h3 id="61-手动调参应做成小实验">
+<a class="header-anchor" href="#61-%e6%89%8b%e5%8a%a8%e8%b0%83%e5%8f%82%e5%ba%94%e5%81%9a%e6%88%90%e5%b0%8f%e5%ae%9e%e9%aa%8c"></a>
+6.1 手动调参应做成小实验
+</h3><p>在已经确认反馈符号、限幅与保护后，先用小 $K_p$、$K_i=K_d=0$ 获得可控响应。逐步增大 $K_p$，观察误差、输出、噪声和振铃；加入适量积分去除静态误差；只有当相位与阻尼确实需要改善时才引入 D。</p>
+<p>每次只改一个因素，保存完整参数和波形。若出现振铃，不要只盯着输出：同步看执行器是否削顶、积分是否积累、测量是否延迟。</p>
+<p>对不能用 P 稳定的对象，这个顺序不适用，应先建模设计。闭环起步需要“已经知道能够稳定”的控制器，不宜把未知对象当成练手试验。</p>
+<h3 id="62-临界比例法认识它但不要盲目使用">
+<a class="header-anchor" href="#62-%e4%b8%b4%e7%95%8c%e6%af%94%e4%be%8b%e6%b3%95%e8%ae%a4%e8%af%86%e5%ae%83%e4%bd%86%e4%b8%8d%e8%a6%81%e7%9b%b2%e7%9b%ae%e4%bd%bf%e7%94%a8"></a>
+6.2 临界比例法：认识它，但不要盲目使用
+</h3><p>理想条件下，关闭 I、D，逐渐增加 P，使闭环进入持续振荡，记录临界增益 $K_u$ 和周期 $P_u$。经典标准形式参数为：</p>
+<table>
+	<thead>
+			<tr>
+					<th>控制器</th>
+					<th>$K_p$</th>
+					<th>$T_i$</th>
+					<th>$T_d$</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td>P</td>
+					<td>$0.5K_u$</td>
+					<td>—</td>
+					<td>—</td>
+			</tr>
+			<tr>
+					<td>PI</td>
+					<td>$0.45K_u$</td>
+					<td>$P_u/1.2$</td>
+					<td>—</td>
+			</tr>
+			<tr>
+					<td>PID</td>
+					<td>$0.6K_u$</td>
+					<td>$P_u/2$</td>
+					<td>$P_u/8$</td>
+			</tr>
+	</tbody>
+</table>
+<p>它不直接保证你指定的带宽与 PM，而且饱和引起的极限环不等于线性临界振荡。机械共振强、功率大或无法承受持续振荡的设备，不适合用这个试验取得初值。</p>
+<h3 id="63-一阶惯性加延时与-simc-pi">
+<a class="header-anchor" href="#63-%e4%b8%80%e9%98%b6%e6%83%af%e6%80%a7%e5%8a%a0%e5%bb%b6%e6%97%b6%e4%b8%8e-simc-pi"></a>
+6.3 一阶惯性加延时与 SIMC PI
+</h3><p>对自平衡对象，常用小阶跃辨识：</p>
+$$
+G(s)=\frac{K e^{-\theta s}}{\tau s+1},
+\qquad K=\frac{\Delta y_{\mathrm{ss}}}{\Delta u}.
+$$<p>$\theta$ 为近似纯延时，$\tau$ 为延时之后达到最终变化量 63.2% 所需的时间。复杂高阶响应应拟合，不能凭一个点硬套。</p>
+<p>一种 SIMC PI 规则是：</p>
+$$
+K_p=\frac{\tau}{K(\tau_c+\theta)},
+\qquad
+T_i=\min\!\left(\tau,\,4(\tau_c+\theta)\right),
+\qquad K_i=K_p/T_i.
+$$<p>$\tau_c$ 是希望采用的闭环时间尺度，增大它通常更保守。选择仍需结合噪声、延时与执行器；它并不保证任意模型下的闭环带宽恰好为 $1/\tau_c$。方法来源见 <a href="https://skoge.folk.ntnu.no/publications/2003/tuningPID/mic-version/mic.pdf">Skogestad 的原始论文</a>。</p>
+<p>下面重点学习可直接对应“带宽、相位裕度”的频域设计。</p>
+<p><a href="/post/pid%E5%8F%82%E6%95%B0%E6%95%B4%E5%AE%9A%E6%96%B9%E6%B3%95/#pid-toc">返回目录</a></p>
+<h2 id="pid-pi-example">
+<a class="header-anchor" href="#pid-pi-example"></a>
+7. 从目标交越频率与 PM 算出 PI：完整算例
+</h2><h3 id="71-先推导通用公式">
+<a class="header-anchor" href="#71-%e5%85%88%e6%8e%a8%e5%af%bc%e9%80%9a%e7%94%a8%e5%85%ac%e5%bc%8f"></a>
+7.1 先推导通用公式
+</h3><p>设对象在目标交越频率处的响应为：</p>
+$$
+G(j\omega_c)=M_g e^{j\phi_g}.
+$$<p>目标相位裕度为 $\phi_m$。要求：</p>
+$$
+|C(j\omega_c)G(j\omega_c)|=1,
+\qquad
+\angle C(j\omega_c)+\phi_g=-180^\circ+\phi_m.
+$$<p>因此控制器必须满足：</p>
+$$
+|C(j\omega_c)|=\frac1{M_g},
+\qquad
+\phi_c=-180^\circ+\phi_m-\phi_g.
+$$<p>PI 控制器为：</p>
+$$
+C(s)=K_p\left(1+\frac1{T_i s}\right).
+$$<p>在交越点：</p>
+$$
+C(j\omega_c)
+=K_p\left(1-j\frac1{\omega_cT_i}\right),
+$$$$
+\phi_c=-\arctan\frac1{\omega_cT_i}.
+$$<p>若 $K_p,T_i>0$，则 PI 能提供的相位位于 $(-90^\circ,0^\circ)$。只有所需 $\phi_c$ 落在这个范围，才能按下式实现：</p>
+$$
+\boxed{T_i=\frac1{\omega_c\tan(-\phi_c)}}
+$$$$
+\boxed{
+K_p=\frac1{M_g\sqrt{1+(\omega_cT_i)^{-2}}}
+=\frac{\cos\phi_c}{M_g},
+\qquad K_i=\frac{K_p}{T_i}
+}
+$$<p>三角函数若在程序里以弧度计算，先完成角度转换。需要正相位时，PI 无法完成，应降低目标频率或引入超前补偿。</p>
+<h3 id="72-带延时的教学对象">
+<a class="header-anchor" href="#72-%e5%b8%a6%e5%bb%b6%e6%97%b6%e7%9a%84%e6%95%99%e5%ad%a6%e5%af%b9%e8%b1%a1"></a>
+7.2 带延时的教学对象
+</h3><p>取：</p>
+$$
+G(s)=\frac{e^{-0.001s}}{(1+0.05s)(1+0.005s)},
+\qquad \omega_c=20\,\mathrm{rad/s},
+\qquad \phi_m=60^\circ.
+$$<p>这里 $f_c=20/(2\pi)\approx3.183\,\mathrm{Hz}$，模型中的 1 ms 延时已经计入对象。</p>
+<p>先算幅值：</p>
+$$
+M_g=
+\frac1{\sqrt{1+1^2}\sqrt{1+0.1^2}}
+=\frac1{\sqrt{2.02}}\approx0.70360.
+$$<p>再算相位：</p>
+$$
+\phi_g=-45^\circ-\arctan(0.1)-0.02\frac{180^\circ}{\pi}
+\approx-51.8565^\circ.
+$$<p>控制器需要：</p>
+$$
+\phi_c=-180^\circ+60^\circ+51.8565^\circ
+=-68.1435^\circ.
+$$<p>代入：</p>
+$$
+T_i\approx0.0200558\,\mathrm{s},
+\qquad K_p\approx0.529114,
+\qquad K_i\approx26.3821\,\mathrm{s^{-1}}.
+$$<p>因本例对象输入输出已归一化，增益单位也相应归一化；真实项目必须恢复实际单位。</p>
+<h3 id="73-反算不要只相信算出来的参数">
+<a class="header-anchor" href="#73-%e5%8f%8d%e7%ae%97%e4%b8%8d%e8%a6%81%e5%8f%aa%e7%9b%b8%e4%bf%a1%e7%ae%97%e5%87%ba%e6%9d%a5%e7%9a%84%e5%8f%82%e6%95%b0"></a>
+7.3 反算，不要只相信算出来的参数
+</h3>$$
+C(j20)\approx0.529114-j1.319105,
+$$<p>所以：</p>
+$$
+|C(j20)|\approx1.42127,
+\qquad
+|L(j20)|\approx1,
+\qquad
+\angle L(j20)\approx-120^\circ.
+$$<p>目标交越和 PM 在该点满足。还需扫描全频段，确认是否有额外交越点与峰值。按本例连续模型计算，闭环半功率带宽约为 <strong>4.70 Hz</strong>，明显高于 3.183 Hz 的开环交越频率；详细数值以图中结果为准。</p>
+<p><img src="/picture/pid_tuning_20261020_a7f3_01_bode_v1.png" alt="教学 PI 模型的开环幅相与闭环响应，标出交越频率、相位裕度和带宽"></p>
+<p>图 1：同一个模型上，开环曲线读 $f_c$、PM，闭环曲线读 $f_{\mathrm{BW}}$。图中的高频相位采用连续展开，包含纯延时。</p>
+<p><strong>工程上的下一步：</strong> 把数字控制器、采样保持和实际测量滤波计入，再检查离散闭环。连续模型命中一个设计点，不等于固件参数可以直接上机。</p>
+<p><a href="/post/pid%E5%8F%82%E6%95%B0%E6%95%B4%E5%AE%9A%E6%96%B9%E6%B3%95/#pid-toc">返回目录</a></p>
+<h2 id="pid-pid-design">
+<a class="header-anchor" href="#pid-pid-design"></a>
+8. PI 不够时，怎样设计 PID 的相位补偿
+</h2><h3 id="81-理想-pid-的两个约束与一个自由度">
+<a class="header-anchor" href="#81-%e7%90%86%e6%83%b3-pid-%e7%9a%84%e4%b8%a4%e4%b8%aa%e7%ba%a6%e6%9d%9f%e4%b8%8e%e4%b8%80%e4%b8%aa%e8%87%aa%e7%94%b1%e5%ba%a6"></a>
+8.1 理想 PID 的两个约束与一个自由度
+</h3><p>仍以交越点的所需复数控制器为目标：</p>
+$$
+C_\star=\frac{e^{j(-\pi+\phi_m)}}{G(j\omega_c)}
+=a+jb.
+$$<p>理想 PID 在该点为：</p>
+$$
+C(j\omega_c)=K_p+j\left(K_d\omega_c-\frac{K_i}{\omega_c}\right).
+$$<p>对比实部与虚部：</p>
+$$
+K_p=a,\qquad
+K_d=\frac{b+K_i/\omega_c}{\omega_c}.
+$$<p>只有幅值、相位两个实数条件，却有三个参数，所以解不是唯一的。你还要用低频抗扰、积分时间尺度、噪声和输出约束选择 $K_i$。若算出负 $K_p$ 或负 $K_d$，不能强行取绝对值，应重新选择指标或结构。</p>
+<h3 id="82-把微分滤波直接纳入设计">
+<a class="header-anchor" href="#82-%e6%8a%8a%e5%be%ae%e5%88%86%e6%bb%a4%e6%b3%a2%e7%9b%b4%e6%8e%a5%e7%ba%b3%e5%85%a5%e8%ae%be%e8%ae%a1"></a>
+8.2 把微分滤波直接纳入设计
+</h3><p>对实际使用的：</p>
+$$
+C(s)=K_p+\frac{K_i}{s}+\frac{K_d s}{1+T_f s},
+$$<p>有：</p>
+$$
+\frac{K_d j\omega}{1+j\omega T_f}
+\mathrel{=}
+\frac{K_d\omega^2T_f}{1+(\omega T_f)^2}
++j\frac{K_d\omega}{1+(\omega T_f)^2}.
+$$<p>因此，在先选择 $K_i,T_f$ 后：</p>
+$$
+\boxed{
+K_d=\frac{\left(b+K_i/\omega_c\right)
+\left[1+(\omega_cT_f)^2\right]}{\omega_c}
+}
+$$$$
+\boxed{
+K_p=a-
+\frac{K_d\omega_c^2T_f}{1+(\omega_cT_f)^2}
+}
+$$<p>这是对指定频率点的精确代数匹配，不是全频段最优设计。$T_f$ 越小，高频噪声增益越大；$T_f$ 太大，又会减少相位改善。</p>
+<h3 id="83-怎样知道自己需要相位超前">
+<a class="header-anchor" href="#83-%e6%80%8e%e6%a0%b7%e7%9f%a5%e9%81%93%e8%87%aa%e5%b7%b1%e9%9c%80%e8%a6%81%e7%9b%b8%e4%bd%8d%e8%b6%85%e5%89%8d"></a>
+8.3 怎样知道自己需要相位超前
+</h3><p>沿用第 7 节对象，如果把目标提高到 $\omega_c=200\,\mathrm{rad/s}$，则：</p>
+$$
+\phi_g=-\arctan(10)-\arctan(1)
+-0.2\frac{180^\circ}{\pi}
+\approx-140.7486^\circ.
+$$<p>为了 PM 为 $60^\circ$，控制器需提供：</p>
+$$
+\phi_c\approx+20.7486^\circ.
+$$<p>PI 不可能产生这个正相位。</p>
+<p>若先选 $K_i=20$、$T_f=0.001\,\mathrm{s}$，则所需 $C_\star=a+jb$ 约为：</p>
+$$
+a=13.290895,\qquad b=5.035088.
+$$<p>按滤波 PID 公式可得：</p>
+$$
+K_p\approx12.263877,\qquad K_i=20,\qquad K_d\approx0.026702.
+$$<p>这组数值在 $\omega_c=200\,\mathrm{rad/s}$ 处满足幅值为 1、相位为 $-120^\circ$ 的局部条件。它只是展示如何计算，尚未作为硬件方案验收；尤其要检查微分高频增益 $K_d/T_f$、所有交越点及离散延时。</p>
+<p>也可以先用超前环节理解设计：</p>
+$$
+C_{\mathrm{lead}}(s)
+=K\frac{1+s/\omega_z}{1+s/\omega_p},
+\qquad \omega_p>\omega_z.
+$$<p>令 $\alpha=\omega_p/\omega_z>1$，则：</p>
+$$
+\phi_{\max}
+=\sin^{-1}\frac{\alpha-1}{\alpha+1},
+\qquad
+\omega_m=\sqrt{\omega_z\omega_p}.
+$$<p>把 $\omega_m$ 放在目标交越附近，再重新计算总增益。超前环节会抬高高频增益，并非免费获得相位。若还串联积分环节，必须把积分带来的相位损失一并计算；串联 PI 与超前结构也不等同于任意一组并联 PID。</p>
+<p><strong>真正的设计迭代是：</strong> 定频率 → 看对象相位 → 算控制器 → 检查全频段 → 检查噪声和输出 → 必要时降低目标。</p>
+<p><a href="/post/pid%E5%8F%82%E6%95%B0%E6%95%B4%E5%AE%9A%E6%96%B9%E6%B3%95/#pid-toc">返回目录</a></p>
+<h2 id="pid-motor">
+<a class="header-anchor" href="#pid-motor"></a>
+9. 电机电流环、速度环、位置环怎样对应
+</h2><h3 id="91-电流环从电压方程得到-pi">
+<a class="header-anchor" href="#91-%e7%94%b5%e6%b5%81%e7%8e%af%e4%bb%8e%e7%94%b5%e5%8e%8b%e6%96%b9%e7%a8%8b%e5%be%97%e5%88%b0-pi"></a>
+9.1 电流环：从电压方程得到 PI
+</h3><p>以解耦充分、参数近似恒定的单轴电流模型为例，反电动势作为扰动或已通过前馈补偿：</p>
+$$
+L_e\frac{\mathrm di}{\mathrm dt}+Ri=v,
+\qquad
+P_i(s)=\frac{I(s)}{V(s)}=\frac1{L_e s+R}.
+$$<p>这里用 $L_e$ 表示电感，避免与环路增益 $L(s)$ 混淆。采用：</p>
+$$
+C_i(s)=K_p+\frac{K_i}{s}
+=K_p\frac{s+K_i/K_p}{s}.
+$$<p>若把 PI 零点放在对象极点处：</p>
+$$
+\frac{K_i}{K_p}=\frac R{L_e},
+$$<p>则理想环路简化为：</p>
+$$
+C_iP_i=\frac{K_p}{L_e s}.
+$$<p>设目标交越频率为 $\omega_{ci}$：</p>
+$$
+\boxed{K_p=L_e\omega_{ci},\qquad K_i=R\omega_{ci}}.
+$$<p>理想情况下：</p>
+$$
+T_i(s)=\frac{\omega_{ci}}{s+\omega_{ci}}.
+$$<p>例：$L_e=1\,\mathrm{mH}$、$R=0.5\,\Omega$、$f_{ci}=300\,\mathrm{Hz}$：</p>
+$$
+\omega_{ci}=2\pi\cdot300\approx1884.96\,\mathrm{rad/s},
+$$$$
+K_p\approx1.885\,\mathrm{V/A},
+\qquad
+K_i\approx942.48\,\mathrm{V/(A\cdot s)}.
+$$<p>若总有效延时为 $150\,\mu\mathrm{s}$，理想 $90^\circ$ PM 会先损失约 $16.2^\circ$，剩余约 $73.8^\circ$；其他滤波与耦合还会继续消耗相位。这个估算假设极零匹配准确，不代表真实电机必然达到该数值。</p>
+<p>如果软件输出是占空比 $d$ 而非电压，且 $v=K_{\mathrm{PWM}}d$，应改为：</p>
+$$
+K_{p,d}=\frac{L_e\omega_{ci}}{K_{\mathrm{PWM}}},
+\qquad
+K_{i,d}=\frac{R\omega_{ci}}{K_{\mathrm{PWM}}}.
+$$<p>母线电压变化、调制方式和归一化都会改变这个映射。盲目复制别人的 PI 数值通常会在这里出错。</p>
+<h3 id="92-速度环先看内电流环是否足够快">
+<a class="header-anchor" href="#92-%e9%80%9f%e5%ba%a6%e7%8e%af%e5%85%88%e7%9c%8b%e5%86%85%e7%94%b5%e6%b5%81%e7%8e%af%e6%98%af%e5%90%a6%e8%b6%b3%e5%a4%9f%e5%bf%ab"></a>
+9.2 速度环：先看内电流环是否足够快
+</h3><p>机械方程为：</p>
+$$
+J\frac{\mathrm d\omega_m}{\mathrm dt}+B\omega_m
+=K_t i_q-\tau_L.
+$$<p>若内电流环在速度环关心的频带内近似为 1：</p>
+$$
+P_\omega(s)\approx\frac{K_t}{Js+B}.
+$$<p>速度 PI 的闭环特征多项式为：</p>
+$$
+Js^2+(B+K_tK_p)s+K_tK_i.
+$$<p>与目标二阶多项式 $J(s^2+2\zeta\omega_n s+\omega_n^2)$ 对照：</p>
+$$
+\boxed{
+K_p=\frac{2\zeta\omega_nJ-B}{K_t},
+\qquad
+K_i=\frac{J\omega_n^2}{K_t}
+}
+$$<p>这里 $\omega_n$ 是目标自然频率，<strong>不是直接等于闭环 -3 dB 带宽</strong>。参考到速度的闭环分子还含 PI 零点，不能仅凭分母就套用无零点二阶系统的超调公式。</p>
+<p>真实速度对象应包括内环：</p>
+$$
+G_\omega(s)=T_i(s)\frac{K_t}{Js+B}H_\omega(s).
+$$<p>速度由编码器差分、滑动平均、PLL 或观测器得到时，测量链相位必须计入。</p>
+<h3 id="93-位置环常用-p先不急着堆-pid">
+<a class="header-anchor" href="#93-%e4%bd%8d%e7%bd%ae%e7%8e%af%e5%b8%b8%e7%94%a8-p%e5%85%88%e4%b8%8d%e6%80%a5%e7%9d%80%e5%a0%86-pid"></a>
+9.3 位置环：常用 P，先不急着堆 PID
+</h3><p>若内速度环近似为 1，且 $\dot\theta=\omega_m$：</p>
+$$
+P_\theta(s)\approx\frac1s.
+$$<p>位置 P 控制 $C_\theta=K_\theta$ 得到：</p>
+$$
+T_\theta(s)=\frac{K_\theta}{s+K_\theta}.
+$$<p>因此初始可取 $K_\theta\approx\omega_{c\theta}$，之后再计入真实速度环与滤波，检查稳定性。</p>
+<p>调试顺序是<strong>先电流、再速度、再位置</strong>。外环关心的频段应位于内环较平坦的区域。频率至少相隔约 5～10 倍可以作为初步规划，但必须用内环实测相位确认；例如一阶内环在其带宽的 $1/5$ 处，仍有约 $11.3^\circ$ 滞后。</p>
+<p>电机速度的机械转频、电角频率、速度指令变化频率、控制环带宽是不同概念。恒速高速旋转不意味着速度参考在以同样的频率振荡；FOC 的旋转坐标变换也会改变信号所处的频带。</p>
+<p><a href="/post/pid%E5%8F%82%E6%95%B0%E6%95%B4%E5%AE%9A%E6%96%B9%E6%B3%95/#pid-toc">返回目录</a></p>
+<h2 id="pid-digital">
+<a class="header-anchor" href="#pid-digital"></a>
+10. 连续 PID 怎样变成闭环软件
+</h2><h3 id="101-采样周期是参数的一部分">
+<a class="header-anchor" href="#101-%e9%87%87%e6%a0%b7%e5%91%a8%e6%9c%9f%e6%98%af%e5%8f%82%e6%95%b0%e7%9a%84%e4%b8%80%e9%83%a8%e5%88%86"></a>
+10.1 采样周期是参数的一部分
+</h3><p>简单矩形积分实现：</p>
+$$
+I[k]=I[k-1]+K_iT_s e[k].
+$$<p>若使用梯形积分：</p>
+$$
+I[k]=I[k-1]+\frac{K_iT_s}{2}\big(e[k]+e[k-1]\big).
+$$<p>因此代码中存的“积分系数”可能实际是 $K_iT_s$，而不是连续域 $K_i$。改采样频率后若没有重新换算，就等于改了控制器。</p>
+<p>对测量微分采用后向欧拉离散，定义正向滤波微分状态 $q$，控制器中使用 $-q$：</p>
+$$
+q[k]=
+\frac{T_f}{T_f+T_s}q[k-1]
++\frac{K_d}{T_f+T_s}\big(y_m[k]-y_m[k-1]\big).
+$$<p>它来自：</p>
+$$
+T_f\dot q+q=K_d\dot y_m.
+$$<p>在计算顺序上，要明确这拍输出使用更新前还是更新后的积分值；不同顺序对应不同离散传递函数和时延。仿真、离线分析和固件必须保持一致。</p>
+<h3 id="102-抗积分饱和">
+<a class="header-anchor" href="#102-%e6%8a%97%e7%a7%af%e5%88%86%e9%a5%b1%e5%92%8c"></a>
+10.2 抗积分饱和
+</h3><p>令未限幅输出为 $u_{\mathrm{raw}}$，实际可实现输出为：</p>
+$$
+u_{\mathrm{lim}}=\operatorname{clip}(u_{\mathrm{raw}},u_{\min},u_{\max}).
+$$<p>反算抗饱和的一种形式为：</p>
+$$
+I[k+1]=I[k]+T_s
+\left[
+K_i e[k]+K_{\mathrm{aw}}
+\left(u_{\mathrm{lim}}[k]-u_{\mathrm{raw}}[k]\right)
+\right].
+$$<p>$I$ 的单位是控制输出，$K_{\mathrm{aw}}$ 的单位为 $\mathrm{s^{-1}}$。可用 $T_t=1/K_{\mathrm{aw}}$ 表示跟踪时间尺度。太快可能引入离散振荡，太慢又不能及时解除积累。</p>
+<p>抗饱和应覆盖真正的执行限制，包括电压矢量限幅、占空比限幅、速度限制和变化率限制。串级控制里，外环还应知道内环是否已无法执行它的命令。</p>
+<p>启动、手自动切换和在线换增益时，应初始化或跟踪积分状态，避免输出突跳；不能只把积分清零当成通用切换方法。</p>
+<h3 id="103-用实际离散环路检查频响">
+<a class="header-anchor" href="#103-%e7%94%a8%e5%ae%9e%e9%99%85%e7%a6%bb%e6%95%a3%e7%8e%af%e8%b7%af%e6%a3%80%e6%9f%a5%e9%a2%91%e5%93%8d"></a>
+10.3 用实际离散环路检查频响
+</h3><p>数字控制器应评估：</p>
+$$
+C_d\!\left(e^{j\omega T_s}\right),
+\qquad 0<\omega<\frac{\pi}{T_s}.
+$$<p>若控制器存在一拍执行延时，则多一个 $z^{-1}$，对应相位损失 $-\omega T_s$。零阶保持、PWM 更新位置、ADC 触发时刻和多速率执行，都需要按真实时间线建模。</p>
+<p>两通道错开 $\Delta t$ 会制造相位误差：</p>
+$$
+\Delta\phi=-360^\circ f\Delta t.
+$$<p>在 1 kHz 处，错开 $100\,\mu\mathrm{s}$ 就会错 $36^\circ$。所以扫频中的时间对齐，与 PID 参数本身一样重要。</p>
+<p><a href="/post/pid%E5%8F%82%E6%95%B0%E6%95%B4%E5%AE%9A%E6%96%B9%E6%B3%95/#pid-toc">返回目录</a></p>
+<h2 id="pid-injection">
+<a class="header-anchor" href="#pid-injection"></a>
+11. 闭环运行时，怎样测到开环伯德图
+</h2><h3 id="111-最推荐的教学接法控制器输出后注入">
+<a class="header-anchor" href="#111-%e6%9c%80%e6%8e%a8%e8%8d%90%e7%9a%84%e6%95%99%e5%ad%a6%e6%8e%a5%e6%b3%95%e6%8e%a7%e5%88%b6%e5%99%a8%e8%be%93%e5%87%ba%e5%90%8e%e6%b3%a8%e5%85%a5"></a>
+11.1 最推荐的教学接法：控制器输出后注入
+</h3><p>在对象输入边界前增加测试信号 $d$：</p>
+$$
+u=u_c+d,\qquad y_m=Gu,\qquad
+u_c=C(r-y_m).
+$$<p>实验中保持参考值不变，分析工作点附近的小信号，因此交流分量满足 $\delta r=0$。接下来公式省略 $\delta$，<strong>所有大写信号都表示测试频率处的复数相量，而不是直流工作点数值</strong>。</p>
+<p><img src="/picture/pid_tuning_20261020_a7f3_02_injection_v1.png" alt="闭环输出注入的位置及需要同时记录的信号"></p>
+<p>图 2：$U_c$ 在加法器之前，$U$ 在加法器之后，$Y_m$ 是控制器实际使用的反馈。若饱和器位于加法器之后，必须保证测量段中未触发饱和。</p>
+<p>由参考交流分量为零：</p>
+$$
+U_c=-CY_m=-CGU=-LU.
+$$<p>于是立即得到最重要的公式：</p>
+$$
+\boxed{L(j\omega)=-\frac{U_c(j\omega)}{U(j\omega)}}.
+$$<p>这正是在物理闭环保持工作的条件下，恢复数学开环环路增益的方法。</p>
+<p>再由 $U=U_c+D$：</p>
+$$
+U=-LU+D
+\quad\Longrightarrow\quad
+\boxed{\frac{U}{D}=\frac1{1+L}=S}.
+$$<p>所以：</p>
+$$
+\boxed{
+L=\frac{D}{U}-1
+=-\frac{U_c}{U}
+}
+$$<p>并且：</p>
+$$
+\frac{U_c}{D}=-\frac{L}{1+L}=-T,
+\qquad
+\frac{Y_m}{D}=\frac{G}{1+L}=GS,
+\qquad
+\boxed{G=\frac{Y_m}{U}}.
+$$<p>关键结论：<strong>直接把 $Y_m/D$ 画出来得到的是 $GS$，不是 $G$，更不是 $L$。</strong></p>
+<h3 id="112-每一种比值测的是什么">
+<a class="header-anchor" href="#112-%e6%af%8f%e4%b8%80%e7%a7%8d%e6%af%94%e5%80%bc%e6%b5%8b%e7%9a%84%e6%98%af%e4%bb%80%e4%b9%88"></a>
+11.2 每一种比值测的是什么
+</h3><table>
+	<thead>
+			<tr>
+					<th>记录的复数比值</th>
+					<th>结果</th>
+					<th>适用条件</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td>$-U_c/U$</td>
+					<td>环路增益 $L$</td>
+					<td>输出注入、参考交流分量为零</td>
+			</tr>
+			<tr>
+					<td>$U/D$</td>
+					<td>灵敏度 $S$</td>
+					<td>同上</td>
+			</tr>
+			<tr>
+					<td>$Y_m/D$</td>
+					<td>$GS$</td>
+					<td>同上</td>
+			</tr>
+			<tr>
+					<td>$Y_m/U$</td>
+					<td>合并对象 $G$</td>
+					<td>同步、线性、注入响应可辨认</td>
+			</tr>
+			<tr>
+					<td>$Y_m/R$</td>
+					<td>通常为闭环参考响应</td>
+					<td>参考端注入，具体由结构决定</td>
+			</tr>
+	</tbody>
+</table>
+<p>$G$ 包含哪些硬件，完全由取点位置决定。如果 $U$ 记录的是电压命令，则 PWM、执行器及命令到真实电压的延迟属于 $G$；如果记录真实测得的电压，则边界改变，不能与前一种结果直接混用。</p>
+<p>低频环路增益很高时，反馈会抵消扰动，$U$ 很小，所以 $-U_c/U$ 可能噪声很大。高频 $U_c$ 很小时，分子又可能不可靠。公式正确不代表每个频率点都有足够信噪比。</p>
+<h3 id="113-也可以在误差加法器处注入">
+<a class="header-anchor" href="#113-%e4%b9%9f%e5%8f%af%e4%bb%a5%e5%9c%a8%e8%af%af%e5%b7%ae%e5%8a%a0%e6%b3%95%e5%99%a8%e5%a4%84%e6%b3%a8%e5%85%a5"></a>
+11.3 也可以在误差加法器处注入
+</h3><p>在控制器输入处定义：</p>
+$$
+x=d-y_m,\qquad u=Cx,\qquad y_m=Gu.
+$$<p>则：</p>
+$$
+\frac{X}{D}=\frac1{1+L}=S,
+\qquad
+\frac{Y_m}{D}=\frac{L}{1+L}=T,
+\qquad
+\boxed{L=\frac{Y_m}{X}}.
+$$<p>这要求注入进入完整反馈控制器通道。如果固件使用设定值权重或测量微分，简单修改参考值未必等价于这里的 $x$ 注入。</p>
+<h3 id="114-为什么从参考端测到闭环后反算容易出错">
+<a class="header-anchor" href="#114-%e4%b8%ba%e4%bb%80%e4%b9%88%e4%bb%8e%e5%8f%82%e8%80%83%e7%ab%af%e6%b5%8b%e5%88%b0%e9%97%ad%e7%8e%af%e5%90%8e%e5%8f%8d%e7%ae%97%e5%ae%b9%e6%98%93%e5%87%ba%e9%94%99"></a>
+11.4 为什么从参考端测到闭环后反算容易出错
+</h3><p>对纯误差反馈、无前置滤波的结构：</p>
+$$
+T=\frac{Y_m}{R},\qquad
+\boxed{L=\frac{T}{1-T}}.
+$$<p>此处必须进行复数运算，不能用幅值代替：</p>
+$$
+\left|\frac{T}{1-T}\right|
+\ne\frac{|T|}{1-|T|}.
+$$<p>低频 $T\approx1$ 时，$1-T$ 是两个接近的复数相减，微小测量误差会被放大。</p>
+<p>若控制器写成：</p>
+$$
+U=C_rR-C_yY_m,
+$$<p>则反馈环路是 $L=C_yG$，而：</p>
+$$
+\frac{Y_m}{R}=\frac{GC_r}{1+GC_y}.
+$$<p>只有 $C_r=C_y$ 时，它才等于 $L/(1+L)$。前馈、二自由度 PID、测量微分与参考滤波，都会使简单反算失效。<strong>输出后注入法仍可以测反馈环路，但必须把测量定义和结构写清。</strong></p>
+<p>这种在闭环中注入并估计频响的方法，也有成熟工程实现，例如 <a href="https://www.ti.com/tool/SFRA">TI 的 SFRA 工具</a>；具体软件接口的符号约定不一定与本文相同，应按其框图核对。</p>
+<p><a href="/post/pid%E5%8F%82%E6%95%B0%E6%95%B4%E5%AE%9A%E6%96%B9%E6%B3%95/#pid-toc">返回目录</a></p>
+<h2 id="pid-sweep">
+<a class="header-anchor" href="#pid-sweep"></a>
+12. 正弦逐点扫频：从实验参数到中断程序
+</h2><h3 id="121-先规定实验的有效条件">
+<a class="header-anchor" href="#121-%e5%85%88%e8%a7%84%e5%ae%9a%e5%ae%9e%e9%aa%8c%e7%9a%84%e6%9c%89%e6%95%88%e6%9d%a1%e4%bb%b6"></a>
+12.1 先规定实验的有效条件
+</h3><p>保持工作点固定，选择已经能稳定运行的控制器。固定参数和采样周期；暂时避免会随测试信号改变的在线整定、增益调度和轨迹运动。硬件保护仍应正常工作。</p>
+<p>每个有效测量窗口必须满足：</p>
+<ul>
+<li>输出、变化率、积分和电流等限制未被触发；</li>
+<li>响应基本处于小信号线性范围，工作点没有明显漂移；</li>
+<li>周期采样没有丢点，注入与所有测量使用同一时间基准；</li>
+<li>暂态已充分衰减，响应未被无关周期扰动主导。</li>
+</ul>
+<p>扫频的目标是测小信号系统。触发保护或发生削顶后，应退出该频点并标为无效，不能通过“继续平均”修复非线性数据。</p>
+<h3 id="122-频率范围与对数网格">
+<a class="header-anchor" href="#122-%e9%a2%91%e7%8e%87%e8%8c%83%e5%9b%b4%e4%b8%8e%e5%af%b9%e6%95%b0%e7%bd%91%e6%a0%bc"></a>
+12.2 频率范围与对数网格
+</h3><p>已知预计 $f_c$ 时，可先覆盖约 $0.1f_c$～$10f_c$，每十倍频程取 10～20 点，再在交越和共振附近加密。这只是初始范围；若边界处仍有重要动态，就需要继续扩展。</p>
+$$
+f_k=f_{\min}
+\left(\frac{f_{\max}}{f_{\min}}\right)^{k/(M-1)},
+\qquad k=0,\ldots,M-1.
+$$<p>上限必须低于有效采样率的 Nyquist 频率，还应留出足够每周期采样点以减少相位和拟合误差。简单实现可先要求每周期至少约 20 点，但这不是精度保证；必要时提高采样率或使用更严格估计。</p>
+<p>若日志经过抽取，必须使用抽取后的有效采样率，并考虑抗混叠滤波。控制中断 20 kHz 而日志只有 1 kHz 时，不能按 20 kHz 解释日志频响。</p>
+<h3 id="123-注入幅值怎么选">
+<a class="header-anchor" href="#123-%e6%b3%a8%e5%85%a5%e5%b9%85%e5%80%bc%e6%80%8e%e4%b9%88%e9%80%89"></a>
+12.3 注入幅值怎么选
+</h3>$$
+d[k]=A_k\cos\theta[k],
+\qquad
+\theta[k+1]=\theta[k]+2\pi f_kT_s\pmod{2\pi}.
+$$<p>可从满量程约 0.5%～2% 的小幅值试起，但必须同时检查噪声、量化、输出余量、摩擦死区与实际运动幅度。这个百分比是试验起点，不是普适安全值。</p>
+<p>同一频点分别用 $A$ 和 $A/2$ 测量；若恢复的频响明显变化，应怀疑非线性或低信噪比。可随频率调整幅值，但一个测量窗口内应保持幅值恒定，调整后重新等待稳定。</p>
+<p>低频为了压过噪声而加大扰动，可能导致较大位移；高频加大扰动则可能触发变化率、电压或电流限制。幅值规划必须结合对象。</p>
+<h3 id="124-暂态等待与整周期窗口">
+<a class="header-anchor" href="#124-%e6%9a%82%e6%80%81%e7%ad%89%e5%be%85%e4%b8%8e%e6%95%b4%e5%91%a8%e6%9c%9f%e7%aa%97%e5%8f%a3"></a>
+12.4 暂态等待与整周期窗口
+</h3><p>每个频点分为：平滑进入 → 等待稳定 → 正式采集 → 检查质量 → 下一个频点。</p>
+<p>如果系统最慢相关模态的衰减时间常数约为 $\tau_{\mathrm{slow}}$，可先用：</p>
+$$
+T_{\mathrm{settle}}\gtrsim
+\max\left(\frac{N_{\mathrm{settle}}}{f_k},\,5\tau_{\mathrm{slow}}\right)
+$$<p>作为等待起点，再比较相邻周期的幅相是否已经一致。简单地固定丢掉两周期，在高频时可能完全不够。</p>
+<p>测量可先取 8～20 周期；低频耗时长、高频更易受时序影响。若选 $N$ 个样本、整数 $m$ 个周期：</p>
+$$
+f_k=\frac{m f_s}{N},
+$$<p>则测量窗恰好覆盖整周期，可减小泄漏。频率量化后要保存并使用<strong>实际注入频率</strong>，不要仍按原计划频率计算。不能满足整周期时，使用第 13 节的最小二乘拟合。</p>
+<h3 id="125-输出注入的固件伪代码">
+<a class="header-anchor" href="#125-%e8%be%93%e5%87%ba%e6%b3%a8%e5%85%a5%e7%9a%84%e5%9b%ba%e4%bb%b6%e4%bc%aa%e4%bb%a3%e7%a0%81"></a>
+12.5 输出注入的固件伪代码
+</h3><p>下面是结构示意，不是可直接刷入的完整驱动。控制输出在采样 $y_m[k]$ 后计算，并在下一采样间隔内保持。于是记录的 $U[k]\to Y_m[k]$ 关系自然包含该执行时序的动态，不应人为把反馈挪一拍来“修正”相位。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="c1">// 所有参数、物理单位、限幅和执行时序须与实际固件一致。
+</span></span></span><span class="line"><span class="cl"><span class="c1">// ISR 固定周期运行；后台负责任务切换、结果传输和拟合。
+</span></span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">control_isr</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">float</span> <span class="n">ym</span> <span class="o">=</span> <span class="nf">calibrated_feedback</span><span class="p">();</span>   <span class="c1">// 当前时刻的测量
+</span></span></span><span class="line"><span class="cl">    <span class="kt">float</span> <span class="n">e</span> <span class="o">=</span> <span class="n">reference_fixed</span> <span class="o">-</span> <span class="n">ym</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="c1">// q 是正向的测量微分；控制输出使用 -q
+</span></span></span><span class="line"><span class="cl">    <span class="n">q</span> <span class="o">=</span> <span class="n">a</span> <span class="o">*</span> <span class="n">q</span> <span class="o">+</span> <span class="n">b</span> <span class="o">*</span> <span class="p">(</span><span class="n">ym</span> <span class="o">-</span> <span class="n">ym_previous</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">float</span> <span class="n">uc</span> <span class="o">=</span> <span class="n">Kp</span> <span class="o">*</span> <span class="n">e</span> <span class="o">+</span> <span class="n">integral</span> <span class="o">-</span> <span class="n">q</span><span class="p">;</span>   <span class="c1">// 注入前，不含本次 d
+</span></span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="kt">float</span> <span class="n">d</span> <span class="o">=</span> <span class="n">sweep_active</span> <span class="o">?</span> <span class="n">amplitude</span> <span class="o">*</span> <span class="nf">cosf</span><span class="p">(</span><span class="n">theta</span><span class="p">)</span> <span class="o">:</span> <span class="mf">0.0f</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">float</span> <span class="n">raw</span> <span class="o">=</span> <span class="n">uc</span> <span class="o">+</span> <span class="n">d</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">float</span> <span class="n">u</span> <span class="o">=</span> <span class="nf">apply_amplitude_and_rate_limits</span><span class="p">(</span><span class="n">raw</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="nf">apply_actuator</span><span class="p">(</span><span class="n">u</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="c1">// 正常小信号扫频时 u == raw，反算项为零。
+</span></span></span><span class="line"><span class="cl">    <span class="c1">// 一旦限幅则标无效；抗饱和和保护仍正常工作。
+</span></span></span><span class="line"><span class="cl">    <span class="n">integral</span> <span class="o">+=</span> <span class="n">Ts</span> <span class="o">*</span> <span class="p">(</span><span class="n">Ki</span> <span class="o">*</span> <span class="n">e</span> <span class="o">+</span> <span class="n">Kaw</span> <span class="o">*</span> <span class="p">(</span><span class="n">u</span> <span class="o">-</span> <span class="n">raw</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="kt">bool</span> <span class="n">limited</span> <span class="o">=</span> <span class="nf">actuator_limit_active</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">measurement_window</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">// 同一控制周期、同一 theta：全部先存到环形缓冲。
+</span></span></span><span class="line"><span class="cl">        <span class="nf">record_sample</span><span class="p">(</span><span class="n">timestamp</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">uc</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">ym</span><span class="p">,</span> <span class="n">limited</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">limited</span> <span class="o">||</span> <span class="nf">protection_active</span><span class="p">())</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">invalidate_current_frequency</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">request_safe_sweep_stop</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="n">ym_previous</span> <span class="o">=</span> <span class="n">ym</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">theta</span> <span class="o">=</span> <span class="nf">wrap_2pi</span><span class="p">(</span><span class="n">theta</span> <span class="o">+</span> <span class="mf">2.0f</span> <span class="o">*</span> <span class="n">PI</span> <span class="o">*</span> <span class="n">frequency_hz</span> <span class="o">*</span> <span class="n">Ts</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>开始扫频前，应对状态 $q$、积分、上一拍测量做正常运行所需的初始化。阶段转换、频率更新、数据缓冲交接应原子化或在中断边界进行；不要在中断里画图、打印串口或写文件。</p>
+<p>不要在 ISR 中简单累加整段未去直流的采样平方作为“交流能量”。直流量可能比注入大几个数量级，会掩盖测试信号；定点实现还需检查累加器溢出。</p>
+<p><a href="/post/pid%E5%8F%82%E6%95%B0%E6%95%B4%E5%AE%9A%E6%96%B9%E6%B3%95/#pid-toc">返回目录</a></p>
+<h2 id="pid-estimation">
+<a class="header-anchor" href="#pid-estimation"></a>
+13. 从采样数据提取复数频响
+</h2><h3 id="131-相量约定先统一">
+<a class="header-anchor" href="#131-%e7%9b%b8%e9%87%8f%e7%ba%a6%e5%ae%9a%e5%85%88%e7%bb%9f%e4%b8%80"></a>
+13.1 相量约定先统一
+</h3><p>采用：</p>
+$$
+x(t)=\Re\!\left\{Xe^{j\omega t}\right\},
+\qquad X=Ae^{j\phi}.
+$$<p>因此：</p>
+$$
+x(t)=A\cos\phi\cos\omega t-A\sin\phi\sin\omega t.
+$$<p>这一约定决定了后面正弦项前的负号。若采用其他约定也可以，但所有通道必须一致。</p>
+<h3 id="132-整周期同步检波">
+<a class="header-anchor" href="#132-%e6%95%b4%e5%91%a8%e6%9c%9f%e5%90%8c%e6%ad%a5%e6%a3%80%e6%b3%a2"></a>
+13.2 整周期同步检波
+</h3><p>对均匀采样、整周期窗口、稳态信号，令 $\theta_n=\omega nT_s$，去掉均值后：</p>
+$$
+\widehat X=
+\frac2N\sum_{n=0}^{N-1}(x_n-\bar x)e^{-j\theta_n}
+=X_c-jX_s,
+$$$$
+X_c=\frac2N\sum(x_n-\bar x)\cos\theta_n,
+\qquad
+X_s=\frac2N\sum(x_n-\bar x)\sin\theta_n.
+$$<p>于是：</p>
+$$
+A_x=|\widehat X|=\sqrt{X_c^2+X_s^2},
+\qquad
+\phi_x=\operatorname{atan2}(-X_s,X_c).
+$$<p>对 $d,u_c,u,y_m$ 分别做同样的计算：</p>
+$$
+\widehat L=-\frac{\widehat U_c}{\widehat U},
+\qquad
+\widehat G=\frac{\widehat Y_m}{\widehat U},
+\qquad
+\widehat S=\frac{\widehat U}{\widehat D}.
+$$<p>必须先得到复数比值，再算 dB 与角度：</p>
+$$
+L_{\mathrm{dB}}=20\log_{10}|\widehat L|,
+\qquad
+\phi_L=\arg\widehat L.
+$$<p>减号对应 $180^\circ$ 相位，不能漏掉。相位展开需要相邻频点足够密，并结合已知低频行为选择正确分支；展开算法本身不证明相位测对了。</p>
+<h3 id="133-非整周期或有直流偏置最小二乘更方便">
+<a class="header-anchor" href="#133-%e9%9d%9e%e6%95%b4%e5%91%a8%e6%9c%9f%e6%88%96%e6%9c%89%e7%9b%b4%e6%b5%81%e5%81%8f%e7%bd%ae%e6%9c%80%e5%b0%8f%e4%ba%8c%e4%b9%98%e6%9b%b4%e6%96%b9%e4%be%bf"></a>
+13.3 非整周期或有直流偏置：最小二乘更方便
+</h3><p>拟合：</p>
+$$
+x_n=a\cos\theta_n+b\sin\theta_n+c+\varepsilon_n.
+$$<p>写成矩阵：</p>
+$$
+\mathbf x=\mathbf A\boldsymbol\beta+\boldsymbol\varepsilon,
+\qquad
+\mathbf A_n=
+\begin{bmatrix}\cos\theta_n&\sin\theta_n&1\end{bmatrix}.
+$$<p>求：</p>
+$$
+\widehat{\boldsymbol\beta}
+=\arg\min_{\boldsymbol\beta}
+\|\mathbf A\boldsymbol\beta-\mathbf x\|_2^2,
+\qquad
+\widehat X=\widehat a-j\widehat b.
+$$<p>实际软件使用 QR/SVD 或成熟的最小二乘函数，避免手动求 $(\mathbf A^\mathsf T\mathbf A)^{-1}$。有缓慢漂移时可以增加线性时间项，但漂移大时应先重新稳定工作点，不能全靠拟合掩盖。</p>
+<p>下面的 Python 函数不要求整周期；时间单位必须为秒：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">phasor</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">frequency_hz</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">    <span class="n">t</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">phase</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">frequency_hz</span> <span class="o">*</span> <span class="p">(</span><span class="n">t</span> <span class="o">-</span> <span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+</span></span><span class="line"><span class="cl">    <span class="n">basis</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">column_stack</span><span class="p">((</span>
+</span></span><span class="line"><span class="cl">        <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">phase</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">phase</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">phase</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="p">))</span>
+</span></span><span class="line"><span class="cl">    <span class="n">coef</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">rank</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">lstsq</span><span class="p">(</span><span class="n">basis</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">rcond</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="n">rank</span> <span class="o">&lt;</span> <span class="mi">3</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&#34;窗口不足以辨识正弦、余弦与直流&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">fit</span> <span class="o">=</span> <span class="n">basis</span> <span class="o">@</span> <span class="n">coef</span>
+</span></span><span class="line"><span class="cl">    <span class="n">residual_rms</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">((</span><span class="n">x</span> <span class="o">-</span> <span class="n">fit</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">    <span class="n">X</span> <span class="o">=</span> <span class="n">coef</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="n">coef</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">X</span><span class="p">,</span> <span class="n">residual_rms</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 每一个频点使用同一窗口、同一 t，同时拒绝任何限幅样本。</span>
+</span></span><span class="line"><span class="cl"><span class="n">D</span><span class="p">,</span> <span class="n">nd</span> <span class="o">=</span> <span class="n">phasor</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">f_actual</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">Uc</span><span class="p">,</span> <span class="n">nc</span> <span class="o">=</span> <span class="n">phasor</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">uc</span><span class="p">,</span> <span class="n">f_actual</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">U</span><span class="p">,</span> <span class="n">nu</span> <span class="o">=</span> <span class="n">phasor</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">f_actual</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">Ym</span><span class="p">,</span> <span class="n">ny</span> <span class="o">=</span> <span class="n">phasor</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">ym</span><span class="p">,</span> <span class="n">f_actual</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># u_min_ac 是依据噪声底/重复实验确定的有效交流幅值门槛。</span>
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">U</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">u_min_ac</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&#34;注入后输入交流分量不足，不能可靠恢复频响&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">L</span> <span class="o">=</span> <span class="o">-</span><span class="n">Uc</span> <span class="o">/</span> <span class="n">U</span>
+</span></span><span class="line"><span class="cl"><span class="n">G</span> <span class="o">=</span> <span class="n">Ym</span> <span class="o">/</span> <span class="n">U</span>
+</span></span><span class="line"><span class="cl"><span class="n">S</span> <span class="o">=</span> <span class="n">U</span> <span class="o">/</span> <span class="n">D</span>
+</span></span><span class="line"><span class="cl"><span class="n">gain_db</span> <span class="o">=</span> <span class="mi">20</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">L</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl"><span class="n">phase_deg</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">angle</span><span class="p">(</span><span class="n">L</span><span class="p">,</span> <span class="n">deg</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span></span></code></pre></div><p>不应直接用“两个时域最大值之比”代替幅值拟合，噪声峰值会带来偏差；也不宜仅靠零交叉估计相位，直流偏置与波形畸变会干扰结果。</p>
+<h3 id="134-闭环噪声相关性与外部注入参考">
+<a class="header-anchor" href="#134-%e9%97%ad%e7%8e%af%e5%99%aa%e5%a3%b0%e7%9b%b8%e5%85%b3%e6%80%a7%e4%b8%8e%e5%a4%96%e9%83%a8%e6%b3%a8%e5%85%a5%e5%8f%82%e8%80%83"></a>
+13.4 闭环噪声相关性与外部注入参考
+</h3><p>在闭环中，测量噪声会经控制器影响 $u$，所以直接由总输入输出谱计算的对象估计可能有闭环偏差。小信号单频试验中，用独立注入 $d$ 作相干参考并做多窗口平均，可以改善这个问题。</p>
+<p>定义交叉谱约定：</p>
+$$
+S_{xd}=\mathbb E[X D^\ast].
+$$<p>在外部扰动与注入不相关、系统线性且数据足够时，可估计：</p>
+$$
+\widehat G=\frac{S_{y_md}}{S_{ud}},
+\qquad
+\widehat L=-\frac{S_{u_cd}}{S_{ud}}.
+$$<p>这利用了各信号中与注入相干的部分。若环境扰动恰好与注入同频且保持相干，例如固定电源纹波，平均并不能自动去掉它。</p>
+<p>常见平方相干度：</p>
+$$
+\gamma_{xd}^2
+=\frac{|S_{xd}|^2}{S_{xx}S_{dd}}.
+$$<p>必须使用多段或多次独立估计的平均谱；单个未平均 FFT 样本构造出的相干度会形式上等于 1，不能拿来当质量证明。即使相干度很高，也不能排除稳定的非线性失真，所以还应检查幅值缩放、谐波与重复性。</p>
+<h3 id="135-一个可复核的闭环扫频演示">
+<a class="header-anchor" href="#135-%e4%b8%80%e4%b8%aa%e5%8f%af%e5%a4%8d%e6%a0%b8%e7%9a%84%e9%97%ad%e7%8e%af%e6%89%ab%e9%a2%91%e6%bc%94%e7%a4%ba"></a>
+13.5 一个可复核的闭环扫频演示
+</h3><p>下图使用第 7 节的连续模型。在各频点，由已知闭环频响合成带直流偏置和独立噪声的稳态波形，再用最小二乘恢复 $-U_c/U$。</p>
+<p><img src="/picture/pid_tuning_20261020_a7f3_03_sweep_v1.png" alt="从合成闭环注入数据恢复的开环频响与真实模型对比"></p>
+<p>图 3：这是<strong>稳态合成数据验证</strong>，用于检查符号、复数比值和估计算法；它没有仿真真实 MCU 的饱和、量化、调度和过渡过程。曲线吻合只能说明这个教学实验中的恢复过程正确。</p>
+<p>每个频点至少保存：实际频率、注入幅值、采样率、等待时间、测量周期数、各通道复数相量、幅相、拟合残差、限幅标志、工作点和控制器版本。没有元数据的伯德图，很难在以后复现。</p>
+<p>在线频响估计的工作流与稳态、扰动等限制，也可参考 <a href="https://www.mathworks.com/help/slcontrol/ug/online-frequency-response-estimation-basics.html">MathWorks 的在线频响估计说明</a>。</p>
+<p><a href="/post/pid%E5%8F%82%E6%95%B0%E6%95%B4%E5%AE%9A%E6%96%B9%E6%B3%95/#pid-toc">返回目录</a></p>
+<h2 id="pid-validation">
+<a class="header-anchor" href="#pid-validation"></a>
+14. 怎样用实测伯德图完成整定闭环
+</h2><h3 id="141-先检查代数和时序再读裕度">
+<a class="header-anchor" href="#141-%e5%85%88%e6%a3%80%e6%9f%a5%e4%bb%a3%e6%95%b0%e5%92%8c%e6%97%b6%e5%ba%8f%e5%86%8d%e8%af%bb%e8%a3%95%e5%ba%a6"></a>
+14.1 先检查代数和时序，再读裕度
+</h3><p>输出注入时应有：</p>
+$$
+\widehat U\approx\widehat U_c+\widehat D.
+$$<p>若不满足，优先检查记录点、限幅、日志对齐、单位缩放和直流处理。这个关系通过，也不能证明对象模型准确，只能排除部分测量错误。</p>
+<p>如果已知控制器实际频响，还可对比：</p>
+$$
+-\frac{\widehat U_c}{\widehat U}
+\quad\text{与}\quad
+C_d(e^{j\omega T_s})\frac{\widehat Y_m}{\widehat U}.
+$$<p>但这两个估计共享测量数据，并不是完全独立的验证。更有价值的检查是重复测试、改变注入幅值、比较不同运行点与阶跃响应。</p>
+<h3 id="142-从离散频点估计交越">
+<a class="header-anchor" href="#142-%e4%bb%8e%e7%a6%bb%e6%95%a3%e9%a2%91%e7%82%b9%e4%bc%b0%e8%ae%a1%e4%ba%a4%e8%b6%8a"></a>
+14.2 从离散频点估计交越
+</h3><p>若相邻两点 $(f_1,M_1)$、$(f_2,M_2)$ 的幅值 dB 跨过零，可在线性 dB—对数频率坐标中插值：</p>
+$$
+q=\frac{-M_1}{M_2-M_1},
+\qquad
+\log f_c=\log f_1+q(\log f_2-\log f_1).
+$$<p>再对已展开相位插值：</p>
+$$
+\phi(f_c)\approx\phi_1+q(\phi_2-\phi_1),
+\qquad
+\mathrm{PM}\approx180^\circ+\phi(f_c).
+$$<p>交越附近应加密采样，因为强共振时简单插值会失真。对所有 0 dB 穿越都应检查，不要只选择最好看的一个。</p>
+<p>若测量频段内没有相位穿过 $-180^\circ$，应写“当前频段未测到相位交越”，不能把 GM 写成“已证实无穷大”。对数字环路，完整频域范围还涉及 Nyquist 上限及采样模型的有效性。</p>
+<h3 id="143-看到问题时优先怎样改">
+<a class="header-anchor" href="#143-%e7%9c%8b%e5%88%b0%e9%97%ae%e9%a2%98%e6%97%b6%e4%bc%98%e5%85%88%e6%80%8e%e6%a0%b7%e6%94%b9"></a>
+14.3 看到问题时优先怎样改
+</h3><table>
+	<thead>
+			<tr>
+					<th>观察</th>
+					<th>先核对</th>
+					<th>常见调整方向</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td>交越太低、PM 充足</td>
+					<td>执行器余量与噪声</td>
+					<td>适度提高总体增益并复测</td>
+			</tr>
+			<tr>
+					<td>交越合适、PM 太小</td>
+					<td>延时、滤波、共振</td>
+					<td>减少不必要延迟，降低积分影响或加入超前</td>
+			</tr>
+			<tr>
+					<td>低频误差大</td>
+					<td>积分是否真正生效、限幅</td>
+					<td>提升低频增益，核对抗饱和</td>
+			</tr>
+			<tr>
+					<td>高频控制输出很吵</td>
+					<td>量化、测量微分</td>
+					<td>限制高频增益、合理滤波</td>
+			</tr>
+			<tr>
+					<td>共振峰明显</td>
+					<td>结构模态、负载变化</td>
+					<td>降带宽，必要时设计陷波并检查其相位</td>
+			</tr>
+			<tr>
+					<td>换负载后结果大变</td>
+					<td>对象和工作点变化</td>
+					<td>多工况设计，必要时做有验证的增益调度</td>
+			</tr>
+	</tbody>
+</table>
+<p>“提高 $K_p$ 只改变幅值不改变相位”只对固定形状的整体增益缩放成立。若保持 $K_i,K_d$ 不变，只改并联 PID 的 $K_p$，控制器形状和相位也会改变。若固定 $T_i,T_d$、整体乘一个增益，则开环相位曲线形状不变，但交越位置仍会移动，PM 也会变化。</p>
+<h3 id="144-验收必须覆盖时间域和工作范围">
+<a class="header-anchor" href="#144-%e9%aa%8c%e6%94%b6%e5%bf%85%e9%a1%bb%e8%a6%86%e7%9b%96%e6%97%b6%e9%97%b4%e5%9f%9f%e5%92%8c%e5%b7%a5%e4%bd%9c%e8%8c%83%e5%9b%b4"></a>
+14.4 验收必须覆盖时间域和工作范围
+</h3><p>至少做小阶跃、代表性轨迹、负载扰动、噪声观察和输出余量检查，再覆盖母线电压、温度、惯量和速度范围。</p>
+<p>大阶跃主要检验限幅、抗积分饱和和恢复过程，小阶跃主要检验局部线性响应；两者都重要。一个“看起来快”的大阶跃，可能只是执行器一直顶在限幅，并不能代表线性带宽。</p>
+<p><a href="/post/pid%E5%8F%82%E6%95%B0%E6%95%B4%E5%AE%9A%E6%96%B9%E6%B3%95/#pid-toc">返回目录</a></p>
+<h2 id="pid-over-bandwidth">
+<a class="header-anchor" href="#pid-over-bandwidth"></a>
+15. 输入信号超过带宽会发生什么
+</h2><h3 id="151-参考输入衰减与滞后不是自动失稳">
+<a class="header-anchor" href="#151-%e5%8f%82%e8%80%83%e8%be%93%e5%85%a5%e8%a1%b0%e5%87%8f%e4%b8%8e%e6%bb%9e%e5%90%8e%e4%b8%8d%e6%98%af%e8%87%aa%e5%8a%a8%e5%a4%b1%e7%a8%b3"></a>
+15.1 参考输入：衰减与滞后，不是自动失稳
+</h3><p>对于已经稳定的一阶闭环：</p>
+$$
+T(j\omega)=\frac1{1+j\omega/\omega_b}.
+$$<table>
+	<thead>
+			<tr>
+					<th>输入频率</th>
+					<th>输出幅值比</th>
+					<th>相位滞后</th>
+					<th>误差幅值比 $\lvert1-T\rvert$</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td>$0.1f_{\mathrm{BW}}$</td>
+					<td>0.995</td>
+					<td>$5.71^\circ$</td>
+					<td>0.0995</td>
+			</tr>
+			<tr>
+					<td>$f_{\mathrm{BW}}$</td>
+					<td>0.707</td>
+					<td>$45^\circ$</td>
+					<td>0.707</td>
+			</tr>
+			<tr>
+					<td>$3f_{\mathrm{BW}}$</td>
+					<td>0.316</td>
+					<td>$71.57^\circ$</td>
+					<td>0.949</td>
+			</tr>
+			<tr>
+					<td>$10f_{\mathrm{BW}}$</td>
+					<td>0.0995</td>
+					<td>$84.29^\circ$</td>
+					<td>0.995</td>
+			</tr>
+	</tbody>
+</table>
+<p>输入频率提高，输出一般变小且更加滞后。<strong>一个稳定的线性系统不会仅因为外部正弦频率超过带宽就自动变成不稳定系统。</strong> 但实际系统可能因为幅值、变化率限制、积分饱和或未建模动态出现失真与异常振荡。</p>
+<p>有共振的闭环，在带宽附近甚至可能放大输入。上表只适用于指定的一阶模型。</p>
+<p><img src="/picture/pid_tuning_20261020_a7f3_04_tracking_v1.png" alt="一阶闭环对低于、等于、高于带宽的正弦输入响应"></p>
+<p>图 4：各面板横轴均为“输入周期数”，因此便于比较幅值与相位；不同面板代表的实际秒数不同。</p>
+<h3 id="152-同样的频率不同注入位置结论不同">
+<a class="header-anchor" href="#152-%e5%90%8c%e6%a0%b7%e7%9a%84%e9%a2%91%e7%8e%87%e4%b8%8d%e5%90%8c%e6%b3%a8%e5%85%a5%e4%bd%8d%e7%bd%ae%e7%bb%93%e8%ae%ba%e4%b8%8d%e5%90%8c"></a>
+15.2 同样的频率，不同注入位置结论不同
+</h3><p>在单位反馈下，令 $d_u$ 加在对象输入、$d_y$ 加在物理输出，测量噪声 $n$ 加在反馈测量处：</p>
+$$
+y=P\big[C(r-y-n)+d_u\big]+d_y.
+$$<p>整理：</p>
+$$
+\boxed{
+Y=T R+PS D_u+S D_y-T N
+}
+$$<p>同时噪声引起的控制输出为：</p>
+$$
+U_c=-CS\,N.
+$$<p>因此：</p>
+<ul>
+<li>参考到输出走 $T$：高频通常跟不上。</li>
+<li>输出扰动到输出走 $S$：高频反馈抑制通常较弱。</li>
+<li>输入扰动到输出走 $PS$：还要看对象自身是否衰减高频。</li>
+<li>测量噪声到真实输出走 $-T$：高频真实输出可能较小。</li>
+<li>测量噪声到执行器命令走 $-CS$：即使物理输出不明显，控制命令也可能很吵。</li>
+</ul>
+<p>如果看的是带噪声测量值 $y_m=y+n$，噪声传递为 $S$，与真实输出的 $-T$ 不同。说“高频噪声被滤掉了”之前，先说明观察的是哪个信号。</p>
+<h3 id="153-小信号带宽与大信号能力不同">
+<a class="header-anchor" href="#153-%e5%b0%8f%e4%bf%a1%e5%8f%b7%e5%b8%a6%e5%ae%bd%e4%b8%8e%e5%a4%a7%e4%bf%a1%e5%8f%b7%e8%83%bd%e5%8a%9b%e4%b8%8d%e5%90%8c"></a>
+15.3 小信号带宽与大信号能力不同
+</h3><p>若要求输出轨迹：</p>
+$$
+y(t)=A\sin\omega t,
+$$<p>则：</p>
+$$
+\max|\dot y|=A\omega,
+\qquad
+\max|\ddot y|=A\omega^2.
+$$<p>位置幅值相同、频率翻倍，需要两倍峰值速度和四倍峰值加速度，电机可能先受速度、转矩或母线电压限制。即使频率低于小信号带宽，大幅轨迹也可能跟不上。</p>
+<p>方波含有高次谐波：</p>
+$$
+r(t)=\frac{4A}{\pi}
+\left(\sin\omega_0t+\frac13\sin3\omega_0t+\cdots\right).
+$$<p>基频低于带宽，不代表其陡峭边沿也能被重现；高次谐波衰减后，边沿会变圆并出现延迟。带宽不是一个“以下全过、以上全没”的理想开关。</p>
+<p><a href="/post/pid%E5%8F%82%E6%95%B0%E6%95%B4%E5%AE%9A%E6%96%B9%E6%B3%95/#pid-toc">返回目录</a></p>
+<h2 id="pid-mistakes">
+<a class="header-anchor" href="#pid-mistakes"></a>
+16. 常见误区与正确检查方式
+</h2><table>
+	<thead>
+			<tr>
+					<th>误区</th>
+					<th>为什么错</th>
+					<th>正确做法</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td>“PID 三项都用才高级”</td>
+					<td>D 可能只增加噪声</td>
+					<td>先判断 PI 是否已经满足指标</td>
+			</tr>
+			<tr>
+					<td>“增大 P 永远更快更好”</td>
+					<td>交越可能进入大滞后或共振区</td>
+					<td>同时检查 PM、噪声与输出</td>
+			</tr>
+			<tr>
+					<td>“积分越大稳态精度越高”</td>
+					<td>理想稳态零误差与积分大小不是同一问题</td>
+					<td>按低频动态需求选择积分</td>
+			</tr>
+			<tr>
+					<td>“D 就是在预测未来”</td>
+					<td>D 依赖当前与过去变化，且受噪声影响</td>
+					<td>将其理解为有限频带相位补偿</td>
+			</tr>
+			<tr>
+					<td>“开环 0 dB 就是闭环 -3 dB”</td>
+					<td>定义和传递函数不同</td>
+					<td>分别测 $L$ 与参考闭环响应</td>
+			</tr>
+			<tr>
+					<td>“测 $Y/D$ 就得到开环”</td>
+					<td>输出注入时它是 $GS$</td>
+					<td>明确注入点与取点，使用复数关系</td>
+			</tr>
+			<tr>
+					<td>“开环测试一定要断反馈”</td>
+					<td>可在闭环中恢复环路增益</td>
+					<td>用输出注入和 $-U_c/U$</td>
+			</tr>
+			<tr>
+					<td>“幅值相除、相位随便减就行”</td>
+					<td>反馈关系涉及复数加减与分支</td>
+					<td>统一相量约定后再运算</td>
+			</tr>
+			<tr>
+					<td>“参考扫频总能用 $T/(1-T)$”</td>
+					<td>二自由度、前馈、测量微分改变结构</td>
+					<td>先写信号方程</td>
+			</tr>
+			<tr>
+					<td>“正 PM 就保证任何系统稳定”</td>
+					<td>多交越与开环不稳定时不充分</td>
+					<td>看全频段、Nyquist 或闭环极点</td>
+			</tr>
+			<tr>
+					<td>“固定等待两周期一定稳态”</td>
+					<td>高频两周期可能远短于慢模态衰减</td>
+					<td>按衰减时间与周期收敛判断</td>
+			</tr>
+			<tr>
+					<td>“注入越小越接近真实”</td>
+					<td>可能落入量化、噪声和摩擦死区</td>
+					<td>做幅值扫描找线性且可辨识区</td>
+			</tr>
+			<tr>
+					<td>“注入越大信噪比越好就越准”</td>
+					<td>饱和和谐波改变了被测系统</td>
+					<td>检查限幅、谐波与幅值不变性</td>
+			</tr>
+			<tr>
+					<td>“一次 FFT 相干度为 1 就可靠”</td>
+					<td>未平均时是代数结果</td>
+					<td>多段平均并检查重复性</td>
+			</tr>
+			<tr>
+					<td>“实测图再补一个采样延时更保险”</td>
+					<td>很可能重复计算延时</td>
+					<td>明确模型或测量已包含什么</td>
+			</tr>
+			<tr>
+					<td>“控制 ISR 多快，日志就能测多高”</td>
+					<td>日志抽取会混叠</td>
+					<td>用有效采样率与抗混叠设计</td>
+			</tr>
+			<tr>
+					<td>“超带宽正弦一定让系统失稳”</td>
+					<td>稳定性与外部输入频率不是同一概念</td>
+					<td>分开看跟踪误差与非线性限制</td>
+			</tr>
+			<tr>
+					<td>“滤波越重越稳定”</td>
+					<td>滤波通常引入相位滞后</td>
+					<td>把滤波器纳入环路重算</td>
+			</tr>
+			<tr>
+					<td>“电机参数抵消后无需复测”</td>
+					<td>电阻、磁链、延时会随工况变化</td>
+					<td>在实际运行范围扫频验证</td>
+			</tr>
+			<tr>
+					<td>“仿真曲线漂亮就可以交付”</td>
+					<td>模型可能没有限幅、噪声、时序误差</td>
+					<td>用真实日志和多工况验收</td>
+			</tr>
+	</tbody>
+</table>
+<p><a href="/post/pid%E5%8F%82%E6%95%B0%E6%95%B4%E5%AE%9A%E6%96%B9%E6%B3%95/#pid-toc">返回目录</a></p>
+<h2 id="pid-practice">
+<a class="header-anchor" href="#pid-practice"></a>
+17. 把知识变成可重复的工程能力
+</h2><h3 id="171-一张完整工作清单">
+<a class="header-anchor" href="#171-%e4%b8%80%e5%bc%a0%e5%ae%8c%e6%95%b4%e5%b7%a5%e4%bd%9c%e6%b8%85%e5%8d%95"></a>
+17.1 一张完整工作清单
+</h3><ol>
+<li><strong>画框图。</strong> 标出参考、控制器、限幅、执行器、传感器、滤波、注入与取点。</li>
+<li><strong>写单位。</strong> 确定 ADC、编码器、归一化、PWM、机械与电角量之间的比例。</li>
+<li><strong>确认符号和时序。</strong> 小输出应朝预期方向变化，反馈应减少误差；记录采样与更新时刻。</li>
+<li><strong>取得模型或初始频响。</strong> 明确工作点、采样率、延时与有效频段。</li>
+<li><strong>定指标。</strong> 写跟踪误差、频率、输出限制、PM、GM、噪声和负载范围。</li>
+<li><strong>计算初值。</strong> 先 PI，再按相位需求决定是否加 D、超前或陷波。</li>
+<li><strong>实现数字控制。</strong> 验证 $K_iT_s$、微分滤波、抗饱和和切换状态。</li>
+<li><strong>进行闭环注入。</strong> 逐点等待、同步记录，剔除限幅与低质量点。</li>
+<li><strong>恢复并解释频响。</strong> 查交越、裕度、峰值及不确定频段。</li>
+<li><strong>完成时域与多工况验收。</strong> 保存参数版本和可复现实验条件。</li>
+</ol>
+<h3 id="172-六道练习与答案">
+<a class="header-anchor" href="#172-%e5%85%ad%e9%81%93%e7%bb%83%e4%b9%a0%e4%b8%8e%e7%ad%94%e6%a1%88"></a>
+17.2 六道练习与答案
+</h3><p><strong>练习 A：</strong> 开环在 80 Hz 处穿越 0 dB，相位为 $-132^\circ$，PM 是多少？能否据此说闭环带宽为 80 Hz？</p>
+<p>答案：PM 为 $48^\circ$；不能。闭环带宽需要检查对应闭环传递函数的幅值下降点。</p>
+<p><strong>练习 B：</strong> 在 500 Hz 交越处额外增加 $100\,\mu\mathrm{s}$ 延时，损失多少相位？</p>
+$$
+\Delta\phi=-360^\circ\cdot500\cdot100\times10^{-6}
+=-18^\circ.
+$$<p>若幅值交越位置不变，PM 约减少 $18^\circ$。还应检查其他交越点是否变成限制。</p>
+<p><strong>练习 C：</strong> 输出注入后测得 $U_c/U=0.8\angle60^\circ$，开环是什么？</p>
+$$
+L=-U_c/U=0.8\angle(-120^\circ),
+\qquad20\log_{10}0.8\approx-1.94\,\mathrm{dB}.
+$$<p>相位写成 $240^\circ$ 与 $-120^\circ$ 等价，但画连续相位曲线应按整体分支处理。这一点不是 0 dB 点，不能直接用它报告 PM。</p>
+<p><strong>练习 D：</strong> 连续积分增益 $K_i=100\,\mathrm{s^{-1}}$，采样周期从 1 ms 改成 0.5 ms，矩形积分每拍系数如何变化？</p>
+<p>答案：从 $K_iT_s=0.1$ 改为 0.05。若代码仍用 0.1，则等效连续积分增益翻倍。</p>
+<p><strong>练习 E：</strong> 一阶闭环在输入频率处输出幅值为 0.995，看起来误差只有 0.5%，是否可以宣布跟踪误差小于 1%？</p>
+<p>答案：不能。该幅值大致对应 $f/f_{\mathrm{BW}}=0.1$，总正弦误差幅值约为输入的 9.95%；相位滞后贡献了主要误差。</p>
+<p><strong>练习 F：</strong> 扫频出现一个很高的共振峰，但该窗口控制输出已经削顶，能否继续据此调相位裕度？</p>
+<p>答案：不能把该点作为小信号线性频响。先降低扰动、调整工作点或提高可用输出余量，在未限幅条件下复测，再判断峰值是否真实。</p>
+<h3 id="173-建议做的三个动手实验">
+<a class="header-anchor" href="#173-%e5%bb%ba%e8%ae%ae%e5%81%9a%e7%9a%84%e4%b8%89%e4%b8%aa%e5%8a%a8%e6%89%8b%e5%ae%9e%e9%aa%8c"></a>
+17.3 建议做的三个动手实验
+</h3><p><strong>实验一：</strong> 复算第 7 节 PI，在相同目标频率下把 PM 分别改为 $45^\circ$、$60^\circ$、$75^\circ$。检查每一组是否可由正参数 PI 实现，再比较闭环带宽、峰值和阶跃。</p>
+<p><strong>实验二：</strong> 用同一模型合成 $d,u_c,u,y_m$，分别计算 $Y_m/D$、$Y_m/U$、$-U_c/U$。画在同一张图上，亲眼确认它们不是同一条曲线。</p>
+<p><strong>实验三：</strong> 对扫频日志故意错开一个采样周期。测量相位误差随频率变化，验证它是否符合 $-360^\circ fT_s$；再恢复对齐，并用半幅注入检查线性。</p>
+<p>当你能解释“曲线为什么这样、参数为什么这样选、这次测量为什么可信”，就已经进入可独立整定的阶段。继续积累不同对象、工况和失败案例，才会形成成熟的工程判断。</p>
+<p><a href="/post/pid%E5%8F%82%E6%95%B0%E6%95%B4%E5%AE%9A%E6%96%B9%E6%B3%95/#pid-toc">返回目录</a></p>
+<h2 id="pid-references">
+<a class="header-anchor" href="#pid-references"></a>
+18. 参考资料与使用边界
+</h2><ul>
+<li><a href="https://www.cds.caltech.edu/~murray/books/AM05/pdf/fbs-public_29Jun19.pdf">Åström 与 Murray：Feedback Systems</a>：负反馈、PID、频域设计与性能限制的系统学习资料。</li>
+<li><a href="https://www.mathworks.com/help/control/ref/dynamicsystem.margin.html">MathWorks：margin</a>：增益裕度、相位裕度、多交越与单位约定。</li>
+<li><a href="https://www.mathworks.com/help/control/ref/dynamicsystem.bandwidth.html">MathWorks：bandwidth</a>：闭环带宽的定义与计算约定。</li>
+<li><a href="https://www.mathworks.com/help/slcontrol/ug/online-frequency-response-estimation-basics.html">MathWorks：Online Frequency Response Estimation Basics</a>：闭环在线注入、稳态与实验工作流。</li>
+<li><a href="https://www.ti.com/tool/SFRA">Texas Instruments：SFRA</a>：在数字控制系统中实施软件频响分析的工程参考。</li>
+<li><a href="https://skoge.folk.ntnu.no/publications/2003/tuningPID/mic-version/mic.pdf">Skogestad：Simple analytic rules for model reduction and PID controller tuning</a>：SIMC 方法与低阶模型整定。</li>
+</ul>
+<p>本文的数值算例、图表与信号关系推导用于学习；文中经验范围用于选择初值。最终参数必须来自实际对象、明确指标和可重复验证。任何单篇文章都不能代替在具体设备上建立模型、测量和复核的过程。</p>
+<p><a href="/post/pid%E5%8F%82%E6%95%B0%E6%95%B4%E5%AE%9A%E6%96%B9%E6%B3%95/#pid-toc">返回目录</a></p>
+</div>
+    <footer class="article-footer"><ul class="article-category-list"><li class="article-tag-list-item" data-aos="zoom-in">
+    <a
+      class="article-category-link"
+      href="/categories/%e7%ae%97%e6%b3%95"
+      data-aos="zoom-in"
+      >算法</a
+    >
+    </li></ul>
+<ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item" data-aos="zoom-in">
+      <a
+        class="article-tag-list-link"
+        href="/tags/pid"
+        rel="tag"
+        >PID</a
+      >
+    </li><li class="article-tag-list-item" data-aos="zoom-in">
+      <a
+        class="article-tag-list-link"
+        href="/tags/%e4%bc%af%e5%be%b7%e5%9b%be"
+        rel="tag"
+        >伯德图</a
+      >
+    </li><li class="article-tag-list-item" data-aos="zoom-in">
+      <a
+        class="article-tag-list-link"
+        href="/tags/%e9%a2%91%e7%8e%87%e5%93%8d%e5%ba%94"
+        rel="tag"
+        >频率响应</a
+      >
+    </li><li class="article-tag-list-item" data-aos="zoom-in">
+      <a
+        class="article-tag-list-link"
+        href="/tags/%e7%94%b5%e6%9c%ba%e6%8e%a7%e5%88%b6"
+        rel="tag"
+        >电机控制</a
+      >
+    </li></ul>
+</footer>
+  </div><nav
+    id="article-nav"
+    aria-label="Article navigation"
+    data-aos="fade-up"
+  ><div class="article-nav-link-wrap left"><img
+            data-src="/images/cover/%e4%bc%a0%e9%80%81%e4%b9%b1%e6%98%9f%e6%b5%b7.jpg"
+            data-sizes="auto"
+            alt="文章排版方法"
+            class="lazyload"
+          /><a
+          href="/post/%E6%96%87%E7%AB%A0%E6%8E%92%E7%89%88%E6%96%B9%E6%B3%95/"
+          aria-label="前一篇:文章排版方法"
+          title="前一篇:文章排版方法"
+        ></a>
+        <div class="article-nav-caption">前一篇</div>
+        <h3 class="article-nav-title">文章排版方法</h3>
+      </div></nav></article></section>
+        </div><footer id="footer" aria-label="Site footer">
+  <div style="width: 100%; overflow: hidden">
+    <div class="footer-line"></div>
+  </div>
+  <div id="footer-info"><div>
+      <span class="icon-copyright"></span>2020-2026<span class="footer-info-sep rotate"></span>云想衣裳花想荣
+    </div><div>
+        <span class="icon-brush"
+          >&nbsp;37.4k</span
+        >
+        &nbsp;|&nbsp;
+        <span class="icon-coffee">&nbsp;01:17</span>
+      </div></div>
+</footer>
+<div id="mask" class="hide"></div>
+      </div><nav id="mobile-nav" aria-label="Mobile navigation">
+  <div class="sidebar-wrap"><div class="sidebar-toc-sidebar"><h3 class="toc-title">文章目录</h3>
+<div class="sidebar-toc-wrapper toc-div-class">
+  <nav id="TableOfContents">
+  <ul>
+    <li><a href="#pid-toc">阅读导航</a></li>
+    <li><a href="#pid-basics">1. 从“误差”到“反馈系统”</a>
+      <ul>
+        <li><a href="#11-先把信号名字分清">1.1 先把信号名字分清</a></li>
+        <li><a href="#12-为什么反馈能减小误差">1.2 为什么反馈能减小误差</a></li>
+      </ul>
+    </li>
+    <li><a href="#pid-law">2. PID 到底做了什么</a>
+      <ul>
+        <li><a href="#21-从时域写到频域">2.1 从时域写到频域</a></li>
+        <li><a href="#22-p按当前误差出力">2.2 P：按当前误差出力</a></li>
+        <li><a href="#23-i累积误差提供低频增益">2.3 I：累积误差，提供低频增益</a></li>
+        <li><a href="#24-d提供相位超前但会放大高频噪声">2.4 D：提供相位超前，但会放大高频噪声</a></li>
+      </ul>
+    </li>
+    <li><a href="#pid-bode">3. 伯德图是“正弦试验结果的总表”</a>
+      <ul>
+        <li><a href="#31-一个频率点意味着什么">3.1 一个频率点意味着什么</a></li>
+        <li><a href="#32-常用积木">3.2 常用积木</a></li>
+      </ul>
+    </li>
+    <li><a href="#pid-margins">4. 带宽、交越频率、相位裕度不是一回事</a>
+      <ul>
+        <li><a href="#41-开环增益交越频率">4.1 开环增益交越频率</a></li>
+        <li><a href="#42-闭环带宽">4.2 闭环带宽</a></li>
+        <li><a href="#43-相位裕度-pm">4.3 相位裕度 PM</a></li>
+        <li><a href="#44-增益裕度-gm">4.4 增益裕度 GM</a></li>
+        <li><a href="#45-一个有用的推导交越处闭环幅值">4.5 一个有用的推导：交越处闭环幅值</a></li>
+      </ul>
+    </li>
+    <li><a href="#pid-spec">5. 先选指标，再调参数</a>
+      <ul>
+        <li><a href="#51-从需要跟踪的信号出发">5.1 从需要跟踪的信号出发</a></li>
+        <li><a href="#52-用相位预算限制目标交越频率">5.2 用相位预算限制目标交越频率</a></li>
+        <li><a href="#53-一个可执行的指标清单">5.3 一个可执行的指标清单</a></li>
+      </ul>
+    </li>
+    <li><a href="#pid-tuning">6. 常见整定方法怎么选</a>
+      <ul>
+        <li><a href="#61-手动调参应做成小实验">6.1 手动调参应做成小实验</a></li>
+        <li><a href="#62-临界比例法认识它但不要盲目使用">6.2 临界比例法：认识它，但不要盲目使用</a></li>
+        <li><a href="#63-一阶惯性加延时与-simc-pi">6.3 一阶惯性加延时与 SIMC PI</a></li>
+      </ul>
+    </li>
+    <li><a href="#pid-pi-example">7. 从目标交越频率与 PM 算出 PI：完整算例</a>
+      <ul>
+        <li><a href="#71-先推导通用公式">7.1 先推导通用公式</a></li>
+        <li><a href="#72-带延时的教学对象">7.2 带延时的教学对象</a></li>
+        <li><a href="#73-反算不要只相信算出来的参数">7.3 反算，不要只相信算出来的参数</a></li>
+      </ul>
+    </li>
+    <li><a href="#pid-pid-design">8. PI 不够时，怎样设计 PID 的相位补偿</a>
+      <ul>
+        <li><a href="#81-理想-pid-的两个约束与一个自由度">8.1 理想 PID 的两个约束与一个自由度</a></li>
+        <li><a href="#82-把微分滤波直接纳入设计">8.2 把微分滤波直接纳入设计</a></li>
+        <li><a href="#83-怎样知道自己需要相位超前">8.3 怎样知道自己需要相位超前</a></li>
+      </ul>
+    </li>
+    <li><a href="#pid-motor">9. 电机电流环、速度环、位置环怎样对应</a>
+      <ul>
+        <li><a href="#91-电流环从电压方程得到-pi">9.1 电流环：从电压方程得到 PI</a></li>
+        <li><a href="#92-速度环先看内电流环是否足够快">9.2 速度环：先看内电流环是否足够快</a></li>
+        <li><a href="#93-位置环常用-p先不急着堆-pid">9.3 位置环：常用 P，先不急着堆 PID</a></li>
+      </ul>
+    </li>
+    <li><a href="#pid-digital">10. 连续 PID 怎样变成闭环软件</a>
+      <ul>
+        <li><a href="#101-采样周期是参数的一部分">10.1 采样周期是参数的一部分</a></li>
+        <li><a href="#102-抗积分饱和">10.2 抗积分饱和</a></li>
+        <li><a href="#103-用实际离散环路检查频响">10.3 用实际离散环路检查频响</a></li>
+      </ul>
+    </li>
+    <li><a href="#pid-injection">11. 闭环运行时，怎样测到开环伯德图</a>
+      <ul>
+        <li><a href="#111-最推荐的教学接法控制器输出后注入">11.1 最推荐的教学接法：控制器输出后注入</a></li>
+        <li><a href="#112-每一种比值测的是什么">11.2 每一种比值测的是什么</a></li>
+        <li><a href="#113-也可以在误差加法器处注入">11.3 也可以在误差加法器处注入</a></li>
+        <li><a href="#114-为什么从参考端测到闭环后反算容易出错">11.4 为什么从参考端测到闭环后反算容易出错</a></li>
+      </ul>
+    </li>
+    <li><a href="#pid-sweep">12. 正弦逐点扫频：从实验参数到中断程序</a>
+      <ul>
+        <li><a href="#121-先规定实验的有效条件">12.1 先规定实验的有效条件</a></li>
+        <li><a href="#122-频率范围与对数网格">12.2 频率范围与对数网格</a></li>
+        <li><a href="#123-注入幅值怎么选">12.3 注入幅值怎么选</a></li>
+        <li><a href="#124-暂态等待与整周期窗口">12.4 暂态等待与整周期窗口</a></li>
+        <li><a href="#125-输出注入的固件伪代码">12.5 输出注入的固件伪代码</a></li>
+      </ul>
+    </li>
+    <li><a href="#pid-estimation">13. 从采样数据提取复数频响</a>
+      <ul>
+        <li><a href="#131-相量约定先统一">13.1 相量约定先统一</a></li>
+        <li><a href="#132-整周期同步检波">13.2 整周期同步检波</a></li>
+        <li><a href="#133-非整周期或有直流偏置最小二乘更方便">13.3 非整周期或有直流偏置：最小二乘更方便</a></li>
+        <li><a href="#134-闭环噪声相关性与外部注入参考">13.4 闭环噪声相关性与外部注入参考</a></li>
+        <li><a href="#135-一个可复核的闭环扫频演示">13.5 一个可复核的闭环扫频演示</a></li>
+      </ul>
+    </li>
+    <li><a href="#pid-validation">14. 怎样用实测伯德图完成整定闭环</a>
+      <ul>
+        <li><a href="#141-先检查代数和时序再读裕度">14.1 先检查代数和时序，再读裕度</a></li>
+        <li><a href="#142-从离散频点估计交越">14.2 从离散频点估计交越</a></li>
+        <li><a href="#143-看到问题时优先怎样改">14.3 看到问题时优先怎样改</a></li>
+        <li><a href="#144-验收必须覆盖时间域和工作范围">14.4 验收必须覆盖时间域和工作范围</a></li>
+      </ul>
+    </li>
+    <li><a href="#pid-over-bandwidth">15. 输入信号超过带宽会发生什么</a>
+      <ul>
+        <li><a href="#151-参考输入衰减与滞后不是自动失稳">15.1 参考输入：衰减与滞后，不是自动失稳</a></li>
+        <li><a href="#152-同样的频率不同注入位置结论不同">15.2 同样的频率，不同注入位置结论不同</a></li>
+        <li><a href="#153-小信号带宽与大信号能力不同">15.3 小信号带宽与大信号能力不同</a></li>
+      </ul>
+    </li>
+    <li><a href="#pid-mistakes">16. 常见误区与正确检查方式</a></li>
+    <li><a href="#pid-practice">17. 把知识变成可重复的工程能力</a>
+      <ul>
+        <li><a href="#171-一张完整工作清单">17.1 一张完整工作清单</a></li>
+        <li><a href="#172-六道练习与答案">17.2 六道练习与答案</a></li>
+        <li><a href="#173-建议做的三个动手实验">17.3 建议做的三个动手实验</a></li>
+      </ul>
+    </li>
+    <li><a href="#pid-references">18. 参考资料与使用边界</a></li>
+  </ul>
+</nav>
+</div></div>
+        <div class="sidebar-common-sidebar hidden"><div class="sidebar-author">
+  <img
+    data-src="/avatar/avatar.webp"
+    data-sizes="auto"
+    alt="云想衣裳花想荣"
+    class="lazyload"
+  />
+  <div class="sidebar-author-name">云想衣裳花想荣</div>
+  <div class="sidebar-description">嵌入式开发学习笔记，技术分享</div>
+</div>
+<div class="sidebar-state">
+  <div class="sidebar-state-article">
+    <div>文章</div><div class="sidebar-state-number">5</div>
+  </div>
+  <a class="sidebar-state-category" href="/categories/" aria-label="sidebar-state-category-link">
+    <div>分类</div>
+    <div class="sidebar-state-number">
+      5
+    </div>
+  </a>
+  <a class="sidebar-state-tag" href="/tags/" aria-label="sidebar-state-tag-link">
+    <div>标签</div>
+    <div class="sidebar-state-number">13</div>
+  </a>
+</div>
+<div class="sidebar-social" ></div><div class="sidebar-menu"><div class="sidebar-menu-link-wrap">
+      <a
+        class="sidebar-menu-link-dummy"
+        href="/"
+        aria-label="首页"
+      ></a><div class="sidebar-menu-link">首页</div>
+    </div><div class="sidebar-menu-link-wrap">
+      <a
+        class="sidebar-menu-link-dummy"
+        href="/archives"
+        aria-label="归档"
+      ></a><div class="sidebar-menu-link">归档</div>
+    </div><div class="sidebar-menu-link-wrap">
+      <a
+        class="sidebar-menu-link-dummy"
+        href="/about"
+        aria-label="关于"
+      ></a><div class="sidebar-menu-link">关于</div>
+    </div><div class="sidebar-menu-link-wrap">
+      <a
+        class="sidebar-menu-link-dummy"
+        href="/friend"
+        aria-label="友链"
+      ></a><div class="sidebar-menu-link">友链</div>
+    </div></div></div></div><div class="sidebar-btn-wrapper">
+        <div class="sidebar-toc-btn current"></div>
+        <div class="sidebar-common-btn"></div>
+      </div></nav>
+</div><script
+    src="https://npm.webcache.cn/lazysizes@5.3.2/lazysizes.min.js"
+    
+    
+    
+    
+    integrity="sha384-3gT/vsepWkfz/ff7PpWNUeMzeWoH3cDhm/A8jM7ouoAK0/fP/9bcHHR5kHq2nf&#43;e" crossorigin="anonymous"></script><script
+    src="https://npm.webcache.cn/clipboard@2.0.11/dist/clipboard.min.js"
+    
+    
+    
+    
+    integrity="sha384-J08i8An/QeARD9ExYpvphB8BsyOj3Gh2TSh1aLINKO3L0cMSH2dN3E22zFoXEi0Q" crossorigin="anonymous"></script><script
+    src="https://npm.webcache.cn/material-theme@1.0.0/dist/material-theme.umd.js"
+    
+    
+    
+    
+    integrity="sha384-vLev0II0HKFaxkcm&#43;/7kX5IGwVFBASkGchU311wmU/veIj2bB0UcBkQbW6yw2asK" crossorigin="anonymous"></script><script src="/js/main.js"  ></script><script src="/js/aos.js"  ></script><script>
+    var aosInit = () => {
+      AOS.init({
+        duration: 1000,
+        easing: "ease",
+        once: true,
+        offset: 50,
+      });
+    };
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", aosInit);
+    } else {
+      aosInit();
+    }
+  </script><script src="/js/pjax_main.js" data-pjax ></script>
+
+<div id="lazy-script">
+  <div><script data-pjax>
+        window.REIMU_POST = {
+          author: "云想衣裳花想荣",
+          title: "PID参数整定方法",
+          url: "http:\/\/localhost:1313\/post\/pid%E5%8F%82%E6%95%B0%E6%95%B4%E5%AE%9A%E6%96%B9%E6%B3%95\/",
+          description: "从 PID 原理与 KaTeX 数学推导，到带宽、相位裕度设计、电机三环整定与闭环正弦注入扫频的完整教程。",
+          cover: "http:\/\/localhost:1313\/images\/cover\/%E5%88%9D%E8%A7%81%E7%B4%AB%E7%81%B5.jpg",
+        };
+      </script><script src="/js/insert_highlight.js" data-pjax ></script><script src="/js/tabs.js" data-pjax defer></script><script type="module" data-pjax>const PhotoSwipeLightbox = (await safeImport("https:\/\/npm.webcache.cn\/photoswipe@5.4.4\/dist\/photoswipe-lightbox.esm.min.js", "sha384-DiL6M\/gG\u002bwmTxmCRZyD1zee6lIhawn5TGvED0FOh7fXcN9B0aZ9dexSF\/N6lrZi\/")).default;const initPswp = (gallery, children) => {
+          if (_$$(`${gallery} ${children}`).length > 0) {
+            new PhotoSwipeLightbox({
+              gallery,
+              children,pswpModule: () => safeImport("https:\/\/npm.webcache.cn\/photoswipe@5.4.4\/dist\/photoswipe.esm.min.js", "sha384-WkkO3GCmgkC3VQWpaV8DqhKJqpzpF9JoByxDmnV8\u002boTJ7m3DfYEWX1fu1scuS4\u002bs")}).init();
+          }
+        }
+        const pswp = () => {
+          initPswp('.article-entry', 'a.article-gallery-item');
+          initPswp('.article-gallery', 'a.article-gallery-item');
+        }
+        pswp()
+      </script><script
+    src="https://npm.webcache.cn/katex@0.16.47/dist/katex.min.js"
+    
+    
+    data-pjax
+    
+    integrity="sha384-CwjPRVHTvLiMBFjEoij&#43;QZViMV5rhTOIp7CJzl24JEqpRDA1sJFHVXXLURktbYYp" crossorigin="anonymous"></script><script
+    src="https://npm.webcache.cn/katex@0.16.47/dist/contrib/auto-render.min.js"
+    
+    
+    data-pjax
+    
+    integrity="sha384-bjyGPfbij8/NDKJhSGZNP/khQVgtHUE5exjm4Ydllo42FwIgYsdLO2lXGmRBf5Mz" crossorigin="anonymous"></script><script data-pjax>
+          var renderMath = () => {
+            if (!window.renderMathInElement) return;
+            window.renderMathInElement(_$("article"), {
+              delimiters: [
+                { left: "$$", right: "$$", display: true },
+                { left: "\\[", right: "\\]", display: true },
+                { left: "$", right: "$", display: false },
+                { left: "\\(", right: "\\)", display: false },
+              ],
+            });
+            window.katexTagOverflowHandler?.();
+          };
+          if (document.readyState === "loading") {
+            document.addEventListener("DOMContentLoaded", renderMath, { once: true });
+          } else {
+            renderMath();
+          }
+        </script></div>
+</div><script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.getRegistrations().then((registrations) => {
+        for (let registration of registrations) {
+          registration.unregister();
+        }
+      });
+    }
+  </script><script>
+  const reimuCopyright = String.raw`
+   ______     ______     __     __    __     __  __    
+  /\  == \   /\  ___\   /\ \   /\ "-./  \   /\ \/\ \   
+  \ \  __<   \ \  __\   \ \ \  \ \ \-./\ \  \ \ \_\ \  
+   \ \_\ \_\  \ \_____\  \ \_\  \ \_\ \ \_\  \ \_____\ 
+    \/_/ /_/   \/_____/   \/_/   \/_/  \/_/   \/_____/ 
+                                                    
+  `;
+  console.log(String.raw`%c ${reimuCopyright}`, "color: #ff5252;");
+  console.log(
+    "%c Theme.Reimu" + " %c https://github.com/D-Sketon/hugo-theme-reimu ",
+    "color: white; background: #ff5252; padding:5px 0;",
+    "padding:4px;border:1px solid #ff5252;",
+  );
+</script><script
+    src="https://npm.webcache.cn/pangu@4.0.7/dist/browser/pangu.min.js"
+    
+    
+    
+    
+    integrity="sha384-HeUHqi0nVsPUm/E0ss7OfnIV/yD96JWB8ehZvUuoVax9DpNHL17jj9pdfXHzqDxm" crossorigin="anonymous"></script><script data-pjax>
+    if (document.readyState === "loading") {
+      document.addEventListener('DOMContentLoaded', () => {
+        pangu?.spacingPage();
+      });
+    } else {
+      pangu?.spacingPage();
+    }
+  </script></body>
+</html>

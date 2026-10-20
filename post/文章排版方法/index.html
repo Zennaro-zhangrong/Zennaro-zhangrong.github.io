@@ -1,0 +1,1278 @@
+<!doctype html>
+<html
+  lang="zh-CN"data-theme-mode="auto"
+>
+  <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8" />
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1, shrink-to-fit=no"
+/><title>
+  文章排版方法 | 云想衣裳花想荣
+</title>
+<meta name="description" content="本博客的技术教程写作约定：目录锚点、数学推导、配图、代码、可复制模板和发布前检查。下次写文章先读这一份即可开始。"/><script>
+  window.siteConfig = JSON.parse("{\"anchor\":{\"auto\":{\"enable\":false,\"length\":60},\"explicit\":{\"enable\":false,\"marker\":\"{#anchor-\",\"prefix\":\"anchor-\"}},\"anchor_icon\":null,\"base\":\"http://localhost:1313/\",\"clipboard\":{\"copyright\":{\"count\":50,\"enable\":false,\"license_type\":\"by-nc-sa\"},\"fail\":{\"en\":\"Copy failed (ﾟ⊿ﾟ)ﾂ\",\"ja\":\"コピー失敗 (ﾟ⊿ﾟ)ﾂ\",\"pt-br\":\"Falha ao copiar (ﾟ⊿ﾟ)ﾂ\",\"zh-cn\":\"复制失败 (ﾟ⊿ﾟ)ﾂ\",\"zh-tw\":\"複製失敗 (ﾟ⊿ﾟ)ﾂ\"},\"success\":{\"en\":\"Copy successfully (*^▽^*)\",\"ja\":\"コピー成功 (*^▽^*)\",\"pt-br\":\"Copiado com sucesso (*^▽^*)\",\"zh-cn\":\"复制成功 (*^▽^*)\",\"zh-tw\":\"複製成功 (*^▽^*)\"}},\"code_block\":{\"expand\":30},\"dark_mode\":{\"button\":true,\"mode\":\"auto\"},\"icon_font\":\"4552607_ex15nbittbh\",\"outdate\":{\"daysago\":180,\"enable\":false,\"message\":{\"en\":\"This article was last updated on {time}. Please note that the content may no longer be applicable.\",\"ja\":\"この記事は最終更新日：{time}。記載内容が現在有効でない可能性がありますのでご注意ください。\",\"pt-br\":\"Este artigo foi atualizado pela última vez em {time}. Observe que o conteúdo pode não ser mais aplicável.\",\"zh-cn\":\"本文最后更新于 {time}，请注意文中内容可能已不适用。\",\"zh-tw\":\"本文最後更新於 {time}，請注意文中內容可能已不適用。\"}}}");
+  
+</script>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+  rel="preload"
+  as="style"
+  href="https://fonts.googleapis.com/css?family=Mulish:400,400italic,700,700italic%7cNoto%20Serif%20SC:400,400italic,700,700italic%7c&amp;display=swap"
+/>
+<link
+  rel="stylesheet"
+  href="https://fonts.googleapis.com/css?family=Mulish:400,400italic,700,700italic%7cNoto%20Serif%20SC:400,400italic,700,700italic%7c&amp;display=swap"
+  media="print"
+  onload="this.media='all'"
+/>
+<link
+    rel="preload"
+    href="//at.alicdn.com/t/c/font_4552607_ex15nbittbh.woff2"
+    as="font"
+    type="font/woff2"
+    crossorigin="anonymous"
+  /><link rel="stylesheet" href="/css/loader.css" /><meta property="og:type" content="website" />
+  <meta property="og:title" content="文章排版方法 | 云想衣裳花想荣" />
+  <meta
+    property="og:description"
+    content="本博客的技术教程写作约定：目录锚点、数学推导、配图、代码、可复制模板和发布前检查。下次写文章先读这一份即可开始。"
+  />
+  <meta property="og:url" content="http://localhost:1313/post/%E6%96%87%E7%AB%A0%E6%8E%92%E7%89%88%E6%96%B9%E6%B3%95/" />
+  <meta
+    property="og:site_name"
+    content="博客首页"
+  />
+  <meta property="og:image" content="http://localhost:1313/images/cover/%E4%BC%A0%E9%80%81%E4%B9%B1%E6%98%9F%E6%B5%B7.jpg" />
+  <meta property="article:author" content="云想衣裳花想荣" />
+  <meta property="article:published_time" content="2026-10-20T00:00:00&#43;00:00" />
+  <meta property="article:modified_time" content="2026-10-20T00:00:00&#43;00:00" /><meta property="article:tag" content="Markdown, KaTeX, Hugo, 文章排版" /><meta name="twitter:card" content="summary" /><meta name="twitter:image" content="http://localhost:1313/images/cover/%E4%BC%A0%E9%80%81%E4%B9%B1%E6%98%9F%E6%B5%B7.jpg" />
+<link rel="shortcut icon" href="/favicon.ico"><link rel="stylesheet" href="/css/main.css" /><link
+    rel="preload"
+    as="style"
+    href="https://npm.webcache.cn/photoswipe@5.4.4/dist/photoswipe.css"
+    integrity="sha384-IfxC36XL/toUyJ939C73PcgMuRzAZuIzZxE38drsmO5p6jD7ei&#43;Zx/1oA/0l8ysE" crossorigin="anonymous"
+    onload="this.onload=null;this.rel='stylesheet'"
+  /><link
+    rel="preload"
+    as="style"
+    href="https://npm.webcache.cn/katex@0.16.47/dist/katex.min.css"
+    integrity="sha384-nH0MfJ44wi1dd7w6jinlyBgljjS8EJAh2JBoRad8a3VDw2K69vfaaqm4WnR&#43;gXtA" crossorigin="anonymous"
+    onload="this.onload=null;this.rel='stylesheet'"
+  /><script
+    src="https://npm.webcache.cn/pace-js@1.2.4/pace.min.js"
+    
+    
+    
+    
+    integrity="sha384-k6YtvFUEIuEFBdrLKJ3YAUbBki333tj1CSUisai5Cswsg9wcLNaPzsTHDswp4Az8" crossorigin="anonymous"></script><link
+    rel="stylesheet"
+    href="https://npm.webcache.cn/@reimujs/aos@0.1.3/dist/aos.css"
+    integrity="sha384-GMRP93c6Hkz9JVKGAuRR3nTS7M07RwPgTFenXiosjq2VbVgvdDNcz1g6Mkj8AONa" crossorigin="anonymous"/></head>
+  <body><div id='loader'>
+    <div class="loading-left-bg loading-bg"></div>
+    <div class="loading-right-bg loading-bg"></div>
+    <div class="spinner-box">
+      <div class="loading-taichi rotate"><svg width="150" height="150" viewBox="0 0 1024 1024" class="icon" version="1.1" xmlns="https://www.w3.org/2000/svg" shape-rendering="geometricPrecision">
+            <path d="M303.5 432A80 80 0 0 1 291.5 592A80 80 0 0 1 303.5 432z" fill="var(--red-1, #ff5252)" />
+            <path d="M512 65A447 447 0 0 1 512 959L512 929A417 417 0 0 0 512 95A417 417 0 0 0 512 929L512 959A447 447 0 0 1 512 65z 
+          M512 95A417 417 0 0 1 929 512A208.5 208.5 0 0 1 720.5 720.5L720.5 592A80 80 0 0 0 720.5 432A80 80 0 0 0 720.5 592L720.5 720.5A208.5 208.5 0 0 1 512 512A208.5 208.5 0 0 0 303.5 303.5A208.5 208.5 0 0 0 95 512A417 417 0 0 1 512 95z" fill="var(--red-1, #ff5252)" />
+          </svg></div><div class="loading-word">左风右雷，可随心意而动...</div>
+    </div>
+  </div>
+  </div>
+  <script>
+    var time = null;
+    var loaderEl = document.getElementById('loader');
+    var startLoading = () => {
+      time = Date.now();
+      loaderEl.classList.remove("loading");
+    }
+    var hideLoader = () => {
+      document.body.style.overflow = 'auto';
+      loader.classList.add('loading');
+    };
+
+    var endLoading = () => {
+      if (!time) {
+        hideLoader();
+      } else {
+        if (Date.now() - time > 500) {
+          time = null;
+          hideLoader();
+        } else {
+          setTimeout(endLoading, 500 - (Date.now() - time));
+          time = null;
+        }
+      }
+    }
+    window.addEventListener('DOMContentLoaded', endLoading);
+    loaderEl.addEventListener('click', endLoading);
+  </script><div id="copy-tooltip"></div>
+<div id="lang-tooltip">
+本文章没有找到对应的语言版本
+</div>
+<div id="heatmap-tooltip"></div><div id="container">
+      <div id="wrap"><div id="header-nav">
+  <nav id="main-nav" aria-label="Primary navigation"><a class="main-nav-link-wrap" href="/"><span class="main-nav-link">首页</span>
+      </a><a class="main-nav-link-wrap" href="/archives"><span class="main-nav-link">归档</span>
+      </a><a class="main-nav-link-wrap" href="/about"><span class="main-nav-link">关于</span>
+      </a><a class="main-nav-link-wrap" href="/friend"><span class="main-nav-link">友链</span>
+      </a><a id="main-nav-toggle" class="nav-icon" aria-label="Toggle navigation" role="button"></a>
+  </nav>
+  <nav id="sub-nav" aria-label="Secondary navigation"></nav><a href="https://github.com/Zennaro-zhangrong" class="triangle-badge" title="github" target="_blank" rel="noopener nofollow noreferrer">
+      <div class="icon icon-github triangle-badge-icon"></div>
+    </a></div>
+<header id="header" aria-label="Site header"><picture></picture>
+    <img crossorigin="anonymous" fetchpriority="high" src="/images/cover/%e4%bc%a0%e9%80%81%e4%b9%b1%e6%98%9f%e6%b5%b7.jpg" alt="文章排版方法"><div id="header-outer">
+    <div id="header-title"><span id="logo">
+            <h1 data-aos="slide-up">文章排版方法</h1>
+          </span><h2 id="subtitle-wrap" data-aos="slide-down"></h2></div>
+  </div>
+</header><div id="content"
+          aria-label="Page content"
+          class="sidebar-left"
+            ><aside id="sidebar" aria-label="Sidebar"><div class="sidebar-wrapper-container sticky"><div class="sidebar-wrapper">
+    <div
+      class="sidebar-wrap"
+      data-aos="fade-up"
+    ><div class="sidebar-toc-sidebar"><h3 class="toc-title">文章目录</h3>
+<div class="sidebar-toc-wrapper toc-div-class">
+  <nav id="TableOfContents">
+  <ul>
+    <li><a href="#layout-toc">阅读导航</a></li>
+    <li><a href="#layout-context">1. 最小项目知识：这些信息已经确认</a>
+      <ul>
+        <li><a href="#11-通过本文所在位置确定博客根目录">1.1 通过本文所在位置确定博客根目录</a></li>
+        <li><a href="#12-日常写作只需要接触这些位置">1.2 日常写作只需要接触这些位置</a></li>
+        <li><a href="#13-已验证的主题与数学配置">1.3 已验证的主题与数学配置</a></li>
+      </ul>
+    </li>
+    <li><a href="#layout-workflow">2. 最短工作流程：先完成内容，再验证显示</a></li>
+    <li><a href="#layout-template">3. 可复制的新文章模板</a></li>
+    <li><a href="#layout-navigation">4. 标题、目录与锚点：让长文随时能定位</a>
+      <ul>
+        <li><a href="#41-用标题表达层次">4.1 用标题表达层次</a></li>
+        <li><a href="#42-为主要章节设置显式锚点">4.2 为主要章节设置显式锚点</a></li>
+        <li><a href="#43-同时提供三种导航">4.3 同时提供三种导航</a></li>
+      </ul>
+    </li>
+    <li><a href="#layout-math">5. KaTeX：公式要能解析，也要能解释</a>
+      <ul>
+        <li><a href="#51-行内与独立公式各司其职">5.1 行内与独立公式各司其职</a></li>
+        <li><a href="#52-推导采用条件方程变形代入解释">5.2 推导采用“条件—方程—变形—代入—解释”</a></li>
+        <li><a href="#53-统一符号单位和断行">5.3 统一符号、单位和断行</a></li>
+        <li><a href="#54-两个必须避开的-markdown-陷阱">5.4 两个必须避开的 Markdown 陷阱</a></li>
+      </ul>
+    </li>
+    <li><a href="#layout-images">6. 配图：从数据到文件再到正文</a>
+      <ul>
+        <li><a href="#61-什么时候值得画图">6.1 什么时候值得画图</a></li>
+        <li><a href="#62-文件名包含主题日期唯一标记序号和版本">6.2 文件名包含主题、日期、唯一标记、序号和版本</a></li>
+        <li><a href="#63-视觉约定">6.3 视觉约定</a></li>
+        <li><a href="#64-图片紧邻解释并有清楚图注">6.4 图片紧邻解释，并有清楚图注</a></li>
+        <li><a href="#65-临时文件管理">6.5 临时文件管理</a></li>
+      </ul>
+    </li>
+    <li><a href="#layout-writing">7. 文字、表格与代码：靠结构获得舒适感</a>
+      <ul>
+        <li><a href="#71-一段展开一个主意">7.1 一段展开一个主意</a></li>
+        <li><a href="#72-表格用于对照不承载长篇推导">7.2 表格用于对照，不承载长篇推导</a></li>
+        <li><a href="#73-代码交代运行边界">7.3 代码交代运行边界</a></li>
+        <li><a href="#74-用练习检查理解">7.4 用练习检查理解</a></li>
+      </ul>
+    </li>
+    <li><a href="#layout-validation">8. 构建与验收：三层检查缺一不可</a>
+      <ul>
+        <li><a href="#81-源文件检查">8.1 源文件检查</a></li>
+        <li><a href="#82-使用-hugo-构建到临时目录">8.2 使用 Hugo 构建到临时目录</a></li>
+        <li><a href="#83-katex-语法检查只是第一关">8.3 KaTeX 语法检查只是第一关</a></li>
+        <li><a href="#84-检查生成-html">8.4 检查生成 HTML</a></li>
+        <li><a href="#85-浏览器检查实际显示">8.5 浏览器检查实际显示</a></li>
+      </ul>
+    </li>
+    <li><a href="#layout-troubleshooting">9. 出问题时定点排查，不重新扫描工程</a></li>
+    <li><a href="#layout-handoff">10. 下次直接使用的写作指令</a></li>
+  </ul>
+</nav>
+</div></div>
+          <div class="sidebar-common-sidebar hidden"><div class="sidebar-author">
+  <img
+    data-src="/avatar/avatar.webp"
+    data-sizes="auto"
+    alt="云想衣裳花想荣"
+    class="lazyload"
+  />
+  <div class="sidebar-author-name">云想衣裳花想荣</div>
+  <div class="sidebar-description">嵌入式开发学习笔记，技术分享</div>
+</div>
+<div class="sidebar-state">
+  <div class="sidebar-state-article">
+    <div>文章</div><div class="sidebar-state-number">5</div>
+  </div>
+  <a class="sidebar-state-category" href="/categories/" aria-label="sidebar-state-category-link">
+    <div>分类</div>
+    <div class="sidebar-state-number">
+      5
+    </div>
+  </a>
+  <a class="sidebar-state-tag" href="/tags/" aria-label="sidebar-state-tag-link">
+    <div>标签</div>
+    <div class="sidebar-state-number">13</div>
+  </a>
+</div>
+<div class="sidebar-social" ></div><div class="sidebar-menu"><div class="sidebar-menu-link-wrap">
+      <a
+        class="sidebar-menu-link-dummy"
+        href="/"
+        aria-label="首页"
+      ></a><div class="sidebar-menu-link">首页</div>
+    </div><div class="sidebar-menu-link-wrap">
+      <a
+        class="sidebar-menu-link-dummy"
+        href="/archives"
+        aria-label="归档"
+      ></a><div class="sidebar-menu-link">归档</div>
+    </div><div class="sidebar-menu-link-wrap">
+      <a
+        class="sidebar-menu-link-dummy"
+        href="/about"
+        aria-label="关于"
+      ></a><div class="sidebar-menu-link">关于</div>
+    </div><div class="sidebar-menu-link-wrap">
+      <a
+        class="sidebar-menu-link-dummy"
+        href="/friend"
+        aria-label="友链"
+      ></a><div class="sidebar-menu-link">友链</div>
+    </div></div></div><div class="sidebar-btn-wrapper" style="position:static">
+            <div class="sidebar-toc-btn current"></div>
+            <div class="sidebar-common-btn"></div>
+          </div></div>
+  </div><div class="sidebar-widget"></div></div></aside>
+<section id="main" aria-label="Main content"><article
+  class="h-entry article"
+  itemscope
+  itemtype="https://schema.org/BlogPosting"
+>
+  <div
+    class="article-inner"
+    data-aos="fade-up"
+  >
+    <div class="article-meta"><div class="article-date">
+  <span
+    class="article-date-link icon-calendar"
+    data-aos="zoom-in"
+  >
+    <time datetime="2026-10-20 00:00:00 &#43;0000 UTC" itemprop="datePublished"
+      >2026-10-20</time
+    >
+    <time style="display: none;" id="post-update-time"
+      >2026-10-20</time
+    >
+  </span></div>
+</div><div class="hr-line"></div><div class="e-content article-entry" itemprop="articleBody"><p>这是一份给<strong>以后写文章的自己和协作助手</strong>使用的工作手册。它整理了《PID参数整定方法》的实际制作经验，目标是：不必重新浏览整个博客工程，也能写出结构清楚、公式正确、目录可定位、配图可验证的技术教程。</p>
+<p><strong>默认做法：先读本文，再读待修改文章。</strong> 沿用本文记录的配置和格式，只在出现具体问题时检查相关文件；不要为了写一篇文章递归扫描整个工程、主题、生成目录或用户主目录。</p>
+<p>本文记录的是 <strong>2026-10-20 已在本机验证的博客约定</strong>。如果以后换了主题、数学渲染方式或文章目录结构，应同步更新本文。新的用户要求与适用的 AGENTS.md 仍需遵守；本文不能代替工具的实际访问权限。</p>
+<h2 id="layout-toc">
+<a class="header-anchor" href="#layout-toc"></a>
+阅读导航
+</h2><table>
+	<thead>
+			<tr>
+					<th>要做什么</th>
+					<th>直接阅读</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td>确认项目位置和已有配置</td>
+					<td><a href="/post/%E6%96%87%E7%AB%A0%E6%8E%92%E7%89%88%E6%96%B9%E6%B3%95/#layout-context">1. 最小项目知识</a></td>
+			</tr>
+			<tr>
+					<td>开始一篇新文章</td>
+					<td><a href="/post/%E6%96%87%E7%AB%A0%E6%8E%92%E7%89%88%E6%96%B9%E6%B3%95/#layout-workflow">2. 最短工作流程</a>、<a href="/post/%E6%96%87%E7%AB%A0%E6%8E%92%E7%89%88%E6%96%B9%E6%B3%95/#layout-template">3. 可复制模板</a></td>
+			</tr>
+			<tr>
+					<td>制作准确、好用的目录</td>
+					<td><a href="/post/%E6%96%87%E7%AB%A0%E6%8E%92%E7%89%88%E6%96%B9%E6%B3%95/#layout-navigation">4. 标题与锚点</a></td>
+			</tr>
+			<tr>
+					<td>写公式与完整推导</td>
+					<td><a href="/post/%E6%96%87%E7%AB%A0%E6%8E%92%E7%89%88%E6%96%B9%E6%B3%95/#layout-math">5. KaTeX 排版</a></td>
+			</tr>
+			<tr>
+					<td>生成、命名、插入配图</td>
+					<td><a href="/post/%E6%96%87%E7%AB%A0%E6%8E%92%E7%89%88%E6%96%B9%E6%B3%95/#layout-images">6. 配图约定</a></td>
+			</tr>
+			<tr>
+					<td>让文字、表格和代码易读</td>
+					<td><a href="/post/%E6%96%87%E7%AB%A0%E6%8E%92%E7%89%88%E6%96%B9%E6%B3%95/#layout-writing">7. 内容与版式</a></td>
+			</tr>
+			<tr>
+					<td>检查文章是否真的能显示</td>
+					<td><a href="/post/%E6%96%87%E7%AB%A0%E6%8E%92%E7%89%88%E6%96%B9%E6%B3%95/#layout-validation">8. 构建与验收</a></td>
+			</tr>
+			<tr>
+					<td>出错后只检查相关位置</td>
+					<td><a href="/post/%E6%96%87%E7%AB%A0%E6%8E%92%E7%89%88%E6%96%B9%E6%B3%95/#layout-troubleshooting">9. 定点排错</a></td>
+			</tr>
+			<tr>
+					<td>下次直接给助手下达任务</td>
+					<td><a href="/post/%E6%96%87%E7%AB%A0%E6%8E%92%E7%89%88%E6%96%B9%E6%B3%95/#layout-handoff">10. 写作指令与交付约定</a></td>
+			</tr>
+	</tbody>
+</table>
+<h2 id="layout-context">
+<a class="header-anchor" href="#layout-context"></a>
+1. 最小项目知识：这些信息已经确认
+</h2><h3 id="11-通过本文所在位置确定博客根目录">
+<a class="header-anchor" href="#11-%e9%80%9a%e8%bf%87%e6%9c%ac%e6%96%87%e6%89%80%e5%9c%a8%e4%bd%8d%e7%bd%ae%e7%a1%ae%e5%ae%9a%e5%8d%9a%e5%ae%a2%e6%a0%b9%e7%9b%ae%e5%bd%95"></a>
+1.1 通过本文所在位置确定博客根目录
+</h3><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">博客根目录/
+</span></span><span class="line"><span class="cl">├── hugo.toml
+</span></span><span class="line"><span class="cl">├── hugo.exe
+</span></span><span class="line"><span class="cl">├── config/_default/params.yml
+</span></span><span class="line"><span class="cl">├── content/post/
+</span></span><span class="line"><span class="cl">│   ├── 文章排版方法.md
+</span></span><span class="line"><span class="cl">│   └── PID参数整定方法.md
+</span></span><span class="line"><span class="cl">├── static/picture/
+</span></span><span class="line"><span class="cl">├── layouts/
+</span></span><span class="line"><span class="cl">└── themes/reimu/
+</span></span></code></pre></div><p>本文在“博客根目录/content/post”中，从它的父目录向上两层即可得到博客根目录。<strong>优先通过文件的真实位置定位工程，不要写死 Windows 用户名。</strong></p>
+<p>工程移动或更换电脑后，以本文实际所在的目录为准。路径不存在时先确认当前工作区，不要沿用聊天中的旧绝对路径，也不要全盘搜索。</p>
+<h3 id="12-日常写作只需要接触这些位置">
+<a class="header-anchor" href="#12-%e6%97%a5%e5%b8%b8%e5%86%99%e4%bd%9c%e5%8f%aa%e9%9c%80%e8%a6%81%e6%8e%a5%e8%a7%a6%e8%bf%99%e4%ba%9b%e4%bd%8d%e7%bd%ae"></a>
+1.2 日常写作只需要接触这些位置
+</h3><table>
+	<thead>
+			<tr>
+					<th>位置</th>
+					<th>用途</th>
+					<th>常规写作是否需要修改</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td>content/post/目标文章.md</td>
+					<td>文章源文件</td>
+					<td>是</td>
+			</tr>
+			<tr>
+					<td>static/picture/</td>
+					<td>文章配图</td>
+					<td>按需</td>
+			</tr>
+			<tr>
+					<td>本文</td>
+					<td>写作和排版约定</td>
+					<td>约定变化时</td>
+			</tr>
+			<tr>
+					<td>系统临时目录</td>
+					<td>脚本、原文备份、验证产物</td>
+					<td>按需</td>
+			</tr>
+			<tr>
+					<td>hugo.toml</td>
+					<td>Hugo 基础配置</td>
+					<td>通常不需要</td>
+			</tr>
+			<tr>
+					<td>config/_default/params.yml</td>
+					<td>主题与功能参数</td>
+					<td>通常不需要</td>
+			</tr>
+			<tr>
+					<td>layouts/、themes/reimu/</td>
+					<td>页面模板与主题</td>
+					<td>明确渲染故障时才定点检查</td>
+			</tr>
+			<tr>
+					<td>public/、resources/</td>
+					<td>构建输出与资源缓存</td>
+					<td>不直接编辑生成页面</td>
+			</tr>
+	</tbody>
+</table>
+<p>图片路径映射：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">实际文件：static/picture/example.png
+</span></span><span class="line"><span class="cl">正文链接：/picture/example.png
+</span></span></code></pre></div><p>不能在正文图片链接中写 static/picture，也不能写本机 C:\ 开头的文件路径。</p>
+<h3 id="13-已验证的主题与数学配置">
+<a class="header-anchor" href="#13-%e5%b7%b2%e9%aa%8c%e8%af%81%e7%9a%84%e4%b8%bb%e9%a2%98%e4%b8%8e%e6%95%b0%e5%ad%a6%e9%85%8d%e7%bd%ae"></a>
+1.3 已验证的主题与数学配置
+</h3><p>当前主题为 <strong>Reimu</strong>。页面会从文章元信息生成标题，因此正文不需要再写一个一级标题。</p>
+<p>本机已经具备以下配置：</p>
+<ul>
+<li>hugo.toml 已开启 Goldmark passthrough。</li>
+<li>行内公式支持美元符号包围，以及反斜杠圆括号包围。</li>
+<li>独立公式支持双美元符号包围，以及反斜杠方括号包围。</li>
+<li>主题启用了 KaTeX，未启用 MathJax。</li>
+<li>文章必须设置 <strong>math: true</strong>，才会启用相应的文章数学渲染。</li>
+<li>全站目录参数原本为 false；长教程应明确设置 <strong>toc: true</strong>。</li>
+<li>已有本地 KaTeX 模块：static/resources/katex@0.16.47/dist/katex.min.js。</li>
+</ul>
+<p>这些是已确认的配置快照，不需要每次写作都重新检查或改写。正常情况下，只设置文章元信息即可。</p>
+<p>目录锚点使用 Hugo 标题属性，无须为了目录额外开启原始 HTML：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-markdown" data-lang="markdown"><span class="line"><span class="cl"><span class="gu">## 1. 基础概念 {#topic-basics}
+</span></span></span></code></pre></div><p><a href="/post/%E6%96%87%E7%AB%A0%E6%8E%92%E7%89%88%E6%96%B9%E6%B3%95/#layout-toc">返回目录</a></p>
+<h2 id="layout-workflow">
+<a class="header-anchor" href="#layout-workflow"></a>
+2. 最短工作流程：先完成内容，再验证显示
+</h2><ol>
+<li><strong>只读必要文件。</strong> 阅读本文、待修改文章，以及适用的写作指令。保留原有标题、封面、分类、发布日期等信息，按需更新摘要和修改日期。</li>
+<li><strong>列出学习目标。</strong> 交代读者起点、文章解决的问题、读完可以独立完成什么，以及适用条件。</li>
+<li><strong>先定目录。</strong> 把基础、原理、计算、实现、验证、误区和练习排成学习路线，为主要章节设置稳定锚点。</li>
+<li><strong>完成正文。</strong> 每节围绕一个问题，先给直观解释，再给公式与推导，最后给例子或检查方法。</li>
+<li><strong>复算与配图。</strong> 用脚本验证核心数值、单位和边界；从同一份参数生成图和正文数值。</li>
+<li><strong>检查 Markdown。</strong> 核对 ID、内部链接、图片路径、代码围栏，以及公式里的 Markdown 歧义。</li>
+<li><strong>临时构建。</strong> 使用现有 Hugo 生成到系统临时目录，不把整个 public 目录当作本次文章修改。</li>
+<li><strong>浏览器验收。</strong> 确认公式真的渲染、目录真的滚到目标位置、图片表格可读；检查桌面和窄屏布局。</li>
+<li><strong>整理交付。</strong> 保留文章及所需图片，清理临时脚本，说明验证结果和未验证项。</li>
+</ol>
+<p>技术事实优先依据教材、论文、官方文档或工程证据。不确定、可能变化或用户要求查证的内容，应查阅原始来源，并在相关论述附近放置链接。省掉重复的工程阅读，不意味着省掉技术核验。</p>
+<p><a href="/post/%E6%96%87%E7%AB%A0%E6%8E%92%E7%89%88%E6%96%B9%E6%B3%95/#layout-toc">返回目录</a></p>
+<h2 id="layout-template">
+<a class="header-anchor" href="#layout-template"></a>
+3. 可复制的新文章模板
+</h2><p>以下模板用四个波浪号围栏展示，因此内部的三个波浪号代码块可以原样复制。实际使用时，只复制代码框中的内容。</p>
+<p>将 topic 换成本篇文章的英文主题前缀，例如 current-sampling 或 filter。前缀简短、稳定，避免把章节编号写进 ID。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-markdown" data-lang="markdown"><span class="line"><span class="cl"><span class="nn">---</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="nt">title</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39;文章标题&#39;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="nt">cover</span><span class="p">:</span><span class="w"> </span><span class="l">/images/cover/初见紫灵.jpg</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="nt">categories</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&#34;算法&#34;</span><span class="p">]</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="nt">tags</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&#34;主题标签&#34;</span><span class="p">]</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="nt">description</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39;一句话说明对象、解决的问题与学习收获。&#39;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="nt">date</span><span class="p">:</span><span class="w"> </span><span class="ld">2026-10-20</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="nt">lastmod</span><span class="p">:</span><span class="w"> </span><span class="ld">2026-10-20</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="nt">math</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="nt">toc</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="nn">---</span><span class="w">
+</span></span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">用一两段交代读者会遇到的问题，以及本文解决到什么程度。
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gs">**先记住：**</span> 写下最重要的结论或阅读线索。
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">本文适用于……；符号、模型和实验采用……约定。
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## 阅读导航 {#topic-toc}
+</span></span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">| 学习阶段 | 阅读位置 | 学完能做什么 |
+</span></span><span class="line"><span class="cl">| --- | --- | --- |
+</span></span><span class="line"><span class="cl">| 入门 | [<span class="nt">1. 基础概念</span>](<span class="na">#topic-basics</span>) | 解释关键术语 |
+</span></span><span class="line"><span class="cl">| 推导 | [<span class="nt">2. 原理与计算</span>](<span class="na">#topic-derivation</span>) | 独立复算结果 |
+</span></span><span class="line"><span class="cl">| 实现 | [<span class="nt">3. 工程实现</span>](<span class="na">#topic-implementation</span>) | 对照代码落地 |
+</span></span><span class="line"><span class="cl">| 验证 | [<span class="nt">4. 验证与误区</span>](<span class="na">#topic-validation</span>) | 判断结果是否可信 |
+</span></span><span class="line"><span class="cl">| 练习 | [<span class="nt">5. 动手练习</span>](<span class="na">#topic-practice</span>) | 检查是否真正掌握 |
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## 1. 基础概念 {#topic-basics}
+</span></span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">### 1.1 先说明信号与单位
+</span></span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">| 符号 | 含义 | 单位 |
+</span></span><span class="line"><span class="cl">| --- | --- | --- |
+</span></span><span class="line"><span class="cl">| $x$ | 输入量 | 按具体问题填写 |
+</span></span><span class="line"><span class="cl">| $y$ | 输出量 | 按具体问题填写 |
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">用具体场景解释概念，不要只罗列定义。
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">[<span class="nt">返回目录</span>](<span class="na">#topic-toc</span>)
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## 2. 原理与计算 {#topic-derivation}
+</span></span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">先说明模型假设，再列出已知条件：
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">$$
+</span></span><span class="line"><span class="cl">y=ax+b.
+</span></span><span class="line"><span class="cl">$$
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">解释每个符号，逐步展示变形；代入数值后进行单位和边界检查。
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gs">**结果的含义：**</span> 说明这个结果能指导什么，不能证明什么。
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">[<span class="nt">返回目录</span>](<span class="na">#topic-toc</span>)
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## 3. 工程实现 {#topic-implementation}
+</span></span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">交代数据输入、处理顺序、单位和输出。
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">~~~python
+</span></span><span class="line"><span class="cl"><span class="gh"># 标明这是完整程序，还是需要接入工程的片段。
+</span></span></span><span class="line"><span class="cl">def model(x, a, b):
+</span></span><span class="line"><span class="cl">    return a * x + b
+</span></span><span class="line"><span class="cl">~~~
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">需要配图时，先生成真实文件，再插入图片链接：
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">![<span class="nt">描述这张图呈现的信息</span>](<span class="na">/picture/topic_20261020_unique_01_response_v1.png</span>)
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">图 1：说明参数、坐标轴和数据性质，指出应该观察什么。
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">[<span class="nt">返回目录</span>](<span class="na">#topic-toc</span>)
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## 4. 验证与误区 {#topic-validation}
+</span></span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">| 容易误解的说法 | 原因 | 正确检查方式 |
+</span></span><span class="line"><span class="cl">| --- | --- | --- |
+</span></span><span class="line"><span class="cl">| 写下常见误区 | 解释失效条件 | 给出可执行动作 |
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">[<span class="nt">返回目录</span>](<span class="na">#topic-toc</span>)
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="gu">## 5. 动手练习 {#topic-practice}
+</span></span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">给出能检验理解的问题，并附答案或验证方法。
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">引用资料写明名称，链接到支持相关内容的原始页面。
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">[<span class="nt">返回目录</span>](<span class="na">#topic-toc</span>)
+</span></span></code></pre></div><p><strong>必须替换模板日期、主题前缀、占位内容和示例图片路径。</strong> 日期采用真实发布日期或修改日期，使用当前用户时区；不要随意填写未来时间。</p>
+<p>短文章可以减少章节，不必照搬长教程的篇幅。需要保留的是清楚的学习路线、解释、验证和定位方式。</p>
+<p><a href="/post/%E6%96%87%E7%AB%A0%E6%8E%92%E7%89%88%E6%96%B9%E6%B3%95/#layout-toc">返回目录</a></p>
+<h2 id="layout-navigation">
+<a class="header-anchor" href="#layout-navigation"></a>
+4. 标题、目录与锚点：让长文随时能定位
+</h2><h3 id="41-用标题表达层次">
+<a class="header-anchor" href="#41-%e7%94%a8%e6%a0%87%e9%a2%98%e8%a1%a8%e8%be%be%e5%b1%82%e6%ac%a1"></a>
+4.1 用标题表达层次
+</h3><p>文章标题放在 title 中，正文主要章节用二级标题，小问题用三级标题；确有必要才增加四级标题。不要用加粗段落冒充需要出现在侧栏目录中的章节。</p>
+<p>长教程可以使用“1、2、3”与“1.1、1.2”编号。标题说清本节解决什么，例如“怎样从采样数据提取相位”，比“高级内容”更方便查找。</p>
+<h3 id="42-为主要章节设置显式锚点">
+<a class="header-anchor" href="#42-%e4%b8%ba%e4%b8%bb%e8%a6%81%e7%ab%a0%e8%8a%82%e8%ae%be%e7%bd%ae%e6%98%be%e5%bc%8f%e9%94%9a%e7%82%b9"></a>
+4.2 为主要章节设置显式锚点
+</h3><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-markdown" data-lang="markdown"><span class="line"><span class="cl"><span class="gu">## 7. 完整计算案例 {#filter-example}
+</span></span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">[<span class="nt">直接跳到计算案例</span>](<span class="na">#filter-example</span>)
+</span></span></code></pre></div><p>锚点使用小写英文字母、数字和连字符，必须唯一。不要把空格、公式、中文标点或可变章节编号放进 ID。</p>
+<p>标题改成“8. 带噪声计算案例”时，只要 ID 不变，原链接仍然有效。经常被引用的三级标题也可设置显式锚点，其余小节交给 Hugo 自动生成。</p>
+<p><strong>链接必须与实际生成的 ID 完全一致。</strong> 最终检查 HTML 和实际点击结果，不能只看源文件拼写。</p>
+<h3 id="43-同时提供三种导航">
+<a class="header-anchor" href="#43-%e5%90%8c%e6%97%b6%e6%8f%90%e4%be%9b%e4%b8%89%e7%a7%8d%e5%af%bc%e8%88%aa"></a>
+4.3 同时提供三种导航
+</h3><table>
+	<thead>
+			<tr>
+					<th>导航方式</th>
+					<th>作用</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td>开头的学习导航</td>
+					<td>概括学习路线，帮助选择入口</td>
+			</tr>
+			<tr>
+					<td>主题侧栏目录</td>
+					<td>按标题层级逐节定位</td>
+			</tr>
+			<tr>
+					<td>主要章节末尾的返回目录</td>
+					<td>从正文深处回到阅读路线</td>
+			</tr>
+	</tbody>
+</table>
+<p>导航表通常控制在两三列。短文章用链接列表即可，不必把几十个小节全部塞进一张大表。</p>
+<p>点击锚点后可能存在平滑滚动，图片和字体加载也可能改变位置。应等位置稳定，确认标题没有被固定导航栏挡住。若有遮挡，定点检查主题的滚动偏移；不要在正文堆空行补偿。</p>
+<p><a href="/post/%E6%96%87%E7%AB%A0%E6%8E%92%E7%89%88%E6%96%B9%E6%B3%95/#layout-toc">返回目录</a></p>
+<h2 id="layout-math">
+<a class="header-anchor" href="#layout-math"></a>
+5. KaTeX：公式要能解析，也要能解释
+</h2><h3 id="51-行内与独立公式各司其职">
+<a class="header-anchor" href="#51-%e8%a1%8c%e5%86%85%e4%b8%8e%e7%8b%ac%e7%ab%8b%e5%85%ac%e5%bc%8f%e5%90%84%e5%8f%b8%e5%85%b6%e8%81%8c"></a>
+5.1 行内与独立公式各司其职
+</h3><p>行内公式用于符号、短关系和句子中的数值：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-markdown" data-lang="markdown"><span class="line"><span class="cl">误差定义为 $e=r-y_m$，其中 $r$ 是参考值。
+</span></span></code></pre></div><p>实际效果：误差定义为 $e=r-y_m$，其中 $r$ 是参考值。</p>
+<p>独立公式用于核心定义、推导和重要结论，公式块前后留空行：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-latex" data-lang="latex"><span class="line"><span class="cl"><span class="sb">$$</span><span class="nb">
+</span></span></span><span class="line"><span class="cl"><span class="nb">T</span><span class="o">(</span><span class="nb">s</span><span class="o">)=</span><span class="nv">\frac</span><span class="nb">{L</span><span class="o">(</span><span class="nb">s</span><span class="o">)</span><span class="nb">}{</span><span class="m">1</span><span class="o">+</span><span class="nb">L</span><span class="o">(</span><span class="nb">s</span><span class="o">)</span><span class="nb">}.
+</span></span></span><span class="line"><span class="cl"><span class="s">$$</span>
+</span></span></code></pre></div><p>实际效果：</p>
+$$
+T(s)=\frac{L(s)}{1+L(s)}.
+$$<p>说明文字放在公式之外。不要把整段中文塞进数学环境，也不要把长推导硬挤成行内公式。</p>
+<h3 id="52-推导采用条件方程变形代入解释">
+<a class="header-anchor" href="#52-%e6%8e%a8%e5%af%bc%e9%87%87%e7%94%a8%e6%9d%a1%e4%bb%b6%e6%96%b9%e7%a8%8b%e5%8f%98%e5%bd%a2%e4%bb%a3%e5%85%a5%e8%a7%a3%e9%87%8a"></a>
+5.2 推导采用“条件—方程—变形—代入—解释”
+</h3><p>可复算的推导至少包括：</p>
+<ol>
+<li>模型假设，例如线性、稳态、零初始条件或未饱和。</li>
+<li>已知量与单位。</li>
+<li>原始方程及采用它的原因。</li>
+<li>关键变形步骤，而不只给首尾两行。</li>
+<li>数值代入与结果。</li>
+<li>单位、数量级、极限情况或回代检查。</li>
+<li>工程含义和失效条件。</li>
+</ol>
+<p>例如先说明负反馈关系，再整理：</p>
+$$
+\begin{aligned}
+Y &= PC(R-HY),\\
+(1+PCH)Y &= PC\,R,\\
+\frac{Y}{R} &= \frac{PC}{1+PCH}.
+\end{aligned}
+$$<p>重要结论可以加方框，不要把所有公式都框起来：</p>
+$$
+\boxed{L=-\frac{U_c}{U}}
+$$<p>符号第一次出现时就解释，特别说明“交流相量还是时域采样值”“Hz 还是 rad/s”等容易混淆的约定。</p>
+<h3 id="53-统一符号单位和断行">
+<a class="header-anchor" href="#53-%e7%bb%9f%e4%b8%80%e7%ac%a6%e5%8f%b7%e5%8d%95%e4%bd%8d%e5%92%8c%e6%96%ad%e8%a1%8c"></a>
+5.3 统一符号、单位和断行
+</h3><p>同一个物理量尽量使用同一个符号。确实要复用符号时，明确说明作用域；能换名字时优先换名字。</p>
+<p>推荐写法：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-latex" data-lang="latex"><span class="line"><span class="cl"><span class="k">\omega</span>=2<span class="k">\pi</span> f
+</span></span><span class="line"><span class="cl">20<span class="k">\log</span><span class="nb">_{</span>10<span class="nb">}</span>|G(j<span class="k">\omega</span>)|
+</span></span><span class="line"><span class="cl"><span class="k">\mathrm</span><span class="nb">{</span>PM<span class="nb">}</span>=60<span class="nb">^</span><span class="k">\circ</span>
+</span></span><span class="line"><span class="cl">T<span class="nb">_</span>s=100<span class="k">\,\mu\mathrm</span><span class="nb">{</span>s<span class="nb">}</span>
+</span></span><span class="line"><span class="cl">f<span class="nb">_</span>c=300<span class="k">\,\mathrm</span><span class="nb">{</span>Hz<span class="nb">}</span>
+</span></span></code></pre></div><p>单位用正体，数值与单位适当分隔。程序里的三角函数、频率和时间单位必须与公式对应。</p>
+<p>长公式优先用 aligned 拆行，不要缩小到难以阅读。KaTeX 支持的是数学命令集合，不是完整 LaTeX 文档；不要放入文档类、宏包导入或未经验证的自定义宏。</p>
+<h3 id="54-两个必须避开的-markdown-陷阱">
+<a class="header-anchor" href="#54-%e4%b8%a4%e4%b8%aa%e5%bf%85%e9%a1%bb%e9%81%bf%e5%bc%80%e7%9a%84-markdown-%e9%99%b7%e9%98%b1"></a>
+5.4 两个必须避开的 Markdown 陷阱
+</h3><p><strong>陷阱一：公式中独占一行的等号。</strong></p>
+<p>PID 文章曾采用如下结构：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">$$
+</span></span><span class="line"><span class="cl">左边公式
+</span></span><span class="line"><span class="cl">=
+</span></span><span class="line"><span class="cl">右边公式
+</span></span><span class="line"><span class="cl">$$
+</span></span></code></pre></div><p>当前构建链会把独立等号误识别为 Setext 标题标记，导致公式被拆断，目录还会多出异常条目。<strong>单独交给 KaTeX 能解析，不代表经过 Markdown 转换后仍正确。</strong></p>
+<p>推荐改成：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-latex" data-lang="latex"><span class="line"><span class="cl"><span class="sb">$$</span><span class="nb">
+</span></span></span><span class="line"><span class="cl"><span class="nv">\begin</span><span class="nb">{aligned}
+</span></span></span><span class="line"><span class="cl"><span class="nb">F</span><span class="o">(</span><span class="nb">j</span><span class="nv">\omega</span><span class="o">)</span><span class="nb">
+</span></span></span><span class="line"><span class="cl"><span class="nb">&amp;</span><span class="o">=</span><span class="nb"> A</span><span class="o">(</span><span class="nv">\omega</span><span class="o">)</span><span class="nv">\\</span><span class="nb">
+</span></span></span><span class="line"><span class="cl"><span class="nb">&amp;</span><span class="nv">\quad</span><span class="nb"> </span><span class="o">+</span><span class="nb">jB</span><span class="o">(</span><span class="nv">\omega</span><span class="o">)</span><span class="nb">.
+</span></span></span><span class="line"><span class="cl"><span class="nv">\end</span><span class="nb">{aligned}
+</span></span></span><span class="line"><span class="cl"><span class="s">$$</span>
+</span></span></code></pre></div><p>简单等式也可把等号放在前一行末尾；若必须单独成行，可以使用数学关系命令，但一般不如 aligned 清楚。</p>
+<p><strong>陷阱二：表格内的原始竖线。</strong></p>
+<p>Markdown 使用竖线分列。表格中的绝对值优先写成数学命令：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-markdown" data-lang="markdown"><span class="line"><span class="cl">| 指标 | 公式 |
+</span></span><span class="line"><span class="cl">| --- | --- |
+</span></span><span class="line"><span class="cl">| 误差幅值 | $\lvert1-T\rvert$ |
+</span></span></code></pre></div><p>实际效果：</p>
+<table>
+	<thead>
+			<tr>
+					<th>指标</th>
+					<th>公式</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td>误差幅值</td>
+					<td>$\lvert1-T\rvert$</td>
+			</tr>
+	</tbody>
+</table>
+<p>复杂公式放到表格外，表格只保留名称、简短关系和比较结果。</p>
+<p><a href="/post/%E6%96%87%E7%AB%A0%E6%8E%92%E7%89%88%E6%96%B9%E6%B3%95/#layout-toc">返回目录</a></p>
+<h2 id="layout-images">
+<a class="header-anchor" href="#layout-images"></a>
+6. 配图：从数据到文件再到正文
+</h2><h3 id="61-什么时候值得画图">
+<a class="header-anchor" href="#61-%e4%bb%80%e4%b9%88%e6%97%b6%e5%80%99%e5%80%bc%e5%be%97%e7%94%bb%e5%9b%be"></a>
+6.1 什么时候值得画图
+</h3><p>适合配图的内容包括：参数变化曲线、方案比较、输入输出波形、注入位置、信号流向和操作流程。简单事实或一条短公式通常直接写文字更清楚。</p>
+<p>数学曲线、频响和仿真结果优先用 NumPy、SciPy、Matplotlib 从模型或数据生成。流程图可以绘制为 PNG。若要引入 Mermaid 等渲染依赖，先确认现有支持，不假定它与 KaTeX 一样已经启用。</p>
+<h3 id="62-文件名包含主题日期唯一标记序号和版本">
+<a class="header-anchor" href="#62-%e6%96%87%e4%bb%b6%e5%90%8d%e5%8c%85%e5%90%ab%e4%b8%bb%e9%a2%98%e6%97%a5%e6%9c%9f%e5%94%af%e4%b8%80%e6%a0%87%e8%ae%b0%e5%ba%8f%e5%8f%b7%e5%92%8c%e7%89%88%e6%9c%ac"></a>
+6.2 文件名包含主题、日期、唯一标记、序号和版本
+</h3><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">主题_日期_本次唯一标记_序号_图意_版本.png
+</span></span></code></pre></div><p>已有 PID 配图示例：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">pid_tuning_20261020_a7f3_01_bode_v1.png
+</span></span><span class="line"><span class="cl">pid_tuning_20261020_a7f3_02_injection_v1.png
+</span></span></code></pre></div><p>下次不要沿用 a7f3。使用新的短随机标记或时间标记，写入前检查目标是否存在。随机标记降低撞名概率，存在性检查才是最终保障。</p>
+<p>一组图采用相同前缀便于查找。不要覆盖其他文章仍在引用的图片；修订时可更新版本后缀并同步正文链接。</p>
+<h3 id="63-视觉约定">
+<a class="header-anchor" href="#63-%e8%a7%86%e8%a7%89%e7%ba%a6%e5%ae%9a"></a>
+6.3 视觉约定
+</h3><ul>
+<li>字体、配色统一，用不同线型或标记区分理论曲线、实测点和参考线。</li>
+<li>坐标轴写清变量与单位，例如“频率 / Hz”。</li>
+<li>标出关键交越点、峰值或阈值；图例不遮挡主要数据。</li>
+<li>网格淡化，数据线比装饰更突出。</li>
+<li>图片缩放到正文宽度后，标签仍然可读。</li>
+<li>画布可从约 10 英寸宽、150～180 dpi 起步，再依据显示调整。</li>
+<li>输出前设置合理布局，避免标题、轴标签和标注被裁切。</li>
+<li>明确区分仿真、稳态合成数据与真实实测。</li>
+</ul>
+<p>Matplotlib 最小示例：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">matplotlib</span>
+</span></span><span class="line"><span class="cl"><span class="n">matplotlib</span><span class="o">.</span><span class="n">use</span><span class="p">(</span><span class="s2">&#34;Agg&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="o">.</span><span class="n">update</span><span class="p">({</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;font.sans-serif&#34;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&#34;Microsoft YaHei&#34;</span><span class="p">,</span> <span class="s2">&#34;SimHei&#34;</span><span class="p">,</span> <span class="s2">&#34;DejaVu Sans&#34;</span><span class="p">],</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;axes.unicode_minus&#34;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;font.size&#34;</span><span class="p">:</span> <span class="mi">11</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;grid.alpha&#34;</span><span class="p">:</span> <span class="mf">0.23</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl"><span class="p">})</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 传入实际 static/picture 路径与本次唯一文件名。</span>
+</span></span><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">make_figure</span><span class="p">(</span><span class="n">picture_dir</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">    <span class="n">destination</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">picture_dir</span><span class="p">)</span> <span class="o">/</span> <span class="n">filename</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="n">destination</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+</span></span><span class="line"><span class="cl">        <span class="k">raise</span> <span class="ne">FileExistsError</span><span class="p">(</span><span class="n">destination</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">500</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">y</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">x</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span> <span class="n">layout</span><span class="o">=</span><span class="s2">&#34;constrained&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&#34;#2563b9&#34;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&#34;一阶模型&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">ax</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">xlabel</span><span class="o">=</span><span class="s2">&#34;归一化时间&#34;</span><span class="p">,</span> <span class="n">ylabel</span><span class="o">=</span><span class="s2">&#34;归一化输出&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">           <span class="n">title</span><span class="o">=</span><span class="s2">&#34;一阶模型的阶跃响应&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">ax</span><span class="o">.</span><span class="n">grid</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">    <span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">    <span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">destination</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">170</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
+</span></span></code></pre></div><p>中文字体必须在运行机器上存在，缺字时更换字体并重新生成。脚本返回成功不等于图中文字一定正常。</p>
+<h3 id="64-图片紧邻解释并有清楚图注">
+<a class="header-anchor" href="#64-%e5%9b%be%e7%89%87%e7%b4%a7%e9%82%bb%e8%a7%a3%e9%87%8a%e5%b9%b6%e6%9c%89%e6%b8%85%e6%a5%9a%e5%9b%be%e6%b3%a8"></a>
+6.4 图片紧邻解释，并有清楚图注
+</h3><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-markdown" data-lang="markdown"><span class="line"><span class="cl">![<span class="nt">开环与闭环频响，标出交越频率和半功率带宽</span>](<span class="na">/picture/pid_tuning_20261020_a7f3_01_bode_v1.png</span>)
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">图 1：按指定教学模型计算。上图用于读开环交越频率，下图用于读闭环带宽；两者不是同一个定义。
+</span></span></code></pre></div><p>替代文字描述图片信息，图注说明数据性质、参数与观察重点。不要只写“如图所示”，也不要把解释放到几屏之外。</p>
+<h3 id="65-临时文件管理">
+<a class="header-anchor" href="#65-%e4%b8%b4%e6%97%b6%e6%96%87%e4%bb%b6%e7%ae%a1%e7%90%86"></a>
+6.5 临时文件管理
+</h3><p>生成脚本、检查脚本和原文备份优先放在本次专用的系统临时子目录，避免被当作文章或公开资源发布。</p>
+<p>如果把脚本放入 static/picture，结束时只删除本次创建且不再需要的脚本。不要用宽泛通配符清理 picture，不要删除正文仍在引用的图。</p>
+<p>用户要求保留可复现实验代码时，将其作为正式交付明确命名和说明，不要当临时文件删除。</p>
+<p><a href="/post/%E6%96%87%E7%AB%A0%E6%8E%92%E7%89%88%E6%96%B9%E6%B3%95/#layout-toc">返回目录</a></p>
+<h2 id="layout-writing">
+<a class="header-anchor" href="#layout-writing"></a>
+7. 文字、表格与代码：靠结构获得舒适感
+</h2><h3 id="71-一段展开一个主意">
+<a class="header-anchor" href="#71-%e4%b8%80%e6%ae%b5%e5%b1%95%e5%bc%80%e4%b8%80%e4%b8%aa%e4%b8%bb%e6%84%8f"></a>
+7.1 一段展开一个主意
+</h3><p>每段通常几句话，先说结论或问题，再解释原因。用空行分段，不用连续空格或大量换行模拟布局。</p>
+<p>加粗留给定义、关键结论和容易误解的条件。避免整页加粗、连续感叹号、花哨符号和层层提示框。</p>
+<p>每节最好能回答一个具体问题：概念解决什么、公式从哪来、怎么计算、代码对应哪个量、怎样验证，以及最容易在哪一步弄错。</p>
+<h3 id="72-表格用于对照不承载长篇推导">
+<a class="header-anchor" href="#72-%e8%a1%a8%e6%a0%bc%e7%94%a8%e4%ba%8e%e5%af%b9%e7%85%a7%e4%b8%8d%e6%89%bf%e8%bd%bd%e9%95%bf%e7%af%87%e6%8e%a8%e5%af%bc"></a>
+7.2 表格用于对照，不承载长篇推导
+</h3><p>适合表格的内容：符号与单位、方法比较、实验参数、现象—原因—操作、误区—解释—纠正方法。</p>
+<p>一般控制在 2～4 列，每格短句。需要多段解释时拆成正文。宽表在手机上容易难读，交付前应检查窄屏显示。</p>
+<h3 id="73-代码交代运行边界">
+<a class="header-anchor" href="#73-%e4%bb%a3%e7%a0%81%e4%ba%a4%e4%bb%a3%e8%bf%90%e8%a1%8c%e8%be%b9%e7%95%8c"></a>
+7.3 代码交代运行边界
+</h3><p>代码块注明语言，例如 python、c、powershell 或 text，并说明它是完整程序、伪代码还是工程片段。</p>
+<p>交代输入输出、单位、采样率、参数来源、调用方需要提供的变量，以及错误和边界处理。实时控制代码还要说明哪些工作不能放进中断。</p>
+<p>公式、代码与图表使用相同符号，或明确映射关系。例如公式中的积分增益与代码中已乘采样周期的系数，不能同名却不解释差别。</p>
+<h3 id="74-用练习检查理解">
+<a class="header-anchor" href="#74-%e7%94%a8%e7%bb%83%e4%b9%a0%e6%a3%80%e6%9f%a5%e7%90%86%e8%a7%a3"></a>
+7.4 用练习检查理解
+</h3><p>长教程末尾放少量练习，覆盖关键概念区分、数量级计算或数据判断，并给出答案或验证步骤。</p>
+<p>工程流程的每步应有具体输出。例如“保存复数幅相与限幅标志”比“认真测量”可执行。把学习目标写成能够解释、计算、实现和验证的能力，不承诺一篇文章解决所有工程问题。</p>
+<p><a href="/post/%E6%96%87%E7%AB%A0%E6%8E%92%E7%89%88%E6%96%B9%E6%B3%95/#layout-toc">返回目录</a></p>
+<h2 id="layout-validation">
+<a class="header-anchor" href="#layout-validation"></a>
+8. 构建与验收：三层检查缺一不可
+</h2><h3 id="81-源文件检查">
+<a class="header-anchor" href="#81-%e6%ba%90%e6%96%87%e4%bb%b6%e6%a3%80%e6%9f%a5"></a>
+8.1 源文件检查
+</h3><ul>
+<li>元信息保留正确，日期真实；需要公式时有 math: true，长文有 toc: true。</li>
+<li>主要 ID 唯一，目录链接和返回链接有对应目标。</li>
+<li>图片真实存在，正文采用 /picture/ 路径，新文件未撞名。</li>
+<li>代码围栏正确闭合，公式没有独立等号或表格竖线歧义。</li>
+<li>没有未替换的占位图、数值、模板文字或未说明变量。</li>
+<li>核心计算已复算，图和文使用相同参数。</li>
+</ul>
+<p><strong>检查时排除代码示例。</strong> 本文展示的模板锚点、图片路径和数学式只是示例，不能将它们全部当作本文的真实链接或待渲染公式。</p>
+<h3 id="82-使用-hugo-构建到临时目录">
+<a class="header-anchor" href="#82-%e4%bd%bf%e7%94%a8-hugo-%e6%9e%84%e5%bb%ba%e5%88%b0%e4%b8%b4%e6%97%b6%e7%9b%ae%e5%bd%95"></a>
+8.2 使用 Hugo 构建到临时目录
+</h3><p>下面命令假设当前 PowerShell 目录是 <strong>博客根目录/content/post</strong>：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="nv">$blogRoot</span> <span class="p">=</span> <span class="p">(</span><span class="nb">Resolve-Path</span> <span class="s1">&#39;..\..&#39;</span><span class="p">).</span><span class="py">Path</span>
+</span></span><span class="line"><span class="cl"><span class="nv">$previewRoot</span> <span class="p">=</span> <span class="nb">Join-Path</span> <span class="nv">$env:TEMP</span> <span class="p">(</span>
+</span></span><span class="line"><span class="cl">    <span class="s1">&#39;article_preview_&#39;</span> <span class="p">+</span> <span class="p">[</span><span class="no">guid</span><span class="p">]::</span><span class="n">NewGuid</span><span class="p">().</span><span class="py">ToString</span><span class="p">(</span><span class="s1">&#39;N&#39;</span><span class="p">).</span><span class="py">Substring</span><span class="p">(</span><span class="mf">0</span><span class="p">,</span> <span class="mf">8</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nb">New-Item</span> <span class="n">-ItemType</span> <span class="n">Directory</span> <span class="n">-Path</span> <span class="nv">$previewRoot</span> <span class="p">|</span> <span class="nb">Out-Null</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nv">$oldResourceDir</span> <span class="p">=</span> <span class="nv">$env:HUGO_RESOURCEDIR</span>
+</span></span><span class="line"><span class="cl"><span class="k">try</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nv">$env:HUGO_RESOURCEDIR</span> <span class="p">=</span> <span class="nb">Join-Path</span> <span class="nv">$previewRoot</span> <span class="s1">&#39;resources&#39;</span>
+</span></span><span class="line"><span class="cl">    <span class="nv">$hugoArgs</span> <span class="p">=</span> <span class="vm">@</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">        <span class="s1">&#39;--source&#39;</span><span class="p">,</span> <span class="nv">$blogRoot</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="s1">&#39;--destination&#39;</span><span class="p">,</span> <span class="p">(</span><span class="nb">Join-Path</span> <span class="nv">$previewRoot</span> <span class="s1">&#39;site&#39;</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">        <span class="s1">&#39;--cacheDir&#39;</span><span class="p">,</span> <span class="p">(</span><span class="nb">Join-Path</span> <span class="nv">$previewRoot</span> <span class="s1">&#39;cache&#39;</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">        <span class="s1">&#39;--noBuildLock&#39;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="p">&amp;</span> <span class="p">(</span><span class="nb">Join-Path</span> <span class="nv">$blogRoot</span> <span class="s1">&#39;hugo.exe&#39;</span><span class="p">)</span> <span class="nv">@hugoArgs</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="nv">$LASTEXITCODE</span> <span class="o">-ne</span> <span class="mf">0</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">throw</span> <span class="s1">&#39;Hugo 构建失败，请先处理相关错误。&#39;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="k">finally</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nv">$env:HUGO_RESOURCEDIR</span> <span class="p">=</span> <span class="nv">$oldResourceDir</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>命令将网页和本次资源缓存放到临时目录。不要添加清理整个目标目录的参数，也不要把预览构建当作正式发布。</p>
+<p>检查草稿或未来日期文章时，可按需增加 <code>--buildDrafts</code> 或 <code>--buildFuture</code>。普通构建中找不到文章，先查发布日期和 draft 状态。</p>
+<p>当前工程已有一些主题或配置弃用提示。<strong>警告与失败要区分</strong>：无关的历史提示通常不需要扩大范围修改；影响页面功能的问题则需要定位。</p>
+<h3 id="83-katex-语法检查只是第一关">
+<a class="header-anchor" href="#83-katex-%e8%af%ad%e6%b3%95%e6%a3%80%e6%9f%a5%e5%8f%aa%e6%98%af%e7%ac%ac%e4%b8%80%e5%85%b3"></a>
+8.3 KaTeX 语法检查只是第一关
+</h3><p>可用现有本地 KaTeX 模块检查提取出的实际数学式：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-javascript" data-lang="javascript"><span class="line"><span class="cl"><span class="c1">// katexModulePath 指向现有的 katex.min.js。
+</span></span></span><span class="line"><span class="cl"><span class="c1">// formulas 是剔除代码示例后提取出的实际数学式列表。
+</span></span></span><span class="line"><span class="cl"><span class="kr">const</span> <span class="nx">katex</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="nx">katexModulePath</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">for</span> <span class="p">(</span><span class="kr">const</span> <span class="nx">formula</span> <span class="k">of</span> <span class="nx">formulas</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">katex</span><span class="p">.</span><span class="nx">renderToString</span><span class="p">(</span><span class="nx">formula</span><span class="p">.</span><span class="nx">tex</span><span class="p">,</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">displayMode</span><span class="o">:</span> <span class="nx">formula</span><span class="p">.</span><span class="nx">display</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">throwOnError</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">strict</span><span class="o">:</span> <span class="s2">&#34;error&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="p">});</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>只数双美元符号是否成对是不够的；简单正则也可能误处理代码、嵌套围栏和行内内容。以 Markdown 解析结果和最终页面为准。</p>
+<p><strong>PID 文章的实际教训：409 处公式通过语法检查，但最初网页只渲染了 408 处。</strong> 浏览器检查发现独立等号被当成标题；修正后才达到 409 处渲染、零错误、没有残留公式源码。</p>
+<h3 id="84-检查生成-html">
+<a class="header-anchor" href="#84-%e6%a3%80%e6%9f%a5%e7%94%9f%e6%88%90-html"></a>
+8.4 检查生成 HTML
+</h3><p>至少核对主要标题 ID 唯一、内部链接有目标、配图对应真实输出文件、KaTeX 与自动渲染脚本已加载，以及模板代码没有被误解析成真实标题或目录。</p>
+<p>不要只靠猜测文件名定位生成页面。可以从输出目录、已知 URL 或文章固定锚点找到目标 HTML。</p>
+<h3 id="85-浏览器检查实际显示">
+<a class="header-anchor" href="#85-%e6%b5%8f%e8%a7%88%e5%99%a8%e6%a3%80%e6%9f%a5%e5%ae%9e%e9%99%85%e6%98%be%e7%a4%ba"></a>
+8.5 浏览器检查实际显示
+</h3><p>可在临时 site 目录启动仅监听本机的服务：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="nv">$siteDir</span> <span class="p">=</span> <span class="nb">Join-Path</span> <span class="nv">$previewRoot</span> <span class="s1">&#39;site&#39;</span>
+</span></span><span class="line"><span class="cl"><span class="n">python</span> <span class="n">-m</span> <span class="n">http</span><span class="p">.</span><span class="py">server</span> <span class="mf">8765</span> <span class="p">-</span><span class="n">-bind</span> <span class="mf">127.0</span><span class="p">.</span><span class="py">0</span><span class="p">.</span><span class="py">1</span> <span class="p">-</span><span class="n">-directory</span> <span class="nv">$siteDir</span>
+</span></span></code></pre></div><p>端口被占用时换空闲端口，不要关闭其他服务。检查结束后停止本次服务。</p>
+<p>验收内容：</p>
+<ol>
+<li><strong>目录定位：</strong> 实际点击开头导航、侧栏和返回目录，查看是否落到正确标题。</li>
+<li><strong>公式显示：</strong> 无红色错误、残留源码、异常标题或被截断的长公式。</li>
+<li><strong>图片显示：</strong> 滚到每张配图，确认加载、中文、标注和图例正常。</li>
+<li><strong>表格与代码：</strong> 列未被误拆，代码可读，横向滚动局限在必要的内容块。</li>
+<li><strong>窄屏布局：</strong> 正文不会撑宽整个页面，导航可用，表格和公式不遮挡内容。</li>
+</ol>
+<p>DOM 中的公式和错误元素数量可辅助检查，不能替代视觉检查。代码框里展示语法的美元符号是正常内容，不应误判为公式渲染失败。</p>
+<p>图片可能懒加载，必须到相应位置核对；重新构建后刷新页面，避免检查旧版本。</p>
+<p><a href="/post/%E6%96%87%E7%AB%A0%E6%8E%92%E7%89%88%E6%96%B9%E6%B3%95/#layout-toc">返回目录</a></p>
+<h2 id="layout-troubleshooting">
+<a class="header-anchor" href="#layout-troubleshooting"></a>
+9. 出问题时定点排查，不重新扫描工程
+</h2><table>
+	<thead>
+			<tr>
+					<th>现象</th>
+					<th>按顺序检查</th>
+					<th>必要时才读的文件</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td>预览里没有文章</td>
+					<td>日期、draft、构建输出和实际 URL</td>
+					<td>目标文章元信息</td>
+			</tr>
+			<tr>
+					<td>所有公式显示源码</td>
+					<td>math: true、脚本加载、浏览器报错</td>
+					<td>config/_default/params.yml；layouts/partials/afterFooter.html</td>
+			</tr>
+			<tr>
+					<td>只有一条公式异常</td>
+					<td>独立等号、围栏、分隔符、表格竖线</td>
+					<td>目标文章附近几行</td>
+			</tr>
+			<tr>
+					<td>公式能解析但网页不完整</td>
+					<td>生成 HTML 是否拆断数学块</td>
+					<td>hugo.toml 中的 passthrough 配置</td>
+			</tr>
+			<tr>
+					<td>没有侧栏目录</td>
+					<td>toc: true、是否使用 Markdown 标题</td>
+					<td>目录相关局部模板</td>
+			</tr>
+			<tr>
+					<td>目录跳错或出现空条目</td>
+					<td>ID 重复、链接拼写、意外 Setext 标题</td>
+					<td>目标文章与 HTML</td>
+			</tr>
+			<tr>
+					<td>图片 404</td>
+					<td>网页路径、大小写、实际文件和构建输出</td>
+					<td>对应图片</td>
+			</tr>
+			<tr>
+					<td>图片中文变方框</td>
+					<td>本机字体、绘图警告</td>
+					<td>本次绘图脚本</td>
+			</tr>
+			<tr>
+					<td>表格被拆成多列</td>
+					<td>单元格里的原始竖线</td>
+					<td>该表格源码</td>
+			</tr>
+			<tr>
+					<td>正文留有路径或占位符</td>
+					<td>是否误贴输出、模板是否替换完</td>
+					<td>目标文章</td>
+			</tr>
+			<tr>
+					<td>修改后页面不变</td>
+					<td>是否构建、刷新，是否打开正确预览</td>
+					<td>本次构建日志</td>
+			</tr>
+			<tr>
+					<td>文件写入失败</td>
+					<td>实际路径与工具授权范围</td>
+					<td>当前工作区信息</td>
+			</tr>
+	</tbody>
+</table>
+<p>需要搜索时，从目标文件或相关小目录开始，限制类型、行数和匹配数量。避免输出压缩 JS 全文，也避免在错误工作目录执行全盘搜索。</p>
+<p>读取 Git 状态前，先确认仓库根目录确实是目标工程，再只看本次文章和配图。不要把用户主目录中其他项目的状态全部列出来。</p>
+<p><a href="/post/%E6%96%87%E7%AB%A0%E6%8E%92%E7%89%88%E6%96%B9%E6%B3%95/#layout-toc">返回目录</a></p>
+<h2 id="layout-handoff">
+<a class="header-anchor" href="#layout-handoff"></a>
+10. 下次直接使用的写作指令
+</h2><p>复制下面的指令，再补充主题和目标文章：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">请先阅读 content/post/文章排版方法.md，再阅读本次目标文章。
+</span></span><span class="line"><span class="cl">按手册整理或撰写教程，不必重新浏览整个工程。
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">保留目标文章原有元信息，按需启用 math: true 和 toc: true。
+</span></span><span class="line"><span class="cl">使用清晰学习路线、稳定章节锚点、可点击目录和返回导航。
+</span></span><span class="line"><span class="cl">数学推导说明假设、符号、单位、变形步骤和适用边界。
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">需要配图时，从可复算的数据生成到 static/picture，
+</span></span><span class="line"><span class="cl">采用新的唯一文件名，并在正文使用 /picture/ 路径引用。
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">完成后检查计算、目录与图片链接，进行 Hugo 临时构建，
+</span></span><span class="line"><span class="cl">并在条件允许时检查浏览器实际公式显示、定位及窄屏排版。
+</span></span><span class="line"><span class="cl">只在遇到明确问题时定点读取相关配置或模板。
+</span></span><span class="line"><span class="cl">清理本次不需要的临时脚本，交付文章路径和验证结果。
+</span></span></code></pre></div><p><strong>这份文件不会仅因为存在于文章目录中就自动被所有助手读取。</strong> 下次请求中明确提到它，或者直接附上文件，是最可靠的使用方式。</p>
+<p>交付说明应简洁，列出实际修改的文章、主要内容、图片数量、验证结果，以及尚未验证的事项。使用当前真实文件路径，不沿用旧用户名。</p>
+<p>以后如果换主题、调整数学分隔符、改变图片目录或构建流程，应先验证新流程，再更新本文对应小节。这样，下次写作仍然可以从这一份手册开始。</p>
+<p><a href="/post/%E6%96%87%E7%AB%A0%E6%8E%92%E7%89%88%E6%96%B9%E6%B3%95/#layout-toc">返回目录</a></p>
+</div>
+    <footer class="article-footer"><ul class="article-category-list"><li class="article-tag-list-item" data-aos="zoom-in">
+    <a
+      class="article-category-link"
+      href="/categories/%e5%86%99%e4%bd%9c"
+      data-aos="zoom-in"
+      >写作</a
+    >
+    </li></ul>
+<ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item" data-aos="zoom-in">
+      <a
+        class="article-tag-list-link"
+        href="/tags/markdown"
+        rel="tag"
+        >Markdown</a
+      >
+    </li><li class="article-tag-list-item" data-aos="zoom-in">
+      <a
+        class="article-tag-list-link"
+        href="/tags/katex"
+        rel="tag"
+        >KaTeX</a
+      >
+    </li><li class="article-tag-list-item" data-aos="zoom-in">
+      <a
+        class="article-tag-list-link"
+        href="/tags/hugo"
+        rel="tag"
+        >Hugo</a
+      >
+    </li><li class="article-tag-list-item" data-aos="zoom-in">
+      <a
+        class="article-tag-list-link"
+        href="/tags/%e6%96%87%e7%ab%a0%e6%8e%92%e7%89%88"
+        rel="tag"
+        >文章排版</a
+      >
+    </li></ul>
+</footer>
+  </div><nav
+    id="article-nav"
+    aria-label="Article navigation"
+    data-aos="fade-up"
+  ><div class="article-nav-link-wrap left"><img
+            data-src="/images/cover/%e7%87%95%e5%ae%b6%e5%a0%a1%e5%a2%a8%e5%bd%a9%e7%8e%af.jpg"
+            data-sizes="auto"
+            alt="单片机从【复位】到【main】的过程"
+            class="lazyload"
+          /><a
+          href="/post/%E5%8D%95%E7%89%87%E6%9C%BA%E5%A4%8D%E4%BD%8D%E5%88%B0main%E5%87%BD%E6%95%B0%E7%9A%84%E8%BF%87%E7%A8%8B/"
+          aria-label="前一篇:单片机从【复位】到【main】的过程"
+          title="前一篇:单片机从【复位】到【main】的过程"
+        ></a>
+        <div class="article-nav-caption">前一篇</div>
+        <h3 class="article-nav-title">单片机从【复位】到【main】的过程</h3>
+      </div><div class="article-nav-link-wrap right"><img
+            data-src="/images/cover/%e5%88%9d%e8%a7%81%e7%b4%ab%e7%81%b5.jpg"
+            data-sizes="auto"
+            alt="PID参数整定方法"
+            class="lazyload"
+          /><a
+          href="/post/pid%E5%8F%82%E6%95%B0%E6%95%B4%E5%AE%9A%E6%96%B9%E6%B3%95/"
+          aria-label="后一篇:PID参数整定方法"
+          title="后一篇:PID参数整定方法"
+        ></a>
+        <div class="article-nav-caption">后一篇</div>
+        <h3 class="article-nav-title">PID参数整定方法</h3>
+      </div></nav></article></section>
+        </div><footer id="footer" aria-label="Site footer">
+  <div style="width: 100%; overflow: hidden">
+    <div class="footer-line"></div>
+  </div>
+  <div id="footer-info"><div>
+      <span class="icon-copyright"></span>2020-2026<span class="footer-info-sep rotate"></span>云想衣裳花想荣
+    </div><div>
+        <span class="icon-brush"
+          >&nbsp;37.4k</span
+        >
+        &nbsp;|&nbsp;
+        <span class="icon-coffee">&nbsp;01:17</span>
+      </div></div>
+</footer>
+<div id="mask" class="hide"></div>
+      </div><nav id="mobile-nav" aria-label="Mobile navigation">
+  <div class="sidebar-wrap"><div class="sidebar-toc-sidebar"><h3 class="toc-title">文章目录</h3>
+<div class="sidebar-toc-wrapper toc-div-class">
+  <nav id="TableOfContents">
+  <ul>
+    <li><a href="#layout-toc">阅读导航</a></li>
+    <li><a href="#layout-context">1. 最小项目知识：这些信息已经确认</a>
+      <ul>
+        <li><a href="#11-通过本文所在位置确定博客根目录">1.1 通过本文所在位置确定博客根目录</a></li>
+        <li><a href="#12-日常写作只需要接触这些位置">1.2 日常写作只需要接触这些位置</a></li>
+        <li><a href="#13-已验证的主题与数学配置">1.3 已验证的主题与数学配置</a></li>
+      </ul>
+    </li>
+    <li><a href="#layout-workflow">2. 最短工作流程：先完成内容，再验证显示</a></li>
+    <li><a href="#layout-template">3. 可复制的新文章模板</a></li>
+    <li><a href="#layout-navigation">4. 标题、目录与锚点：让长文随时能定位</a>
+      <ul>
+        <li><a href="#41-用标题表达层次">4.1 用标题表达层次</a></li>
+        <li><a href="#42-为主要章节设置显式锚点">4.2 为主要章节设置显式锚点</a></li>
+        <li><a href="#43-同时提供三种导航">4.3 同时提供三种导航</a></li>
+      </ul>
+    </li>
+    <li><a href="#layout-math">5. KaTeX：公式要能解析，也要能解释</a>
+      <ul>
+        <li><a href="#51-行内与独立公式各司其职">5.1 行内与独立公式各司其职</a></li>
+        <li><a href="#52-推导采用条件方程变形代入解释">5.2 推导采用“条件—方程—变形—代入—解释”</a></li>
+        <li><a href="#53-统一符号单位和断行">5.3 统一符号、单位和断行</a></li>
+        <li><a href="#54-两个必须避开的-markdown-陷阱">5.4 两个必须避开的 Markdown 陷阱</a></li>
+      </ul>
+    </li>
+    <li><a href="#layout-images">6. 配图：从数据到文件再到正文</a>
+      <ul>
+        <li><a href="#61-什么时候值得画图">6.1 什么时候值得画图</a></li>
+        <li><a href="#62-文件名包含主题日期唯一标记序号和版本">6.2 文件名包含主题、日期、唯一标记、序号和版本</a></li>
+        <li><a href="#63-视觉约定">6.3 视觉约定</a></li>
+        <li><a href="#64-图片紧邻解释并有清楚图注">6.4 图片紧邻解释，并有清楚图注</a></li>
+        <li><a href="#65-临时文件管理">6.5 临时文件管理</a></li>
+      </ul>
+    </li>
+    <li><a href="#layout-writing">7. 文字、表格与代码：靠结构获得舒适感</a>
+      <ul>
+        <li><a href="#71-一段展开一个主意">7.1 一段展开一个主意</a></li>
+        <li><a href="#72-表格用于对照不承载长篇推导">7.2 表格用于对照，不承载长篇推导</a></li>
+        <li><a href="#73-代码交代运行边界">7.3 代码交代运行边界</a></li>
+        <li><a href="#74-用练习检查理解">7.4 用练习检查理解</a></li>
+      </ul>
+    </li>
+    <li><a href="#layout-validation">8. 构建与验收：三层检查缺一不可</a>
+      <ul>
+        <li><a href="#81-源文件检查">8.1 源文件检查</a></li>
+        <li><a href="#82-使用-hugo-构建到临时目录">8.2 使用 Hugo 构建到临时目录</a></li>
+        <li><a href="#83-katex-语法检查只是第一关">8.3 KaTeX 语法检查只是第一关</a></li>
+        <li><a href="#84-检查生成-html">8.4 检查生成 HTML</a></li>
+        <li><a href="#85-浏览器检查实际显示">8.5 浏览器检查实际显示</a></li>
+      </ul>
+    </li>
+    <li><a href="#layout-troubleshooting">9. 出问题时定点排查，不重新扫描工程</a></li>
+    <li><a href="#layout-handoff">10. 下次直接使用的写作指令</a></li>
+  </ul>
+</nav>
+</div></div>
+        <div class="sidebar-common-sidebar hidden"><div class="sidebar-author">
+  <img
+    data-src="/avatar/avatar.webp"
+    data-sizes="auto"
+    alt="云想衣裳花想荣"
+    class="lazyload"
+  />
+  <div class="sidebar-author-name">云想衣裳花想荣</div>
+  <div class="sidebar-description">嵌入式开发学习笔记，技术分享</div>
+</div>
+<div class="sidebar-state">
+  <div class="sidebar-state-article">
+    <div>文章</div><div class="sidebar-state-number">5</div>
+  </div>
+  <a class="sidebar-state-category" href="/categories/" aria-label="sidebar-state-category-link">
+    <div>分类</div>
+    <div class="sidebar-state-number">
+      5
+    </div>
+  </a>
+  <a class="sidebar-state-tag" href="/tags/" aria-label="sidebar-state-tag-link">
+    <div>标签</div>
+    <div class="sidebar-state-number">13</div>
+  </a>
+</div>
+<div class="sidebar-social" ></div><div class="sidebar-menu"><div class="sidebar-menu-link-wrap">
+      <a
+        class="sidebar-menu-link-dummy"
+        href="/"
+        aria-label="首页"
+      ></a><div class="sidebar-menu-link">首页</div>
+    </div><div class="sidebar-menu-link-wrap">
+      <a
+        class="sidebar-menu-link-dummy"
+        href="/archives"
+        aria-label="归档"
+      ></a><div class="sidebar-menu-link">归档</div>
+    </div><div class="sidebar-menu-link-wrap">
+      <a
+        class="sidebar-menu-link-dummy"
+        href="/about"
+        aria-label="关于"
+      ></a><div class="sidebar-menu-link">关于</div>
+    </div><div class="sidebar-menu-link-wrap">
+      <a
+        class="sidebar-menu-link-dummy"
+        href="/friend"
+        aria-label="友链"
+      ></a><div class="sidebar-menu-link">友链</div>
+    </div></div></div></div><div class="sidebar-btn-wrapper">
+        <div class="sidebar-toc-btn current"></div>
+        <div class="sidebar-common-btn"></div>
+      </div></nav>
+</div><script
+    src="https://npm.webcache.cn/lazysizes@5.3.2/lazysizes.min.js"
+    
+    
+    
+    
+    integrity="sha384-3gT/vsepWkfz/ff7PpWNUeMzeWoH3cDhm/A8jM7ouoAK0/fP/9bcHHR5kHq2nf&#43;e" crossorigin="anonymous"></script><script
+    src="https://npm.webcache.cn/clipboard@2.0.11/dist/clipboard.min.js"
+    
+    
+    
+    
+    integrity="sha384-J08i8An/QeARD9ExYpvphB8BsyOj3Gh2TSh1aLINKO3L0cMSH2dN3E22zFoXEi0Q" crossorigin="anonymous"></script><script
+    src="https://npm.webcache.cn/material-theme@1.0.0/dist/material-theme.umd.js"
+    
+    
+    
+    
+    integrity="sha384-vLev0II0HKFaxkcm&#43;/7kX5IGwVFBASkGchU311wmU/veIj2bB0UcBkQbW6yw2asK" crossorigin="anonymous"></script><script src="/js/main.js"  ></script><script src="/js/aos.js"  ></script><script>
+    var aosInit = () => {
+      AOS.init({
+        duration: 1000,
+        easing: "ease",
+        once: true,
+        offset: 50,
+      });
+    };
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", aosInit);
+    } else {
+      aosInit();
+    }
+  </script><script src="/js/pjax_main.js" data-pjax ></script>
+
+<div id="lazy-script">
+  <div><script data-pjax>
+        window.REIMU_POST = {
+          author: "云想衣裳花想荣",
+          title: "文章排版方法",
+          url: "http:\/\/localhost:1313\/post\/%E6%96%87%E7%AB%A0%E6%8E%92%E7%89%88%E6%96%B9%E6%B3%95\/",
+          description: "本博客的技术教程写作约定：目录锚点、数学推导、配图、代码、可复制模板和发布前检查。下次写文章先读这一份即可开始。",
+          cover: "http:\/\/localhost:1313\/images\/cover\/%E4%BC%A0%E9%80%81%E4%B9%B1%E6%98%9F%E6%B5%B7.jpg",
+        };
+      </script><script src="/js/insert_highlight.js" data-pjax ></script><script src="/js/tabs.js" data-pjax defer></script><script type="module" data-pjax>const PhotoSwipeLightbox = (await safeImport("https:\/\/npm.webcache.cn\/photoswipe@5.4.4\/dist\/photoswipe-lightbox.esm.min.js", "sha384-DiL6M\/gG\u002bwmTxmCRZyD1zee6lIhawn5TGvED0FOh7fXcN9B0aZ9dexSF\/N6lrZi\/")).default;const initPswp = (gallery, children) => {
+          if (_$$(`${gallery} ${children}`).length > 0) {
+            new PhotoSwipeLightbox({
+              gallery,
+              children,pswpModule: () => safeImport("https:\/\/npm.webcache.cn\/photoswipe@5.4.4\/dist\/photoswipe.esm.min.js", "sha384-WkkO3GCmgkC3VQWpaV8DqhKJqpzpF9JoByxDmnV8\u002boTJ7m3DfYEWX1fu1scuS4\u002bs")}).init();
+          }
+        }
+        const pswp = () => {
+          initPswp('.article-entry', 'a.article-gallery-item');
+          initPswp('.article-gallery', 'a.article-gallery-item');
+        }
+        pswp()
+      </script><script
+    src="https://npm.webcache.cn/katex@0.16.47/dist/katex.min.js"
+    
+    
+    data-pjax
+    
+    integrity="sha384-CwjPRVHTvLiMBFjEoij&#43;QZViMV5rhTOIp7CJzl24JEqpRDA1sJFHVXXLURktbYYp" crossorigin="anonymous"></script><script
+    src="https://npm.webcache.cn/katex@0.16.47/dist/contrib/auto-render.min.js"
+    
+    
+    data-pjax
+    
+    integrity="sha384-bjyGPfbij8/NDKJhSGZNP/khQVgtHUE5exjm4Ydllo42FwIgYsdLO2lXGmRBf5Mz" crossorigin="anonymous"></script><script data-pjax>
+          var renderMath = () => {
+            if (!window.renderMathInElement) return;
+            window.renderMathInElement(_$("article"), {
+              delimiters: [
+                { left: "$$", right: "$$", display: true },
+                { left: "\\[", right: "\\]", display: true },
+                { left: "$", right: "$", display: false },
+                { left: "\\(", right: "\\)", display: false },
+              ],
+            });
+            window.katexTagOverflowHandler?.();
+          };
+          if (document.readyState === "loading") {
+            document.addEventListener("DOMContentLoaded", renderMath, { once: true });
+          } else {
+            renderMath();
+          }
+        </script></div>
+</div><script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.getRegistrations().then((registrations) => {
+        for (let registration of registrations) {
+          registration.unregister();
+        }
+      });
+    }
+  </script><script>
+  const reimuCopyright = String.raw`
+   ______     ______     __     __    __     __  __    
+  /\  == \   /\  ___\   /\ \   /\ "-./  \   /\ \/\ \   
+  \ \  __<   \ \  __\   \ \ \  \ \ \-./\ \  \ \ \_\ \  
+   \ \_\ \_\  \ \_____\  \ \_\  \ \_\ \ \_\  \ \_____\ 
+    \/_/ /_/   \/_____/   \/_/   \/_/  \/_/   \/_____/ 
+                                                    
+  `;
+  console.log(String.raw`%c ${reimuCopyright}`, "color: #ff5252;");
+  console.log(
+    "%c Theme.Reimu" + " %c https://github.com/D-Sketon/hugo-theme-reimu ",
+    "color: white; background: #ff5252; padding:5px 0;",
+    "padding:4px;border:1px solid #ff5252;",
+  );
+</script><script
+    src="https://npm.webcache.cn/pangu@4.0.7/dist/browser/pangu.min.js"
+    
+    
+    
+    
+    integrity="sha384-HeUHqi0nVsPUm/E0ss7OfnIV/yD96JWB8ehZvUuoVax9DpNHL17jj9pdfXHzqDxm" crossorigin="anonymous"></script><script data-pjax>
+    if (document.readyState === "loading") {
+      document.addEventListener('DOMContentLoaded', () => {
+        pangu?.spacingPage();
+      });
+    } else {
+      pangu?.spacingPage();
+    }
+  </script></body>
+</html>
