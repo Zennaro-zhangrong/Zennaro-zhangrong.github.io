@@ -12,7 +12,7 @@
     
     <copyright>本博客所有文章除特别声明外，均采用 BY-NC-SA 许可协议。转载请注明出处！</copyright>
     
-    <lastBuildDate>Fri, 16 Oct 2026 17:08:40 +0800</lastBuildDate>
+    <lastBuildDate>Sun, 01 Mar 2026 00:00:00 +0800</lastBuildDate>
     
     
     <atom:link href="http://localhost:1313/categories/%E9%80%9A%E4%BF%A1%E6%80%BB%E7%BA%BF/index.xml" rel="self" type="application/rss&#43;xml" />
@@ -24,7 +24,7 @@
     <item>
       <title>IIC通信总线</title>
       <link>http://localhost:1313/post/iic%E9%80%9A%E4%BF%A1%E6%80%BB%E7%BA%BF/</link>
-      <pubDate>Fri, 16 Oct 2026 17:08:40 &#43;0800</pubDate>
+      <pubDate>Tue, 10 Feb 2026 16:00:00 &#43;0800</pubDate>
       <author>zennaro.zhang@outlook.com (云想衣裳花想荣)</author>
       <guid>http://localhost:1313/post/iic%E9%80%9A%E4%BF%A1%E6%80%BB%E7%BA%BF/</guid>
       <description>
@@ -38,7 +38,7 @@ IIC的发展历史
 ……<br>
 1992年IIC第一次升级，地址扩展到10位，通信速率增加到400kbps。</p>
         
-        <hr><p>本文2026-10-16首发于<a href='http://localhost:1313/'>博客首页</a>，最后修改于2026-10-16</p>]]>
+        <hr><p>本文2026-02-10首发于<a href='http://localhost:1313/'>博客首页</a>，最后修改于2026-03-01</p>]]>
       </description>
       
         <category>通信总线</category>

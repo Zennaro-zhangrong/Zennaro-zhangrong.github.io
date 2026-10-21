@@ -12,7 +12,7 @@
     
     <copyright>本博客所有文章除特别声明外，均采用 BY-NC-SA 许可协议。转载请注明出处！</copyright>
     
-    <lastBuildDate>Tue, 20 Oct 2026 00:00:00 +0800</lastBuildDate>
+    <lastBuildDate>Fri, 20 Mar 2026 00:00:00 +0800</lastBuildDate>
     
     
     <atom:link href="http://localhost:1313/tags/%E5%8E%9F%E7%90%86/index.xml" rel="self" type="application/rss&#43;xml" />
@@ -24,7 +24,7 @@
     <item>
       <title>单片机从【复位】到【main】的过程</title>
       <link>http://localhost:1313/post/%E5%8D%95%E7%89%87%E6%9C%BA%E5%A4%8D%E4%BD%8D%E5%88%B0main%E5%87%BD%E6%95%B0%E7%9A%84%E8%BF%87%E7%A8%8B/</link>
-      <pubDate>Sat, 17 Oct 2026 23:00:00 &#43;0800</pubDate>
+      <pubDate>Tue, 10 Mar 2026 16:00:00 &#43;0800</pubDate>
       <author>zennaro.zhang@outlook.com (云想衣裳花想荣)</author>
       <guid>http://localhost:1313/post/%E5%8D%95%E7%89%87%E6%9C%BA%E5%A4%8D%E4%BD%8D%E5%88%B0main%E5%87%BD%E6%95%B0%E7%9A%84%E8%BF%87%E7%A8%8B/</guid>
       <description>
@@ -37,7 +37,7 @@
 <p><strong>一句话总结</strong>：复位释放时，Cortex-M 内核只从地址 <code>0x00000000</code> 和 <code>0x00000004</code> 取出两个数，分别装进 <strong>MSP（栈指针）</strong> 和 <strong>PC（程序计数器）</strong>。此后执行的第一段代码不是 <code>main</code>，而是启动文件里的 <code>Reset_Handler</code>；它把 C 语言运行所需的环境搭好，最后才调用 <code>main</code>。</p>
 </blockquote>
         
-        <hr><p>本文2026-10-17首发于<a href='http://localhost:1313/'>博客首页</a>，最后修改于2026-10-20</p>]]>
+        <hr><p>本文2026-03-10首发于<a href='http://localhost:1313/'>博客首页</a>，最后修改于2026-03-20</p>]]>
       </description>
       
         <category>微机原理</category>

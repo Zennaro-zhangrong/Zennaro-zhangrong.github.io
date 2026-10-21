@@ -12,7 +12,7 @@
     
     <copyright>本博客所有文章除特别声明外，均采用 BY-NC-SA 许可协议。转载请注明出处！</copyright>
     
-    <lastBuildDate>Tue, 20 Oct 2026 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Mon, 06 Apr 2026 00:00:00 +0800</lastBuildDate>
     
     
     <atom:link href="http://localhost:1313/tags/%E7%94%B5%E6%9C%BA%E6%8E%A7%E5%88%B6/index.xml" rel="self" type="application/rss&#43;xml" />
@@ -24,7 +24,7 @@
     <item>
       <title>PID参数整定方法</title>
       <link>http://localhost:1313/post/pid%E5%8F%82%E6%95%B0%E6%95%B4%E5%AE%9A%E6%96%B9%E6%B3%95/</link>
-      <pubDate>Tue, 20 Oct 2026 15:00:00 &#43;0800</pubDate>
+      <pubDate>Sun, 05 Apr 2026 00:00:00 &#43;0800</pubDate>
       <author>zennaro.zhang@outlook.com (云想衣裳花想荣)</author>
       <guid>http://localhost:1313/post/pid%E5%8F%82%E6%95%B0%E6%95%B4%E5%AE%9A%E6%96%B9%E6%B3%95/</guid>
       <description>
@@ -32,7 +32,7 @@
         
           <p>这篇文章的目标，是让你能够解释每一次调参的原因，并通过计算、波形和实测频响验证它。我们会从误差与负反馈出发，推导 PI/PID 参数，再把公式落实到控制中断和扫频数据处理中。</p>
         
-        <hr><p>本文2026-10-20首发于<a href='http://localhost:1313/'>博客首页</a>，最后修改于2026-10-20</p>]]>
+        <hr><p>本文2026-04-05首发于<a href='http://localhost:1313/'>博客首页</a>，最后修改于2026-04-06</p>]]>
       </description>
       
         <category>算法</category>

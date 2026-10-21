@@ -12,7 +12,7 @@
     
     <copyright>本博客所有文章除特别声明外，均采用 BY-NC-SA 许可协议。转载请注明出处！</copyright>
     
-    <lastBuildDate>Wed, 21 Oct 2026 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Tue, 21 Apr 2026 00:00:00 +0800</lastBuildDate>
     
     
     <atom:link href="http://localhost:1313/index.xml" rel="self" type="application/rss&#43;xml" />
@@ -24,7 +24,7 @@
     <item>
       <title>【结构体】探究</title>
       <link>http://localhost:1313/post/%E7%BB%93%E6%9E%84%E4%BD%93%E7%BB%86%E8%8A%82%E6%8E%A2%E7%A9%B6/</link>
-      <pubDate>Wed, 21 Oct 2026 00:00:00 &#43;0800</pubDate>
+      <pubDate>Mon, 20 Apr 2026 00:00:00 &#43;0800</pubDate>
       <author>zennaro.zhang@outlook.com (云想衣裳花想荣)</author>
       <guid>http://localhost:1313/post/%E7%BB%93%E6%9E%84%E4%BD%93%E7%BB%86%E8%8A%82%E6%8E%A2%E7%A9%B6/</guid>
       <description>
@@ -32,7 +32,7 @@
         
           <p>刚开始学结构体时，常见写法只有两句：用 <code>struct</code> 把数据放在一起，用 <code>.</code> 或 <code>-&gt;</code> 访问成员。但真正写程序以后，问题会接连出现：三个成员加起来只有 7 字节，为什么结构体占 12 字节？函数已经收到了指针，为什么不能替调用者修改指针？复制一个结构体后，为什么两个对象还是共享一块内存？一个结构体里怎么还能放“函数”？</p>
         
-        <hr><p>本文2026-10-21首发于<a href='http://localhost:1313/'>博客首页</a>，最后修改于2026-10-21</p>]]>
+        <hr><p>本文2026-04-20首发于<a href='http://localhost:1313/'>博客首页</a>，最后修改于2026-04-21</p>]]>
       </description>
       
         <category>C语言</category>
@@ -42,29 +42,9 @@
     
 
     <item>
-      <title>文章排版方法</title>
-      <link>http://localhost:1313/post/%E6%96%87%E7%AB%A0%E6%8E%92%E7%89%88%E6%96%B9%E6%B3%95/</link>
-      <pubDate>Tue, 20 Oct 2026 00:00:00 &#43;0000</pubDate>
-      <author>zennaro.zhang@outlook.com (云想衣裳花想荣)</author>
-      <guid>http://localhost:1313/post/%E6%96%87%E7%AB%A0%E6%8E%92%E7%89%88%E6%96%B9%E6%B3%95/</guid>
-      <description>
-        <![CDATA[<h1>文章排版方法</h1><p>作者：云想衣裳花想荣（zennaro.zhang@outlook.com）</p>
-        
-          <p>这是一份给<strong>以后写文章的自己和协作助手</strong>使用的工作手册。它整理了《PID参数整定方法》的实际制作经验，目标是：不必重新浏览整个博客工程，也能写出结构清楚、公式正确、目录可定位、配图可验证的技术教程。</p>
-        
-        <hr><p>本文2026-10-20首发于<a href='http://localhost:1313/'>博客首页</a>，最后修改于2026-10-20</p>]]>
-      </description>
-      
-        <category>写作</category>
-      
-    </item>
-    
-    
-
-    <item>
       <title>PID参数整定方法</title>
       <link>http://localhost:1313/post/pid%E5%8F%82%E6%95%B0%E6%95%B4%E5%AE%9A%E6%96%B9%E6%B3%95/</link>
-      <pubDate>Tue, 20 Oct 2026 15:00:00 &#43;0800</pubDate>
+      <pubDate>Sun, 05 Apr 2026 00:00:00 &#43;0800</pubDate>
       <author>zennaro.zhang@outlook.com (云想衣裳花想荣)</author>
       <guid>http://localhost:1313/post/pid%E5%8F%82%E6%95%B0%E6%95%B4%E5%AE%9A%E6%96%B9%E6%B3%95/</guid>
       <description>
@@ -72,7 +52,7 @@
         
           <p>这篇文章的目标，是让你能够解释每一次调参的原因，并通过计算、波形和实测频响验证它。我们会从误差与负反馈出发，推导 PI/PID 参数，再把公式落实到控制中断和扫频数据处理中。</p>
         
-        <hr><p>本文2026-10-20首发于<a href='http://localhost:1313/'>博客首页</a>，最后修改于2026-10-20</p>]]>
+        <hr><p>本文2026-04-05首发于<a href='http://localhost:1313/'>博客首页</a>，最后修改于2026-04-06</p>]]>
       </description>
       
         <category>算法</category>
@@ -84,7 +64,7 @@
     <item>
       <title>单片机从【复位】到【main】的过程</title>
       <link>http://localhost:1313/post/%E5%8D%95%E7%89%87%E6%9C%BA%E5%A4%8D%E4%BD%8D%E5%88%B0main%E5%87%BD%E6%95%B0%E7%9A%84%E8%BF%87%E7%A8%8B/</link>
-      <pubDate>Sat, 17 Oct 2026 23:00:00 &#43;0800</pubDate>
+      <pubDate>Tue, 10 Mar 2026 16:00:00 &#43;0800</pubDate>
       <author>zennaro.zhang@outlook.com (云想衣裳花想荣)</author>
       <guid>http://localhost:1313/post/%E5%8D%95%E7%89%87%E6%9C%BA%E5%A4%8D%E4%BD%8D%E5%88%B0main%E5%87%BD%E6%95%B0%E7%9A%84%E8%BF%87%E7%A8%8B/</guid>
       <description>
@@ -97,7 +77,7 @@
 <p><strong>一句话总结</strong>：复位释放时，Cortex-M 内核只从地址 <code>0x00000000</code> 和 <code>0x00000004</code> 取出两个数，分别装进 <strong>MSP（栈指针）</strong> 和 <strong>PC（程序计数器）</strong>。此后执行的第一段代码不是 <code>main</code>，而是启动文件里的 <code>Reset_Handler</code>；它把 C 语言运行所需的环境搭好，最后才调用 <code>main</code>。</p>
 </blockquote>
         
-        <hr><p>本文2026-10-17首发于<a href='http://localhost:1313/'>博客首页</a>，最后修改于2026-10-20</p>]]>
+        <hr><p>本文2026-03-10首发于<a href='http://localhost:1313/'>博客首页</a>，最后修改于2026-03-20</p>]]>
       </description>
       
         <category>微机原理</category>
@@ -109,7 +89,7 @@
     <item>
       <title>IIC通信总线</title>
       <link>http://localhost:1313/post/iic%E9%80%9A%E4%BF%A1%E6%80%BB%E7%BA%BF/</link>
-      <pubDate>Fri, 16 Oct 2026 17:08:40 &#43;0800</pubDate>
+      <pubDate>Tue, 10 Feb 2026 16:00:00 &#43;0800</pubDate>
       <author>zennaro.zhang@outlook.com (云想衣裳花想荣)</author>
       <guid>http://localhost:1313/post/iic%E9%80%9A%E4%BF%A1%E6%80%BB%E7%BA%BF/</guid>
       <description>
@@ -123,7 +103,7 @@ IIC的发展历史
 ……<br>
 1992年IIC第一次升级，地址扩展到10位，通信速率增加到400kbps。</p>
         
-        <hr><p>本文2026-10-16首发于<a href='http://localhost:1313/'>博客首页</a>，最后修改于2026-10-16</p>]]>
+        <hr><p>本文2026-02-10首发于<a href='http://localhost:1313/'>博客首页</a>，最后修改于2026-03-01</p>]]>
       </description>
       
         <category>通信总线</category>
@@ -133,9 +113,29 @@ IIC的发展历史
     
 
     <item>
+      <title>文章排版方法</title>
+      <link>http://localhost:1313/post/%E6%96%87%E7%AB%A0%E6%8E%92%E7%89%88%E6%96%B9%E6%B3%95/</link>
+      <pubDate>Sat, 17 Jan 2026 16:00:00 &#43;0800</pubDate>
+      <author>zennaro.zhang@outlook.com (云想衣裳花想荣)</author>
+      <guid>http://localhost:1313/post/%E6%96%87%E7%AB%A0%E6%8E%92%E7%89%88%E6%96%B9%E6%B3%95/</guid>
+      <description>
+        <![CDATA[<h1>文章排版方法</h1><p>作者：云想衣裳花想荣（zennaro.zhang@outlook.com）</p>
+        
+          <p>这是一份给<strong>以后写文章的自己和协作助手</strong>使用的工作手册。它整理了《PID参数整定方法》的实际制作经验，目标是：不必重新浏览整个博客工程，也能写出结构清楚、公式正确、目录可定位、配图可验证的技术教程。</p>
+        
+        <hr><p>本文2026-01-17首发于<a href='http://localhost:1313/'>博客首页</a>，最后修改于2026-01-17</p>]]>
+      </description>
+      
+        <category>写作</category>
+      
+    </item>
+    
+    
+
+    <item>
       <title>开发者工具速查</title>
       <link>http://localhost:1313/post/%E5%BC%80%E5%8F%91%E8%80%85%E5%B7%A5%E5%85%B7%E9%80%9F%E6%9F%A5/</link>
-      <pubDate>Fri, 16 Oct 2026 16:20:00 &#43;0800</pubDate>
+      <pubDate>Fri, 16 Jan 2026 16:00:00 &#43;0800</pubDate>
       <author>zennaro.zhang@outlook.com (云想衣裳花想荣)</author>
       <guid>http://localhost:1313/post/%E5%BC%80%E5%8F%91%E8%80%85%E5%B7%A5%E5%85%B7%E9%80%9F%E6%9F%A5/</guid>
       <description>
@@ -146,7 +146,7 @@ IIC的发展历史
 Markdown语法教程
 </h1><p>点击<a href="https://markdown.com.cn/">Markdown官网链接</a>查看相关语法</p>
         
-        <hr><p>本文2026-10-16首发于<a href='http://localhost:1313/'>博客首页</a>，最后修改于2026-10-16</p>]]>
+        <hr><p>本文2026-01-16首发于<a href='http://localhost:1313/'>博客首页</a>，最后修改于2026-01-16</p>]]>
       </description>
       
         <category>语言语法</category>
