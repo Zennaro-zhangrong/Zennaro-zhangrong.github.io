@@ -1,0 +1,2023 @@
+<!doctype html>
+<html
+  lang="zh-CN"data-theme-mode="auto"
+>
+  <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8" />
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1, shrink-to-fit=no"
+/><title>
+  【结构体】探究 | 云想衣裳花想荣
+</title>
+<meta name="description" content="从内存布局与对齐出发，理解成员访问、值与指针传参、浅深复制、生命周期和函数指针，并用设备接口案例学习结构体的工程应用。"/><script>
+  window.siteConfig = JSON.parse("{\"anchor\":{\"auto\":{\"enable\":false,\"length\":60},\"explicit\":{\"enable\":false,\"marker\":\"{#anchor-\",\"prefix\":\"anchor-\"}},\"anchor_icon\":null,\"base\":\"http://localhost:1313/\",\"clipboard\":{\"copyright\":{\"count\":50,\"enable\":false,\"license_type\":\"by-nc-sa\"},\"fail\":{\"en\":\"Copy failed (ﾟ⊿ﾟ)ﾂ\",\"ja\":\"コピー失敗 (ﾟ⊿ﾟ)ﾂ\",\"pt-br\":\"Falha ao copiar (ﾟ⊿ﾟ)ﾂ\",\"zh-cn\":\"复制失败 (ﾟ⊿ﾟ)ﾂ\",\"zh-tw\":\"複製失敗 (ﾟ⊿ﾟ)ﾂ\"},\"success\":{\"en\":\"Copy successfully (*^▽^*)\",\"ja\":\"コピー成功 (*^▽^*)\",\"pt-br\":\"Copiado com sucesso (*^▽^*)\",\"zh-cn\":\"复制成功 (*^▽^*)\",\"zh-tw\":\"複製成功 (*^▽^*)\"}},\"code_block\":{\"expand\":30},\"dark_mode\":{\"button\":true,\"mode\":\"auto\"},\"icon_font\":\"4552607_ex15nbittbh\",\"outdate\":{\"daysago\":180,\"enable\":false,\"message\":{\"en\":\"This article was last updated on {time}. Please note that the content may no longer be applicable.\",\"ja\":\"この記事は最終更新日：{time}。記載内容が現在有効でない可能性がありますのでご注意ください。\",\"pt-br\":\"Este artigo foi atualizado pela última vez em {time}. Observe que o conteúdo pode não ser mais aplicável.\",\"zh-cn\":\"本文最后更新于 {time}，请注意文中内容可能已不适用。\",\"zh-tw\":\"本文最後更新於 {time}，請注意文中內容可能已不適用。\"}}}");
+  
+</script>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+  rel="preload"
+  as="style"
+  href="https://fonts.googleapis.com/css?family=Mulish:400,400italic,700,700italic%7cNoto%20Serif%20SC:400,400italic,700,700italic%7c&amp;display=swap"
+/>
+<link
+  rel="stylesheet"
+  href="https://fonts.googleapis.com/css?family=Mulish:400,400italic,700,700italic%7cNoto%20Serif%20SC:400,400italic,700,700italic%7c&amp;display=swap"
+  media="print"
+  onload="this.media='all'"
+/>
+<link
+    rel="preload"
+    href="//at.alicdn.com/t/c/font_4552607_ex15nbittbh.woff2"
+    as="font"
+    type="font/woff2"
+    crossorigin="anonymous"
+  /><link rel="stylesheet" href="/css/loader.css" /><meta property="og:type" content="website" />
+  <meta property="og:title" content="【结构体】探究 | 云想衣裳花想荣" />
+  <meta
+    property="og:description"
+    content="从内存布局与对齐出发，理解成员访问、值与指针传参、浅深复制、生命周期和函数指针，并用设备接口案例学习结构体的工程应用。"
+  />
+  <meta property="og:url" content="http://localhost:1313/post/%E7%BB%93%E6%9E%84%E4%BD%93%E7%BB%86%E8%8A%82%E6%8E%A2%E7%A9%B6/" />
+  <meta
+    property="og:site_name"
+    content="博客首页"
+  />
+  <meta property="og:image" content="http://localhost:1313/images/cover/%E9%9F%A9%E7%AB%8B%E7%BD%91%E5%9B%BE%E5%A3%81%E7%BA%B8.jpg" />
+  <meta property="article:author" content="云想衣裳花想荣" />
+  <meta property="article:published_time" content="2026-10-21T00:00:00&#43;08:00" />
+  <meta property="article:modified_time" content="2026-10-21T00:00:00&#43;00:00" /><meta property="article:tag" content="结构体, 考点" /><meta name="twitter:card" content="summary" /><meta name="twitter:image" content="http://localhost:1313/images/cover/%E9%9F%A9%E7%AB%8B%E7%BD%91%E5%9B%BE%E5%A3%81%E7%BA%B8.jpg" />
+<link rel="shortcut icon" href="/favicon.ico"><link rel="stylesheet" href="/css/main.css" /><link
+    rel="preload"
+    as="style"
+    href="https://npm.webcache.cn/photoswipe@5.4.4/dist/photoswipe.css"
+    integrity="sha384-IfxC36XL/toUyJ939C73PcgMuRzAZuIzZxE38drsmO5p6jD7ei&#43;Zx/1oA/0l8ysE" crossorigin="anonymous"
+    onload="this.onload=null;this.rel='stylesheet'"
+  /><link
+    rel="preload"
+    as="style"
+    href="https://npm.webcache.cn/katex@0.16.47/dist/katex.min.css"
+    integrity="sha384-nH0MfJ44wi1dd7w6jinlyBgljjS8EJAh2JBoRad8a3VDw2K69vfaaqm4WnR&#43;gXtA" crossorigin="anonymous"
+    onload="this.onload=null;this.rel='stylesheet'"
+  /><script
+    src="https://npm.webcache.cn/pace-js@1.2.4/pace.min.js"
+    
+    
+    
+    
+    integrity="sha384-k6YtvFUEIuEFBdrLKJ3YAUbBki333tj1CSUisai5Cswsg9wcLNaPzsTHDswp4Az8" crossorigin="anonymous"></script><link
+    rel="stylesheet"
+    href="https://npm.webcache.cn/@reimujs/aos@0.1.3/dist/aos.css"
+    integrity="sha384-GMRP93c6Hkz9JVKGAuRR3nTS7M07RwPgTFenXiosjq2VbVgvdDNcz1g6Mkj8AONa" crossorigin="anonymous"/></head>
+  <body><div id='loader'>
+    <div class="loading-left-bg loading-bg"></div>
+    <div class="loading-right-bg loading-bg"></div>
+    <div class="spinner-box">
+      <div class="loading-taichi rotate"><svg width="150" height="150" viewBox="0 0 1024 1024" class="icon" version="1.1" xmlns="https://www.w3.org/2000/svg" shape-rendering="geometricPrecision">
+            <path d="M303.5 432A80 80 0 0 1 291.5 592A80 80 0 0 1 303.5 432z" fill="var(--red-1, #ff5252)" />
+            <path d="M512 65A447 447 0 0 1 512 959L512 929A417 417 0 0 0 512 95A417 417 0 0 0 512 929L512 959A447 447 0 0 1 512 65z 
+          M512 95A417 417 0 0 1 929 512A208.5 208.5 0 0 1 720.5 720.5L720.5 592A80 80 0 0 0 720.5 432A80 80 0 0 0 720.5 592L720.5 720.5A208.5 208.5 0 0 1 512 512A208.5 208.5 0 0 0 303.5 303.5A208.5 208.5 0 0 0 95 512A417 417 0 0 1 512 95z" fill="var(--red-1, #ff5252)" />
+          </svg></div><div class="loading-word">左风右雷，可随心意而动...</div>
+    </div>
+  </div>
+  </div>
+  <script>
+    var time = null;
+    var loaderEl = document.getElementById('loader');
+    var startLoading = () => {
+      time = Date.now();
+      loaderEl.classList.remove("loading");
+    }
+    var hideLoader = () => {
+      document.body.style.overflow = 'auto';
+      loader.classList.add('loading');
+    };
+
+    var endLoading = () => {
+      if (!time) {
+        hideLoader();
+      } else {
+        if (Date.now() - time > 500) {
+          time = null;
+          hideLoader();
+        } else {
+          setTimeout(endLoading, 500 - (Date.now() - time));
+          time = null;
+        }
+      }
+    }
+    window.addEventListener('DOMContentLoaded', endLoading);
+    loaderEl.addEventListener('click', endLoading);
+  </script><div id="copy-tooltip"></div>
+<div id="lang-tooltip">
+本文章没有找到对应的语言版本
+</div>
+<div id="heatmap-tooltip"></div><div id="container">
+      <div id="wrap"><div id="header-nav">
+  <nav id="main-nav" aria-label="Primary navigation"><a class="main-nav-link-wrap" href="/"><span class="main-nav-link">首页</span>
+      </a><a class="main-nav-link-wrap" href="/archives"><span class="main-nav-link">归档</span>
+      </a><a class="main-nav-link-wrap" href="/about"><span class="main-nav-link">关于</span>
+      </a><a class="main-nav-link-wrap" href="/friend"><span class="main-nav-link">友链</span>
+      </a><a id="main-nav-toggle" class="nav-icon" aria-label="Toggle navigation" role="button"></a>
+  </nav>
+  <nav id="sub-nav" aria-label="Secondary navigation"></nav><a href="https://github.com/Zennaro-zhangrong" class="triangle-badge" title="github" target="_blank" rel="noopener nofollow noreferrer">
+      <div class="icon icon-github triangle-badge-icon"></div>
+    </a></div>
+<header id="header" aria-label="Site header"><picture></picture>
+    <img crossorigin="anonymous" fetchpriority="high" src="/images/cover/%e9%9f%a9%e7%ab%8b%e7%bd%91%e5%9b%be%e5%a3%81%e7%ba%b8.jpg" alt="【结构体】探究"><div id="header-outer">
+    <div id="header-title"><span id="logo">
+            <h1 data-aos="slide-up">【结构体】探究</h1>
+          </span><h2 id="subtitle-wrap" data-aos="slide-down"></h2></div>
+  </div>
+</header><div id="content"
+          aria-label="Page content"
+          class="sidebar-left"
+            ><aside id="sidebar" aria-label="Sidebar"><div class="sidebar-wrapper-container sticky"><div class="sidebar-wrapper">
+    <div
+      class="sidebar-wrap"
+      data-aos="fade-up"
+    ><div class="sidebar-toc-sidebar"><h3 class="toc-title">文章目录</h3>
+<div class="sidebar-toc-wrapper toc-div-class">
+  <nav id="TableOfContents">
+  <ul>
+    <li><a href="#struct-toc">阅读导航</a></li>
+    <li><a href="#struct-basics">1. 结构体类型、结构体对象和结构体指针</a>
+      <ul>
+        <li><a href="#11-为什么需要把数据组成一个对象">1.1 为什么需要把数据组成一个对象</a></li>
+        <li><a href="#12-typedef-是别名不是创建对象">1.2 <code>typedef</code> 是别名，不是创建对象</a></li>
+        <li><a href="#13-初始化解决的是成员值不是内存的所有字节">1.3 初始化解决的是成员值，不是内存的所有字节</a></li>
+      </ul>
+    </li>
+    <li><a href="#struct-layout">2. 内存布局：成员为什么不一定紧挨着</a>
+      <ul>
+        <li><a href="#21-先区分标准规则与平台约定">2.1 先区分标准规则与平台约定</a></li>
+        <li><a href="#22-对齐到底约束什么">2.2 对齐到底约束什么</a></li>
+        <li><a href="#23-用递推式复算任意普通结构体">2.3 用递推式复算任意普通结构体</a></li>
+        <li><a href="#24-为什么末尾也要补齐看结构体数组">2.4 为什么末尾也要补齐：看结构体数组</a></li>
+        <li><a href="#25-重排和嵌套怎么计算">2.5 重排和嵌套怎么计算</a></li>
+      </ul>
+    </li>
+    <li><a href="#struct-layout-lab">3. 完整实验：亲眼观察大小、偏移和地址</a></li>
+    <li><a href="#struct-access">4. 成员访问：从表达式一直追到目标对象</a>
+      <ul>
+        <li><a href="#41-点和箭头由左边的类型决定">4.1 点和箭头由左边的类型决定</a></li>
+        <li><a href="#42-四种表达式不要混在一起">4.2 四种表达式不要混在一起</a></li>
+        <li><a href="#43-嵌套访问时逐段看类型">4.3 嵌套访问时逐段看类型</a></li>
+        <li><a href="#44-数组优先级与有效访问">4.4 数组、优先级与有效访问</a></li>
+      </ul>
+    </li>
+    <li><a href="#struct-parameters">5. 传结构体、传指针、传二级指针分别改变什么</a>
+      <ul>
+        <li><a href="#51-c-的实参都是按值传递">5.1 C 的实参都是按值传递</a></li>
+        <li><a href="#52-按任务选择接口">5.2 按任务选择接口</a></li>
+        <li><a href="#53-const-限制到哪一层">5.3 <code>const</code> 限制到哪一层</a></li>
+        <li><a href="#54-值返回没有错指针也不保证更快">5.4 值返回没有错，指针也不保证更快</a></li>
+      </ul>
+    </li>
+    <li><a href="#struct-copy">6. 结构体复制：成员复制了，资源不一定复制</a>
+      <ul>
+        <li><a href="#61-数组成员与指针成员的差别">6.1 数组成员与指针成员的差别</a></li>
+        <li><a href="#62-浅复制不是错误所有权不清楚才危险">6.2 浅复制不是错误，所有权不清楚才危险</a></li>
+        <li><a href="#63-完整示例独立复制动态数组">6.3 完整示例：独立复制动态数组</a></li>
+        <li><a href="#64-为什么-memcmp-不能代替结构体相等">6.4 为什么 <code>memcmp</code> 不能代替结构体相等</a></li>
+      </ul>
+    </li>
+    <li><a href="#struct-lifetime">7. 生命周期：地址存在过，不代表现在还能用</a>
+      <ul>
+        <li><a href="#71-结构体并不天然属于栈">7.1 结构体并不天然属于“栈”</a></li>
+        <li><a href="#72-返回值可以返回局部对象地址不可以">7.2 返回值可以，返回局部对象地址不可以</a></li>
+        <li><a href="#73-释放与重新分配会影响所有别名">7.3 释放与重新分配会影响所有别名</a></li>
+        <li><a href="#74-函数保存你的指针时要问保存多久">7.4 函数保存你的指针时，要问保存多久</a></li>
+      </ul>
+    </li>
+    <li><a href="#struct-function-pointer">8. 函数指针：结构体怎样关联行为</a>
+      <ul>
+        <li><a href="#81-先把声明读懂">8.1 先把声明读懂</a></li>
+        <li><a href="#82-结构体里存的是函数指针不是函数体">8.2 结构体里存的是函数指针，不是函数体</a></li>
+        <li><a href="#83-调用签名必须匹配">8.3 调用签名必须匹配</a></li>
+        <li><a href="#84-为什么回调通常配一个上下文指针">8.4 为什么回调通常配一个上下文指针</a></li>
+      </ul>
+    </li>
+    <li><a href="#struct-device">9. 完整工程案例：状态、操作表和回调协同工作</a>
+      <ul>
+        <li><a href="#91-要解决的实际问题">9.1 要解决的实际问题</a></li>
+        <li><a href="#92-可以单独保存运行的程序">9.2 可以单独保存运行的程序</a></li>
+        <li><a href="#93-把一次调用拆开看">9.3 把一次调用拆开看</a></li>
+        <li><a href="#94-每个实例内放函数指针还是共享操作表">9.4 每个实例内放函数指针，还是共享操作表</a></li>
+      </ul>
+    </li>
+    <li><a href="#struct-applications">10. 结构体在数据组织和模块设计中的应用</a>
+      <ul>
+        <li><a href="#101-配置状态与结果分开组织">10.1 配置、状态与结果分开组织</a></li>
+        <li><a href="#102-链表为什么需要二级指针">10.2 链表为什么需要二级指针</a></li>
+        <li><a href="#103-柔性数组一个分配里放头部和变长数据">10.3 柔性数组：一个分配里放头部和变长数据</a></li>
+        <li><a href="#104-不透明结构体把实现细节藏在模块里">10.4 不透明结构体：把实现细节藏在模块里</a></li>
+        <li><a href="#105-大量数据结构体数组和成员数组">10.5 大量数据：结构体数组和成员数组</a></li>
+      </ul>
+    </li>
+    <li><a href="#struct-boundaries">11. 协议、位域和硬件寄存器的边界</a>
+      <ul>
+        <li><a href="#111-为什么不能直接发送-sizeofstruct-个字节">11.1 为什么不能直接发送 <code>sizeof(struct)</code> 个字节</a></li>
+        <li><a href="#112-packed-与-pragma-pack-改变了什么">11.2 <code>packed</code> 与 <code>#pragma pack</code> 改变了什么</a></li>
+        <li><a href="#113-位域表达小整数不承诺可移植的线缆位序">11.3 位域表达小整数，不承诺可移植的线缆位序</a></li>
+        <li><a href="#114-volatile-struct-不等于线程安全">11.4 <code>volatile struct</code> 不等于线程安全</a></li>
+      </ul>
+    </li>
+    <li><a href="#struct-pitfalls">12. 常见误区与排错顺序</a></li>
+    <li><a href="#struct-exercises">13. 动手练习与参考答案</a>
+      <ul>
+        <li><a href="#131-手算一个含-double-的布局">13.1 手算一个含 <code>double</code> 的布局</a></li>
+        <li><a href="#132-参数只差一个星号效果差多少">13.2 参数只差一个星号，效果差多少</a></li>
+        <li><a href="#133-看起来只读为什么还能修改数据">13.3 看起来“只读”，为什么还能修改数据</a></li>
+        <li><a href="#134-深复制究竟复制到哪里">13.4 深复制究竟复制到哪里</a></li>
+        <li><a href="#135-修改设备实验来检验接口边界">13.5 修改设备实验来检验接口边界</a></li>
+        <li><a href="#136-一个看似省事的协议实现">13.6 一个看似省事的协议实现</a></li>
+      </ul>
+    </li>
+    <li><a href="#struct-references">14. 如何运行实验，如何查证结论</a>
+      <ul>
+        <li><a href="#141-每个完整程序单独保存和编译">14.1 每个完整程序单独保存和编译</a></li>
+        <li><a href="#142-阅读原始资料时区分语言规则与扩展">14.2 阅读原始资料时区分语言规则与扩展</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+</div></div>
+          <div class="sidebar-common-sidebar hidden"><div class="sidebar-author">
+  <img
+    data-src="/avatar/avatar.webp"
+    data-sizes="auto"
+    alt="云想衣裳花想荣"
+    class="lazyload"
+  />
+  <div class="sidebar-author-name">云想衣裳花想荣</div>
+  <div class="sidebar-description">嵌入式开发学习笔记，技术分享</div>
+</div>
+<div class="sidebar-state">
+  <div class="sidebar-state-article">
+    <div>文章</div><div class="sidebar-state-number">6</div>
+  </div>
+  <a class="sidebar-state-category" href="/categories/" aria-label="sidebar-state-category-link">
+    <div>分类</div>
+    <div class="sidebar-state-number">
+      6
+    </div>
+  </a>
+  <a class="sidebar-state-tag" href="/tags/" aria-label="sidebar-state-tag-link">
+    <div>标签</div>
+    <div class="sidebar-state-number">15</div>
+  </a>
+</div>
+<div class="sidebar-social" ></div><div class="sidebar-menu"><div class="sidebar-menu-link-wrap">
+      <a
+        class="sidebar-menu-link-dummy"
+        href="/"
+        aria-label="首页"
+      ></a><div class="sidebar-menu-link">首页</div>
+    </div><div class="sidebar-menu-link-wrap">
+      <a
+        class="sidebar-menu-link-dummy"
+        href="/archives"
+        aria-label="归档"
+      ></a><div class="sidebar-menu-link">归档</div>
+    </div><div class="sidebar-menu-link-wrap">
+      <a
+        class="sidebar-menu-link-dummy"
+        href="/about"
+        aria-label="关于"
+      ></a><div class="sidebar-menu-link">关于</div>
+    </div><div class="sidebar-menu-link-wrap">
+      <a
+        class="sidebar-menu-link-dummy"
+        href="/friend"
+        aria-label="友链"
+      ></a><div class="sidebar-menu-link">友链</div>
+    </div></div></div><div class="sidebar-btn-wrapper" style="position:static">
+            <div class="sidebar-toc-btn current"></div>
+            <div class="sidebar-common-btn"></div>
+          </div></div>
+  </div><div class="sidebar-widget"></div></div></aside>
+<section id="main" aria-label="Main content"><article
+  class="h-entry article"
+  itemscope
+  itemtype="https://schema.org/BlogPosting"
+>
+  <div
+    class="article-inner"
+    data-aos="fade-up"
+  >
+    <div class="article-meta"><div class="article-date">
+  <span
+    class="article-date-link icon-calendar"
+    data-aos="zoom-in"
+  >
+    <time datetime="2026-10-21 00:00:00 &#43;0800 CST" itemprop="datePublished"
+      >2026-10-21</time
+    >
+    <time style="display: none;" id="post-update-time"
+      >2026-10-21</time
+    >
+  </span></div>
+</div><div class="hr-line"></div><div class="e-content article-entry" itemprop="articleBody"><p>刚开始学结构体时，常见写法只有两句：用 <code>struct</code> 把数据放在一起，用 <code>.</code> 或 <code>-&gt;</code> 访问成员。但真正写程序以后，问题会接连出现：三个成员加起来只有 7 字节，为什么结构体占 12 字节？函数已经收到了指针，为什么不能替调用者修改指针？复制一个结构体后，为什么两个对象还是共享一块内存？一个结构体里怎么还能放“函数”？</p>
+<p>这些问题可以沿着同一条线理解：<strong>结构体定义决定对象的组成和布局；对象拥有自己的成员；指针保存对别处的引用；函数通过参数约定决定读写谁、谁负责资源。</strong></p>
+<p>本文假设你已了解变量、数组、函数和指针的基本写法，使用 <strong>C11</strong> 作为语言基线。指定初始化和柔性数组属于 C99 已有特性；<code>_Alignof</code>、<code>_Static_assert</code> 使用 C11 写法。本文讨论 C，不把 C++ 的构造函数、引用、成员函数或继承规则混进来。</p>
+<p>读完后，你应该能独立计算一个给定平台上的普通结构体布局，画出传参和复制前后的对象关系，设计清楚的结构体接口，并读懂设备驱动中的函数指针表。</p>
+<h2 id="struct-toc">
+<a class="header-anchor" href="#struct-toc"></a>
+阅读导航
+</h2><table>
+	<thead>
+			<tr>
+					<th>学习阶段</th>
+					<th>阅读位置</th>
+					<th>学完能做什么</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td>建立概念</td>
+					<td><a href="/post/%E7%BB%93%E6%9E%84%E4%BD%93%E7%BB%86%E8%8A%82%E6%8E%A2%E7%A9%B6/#struct-basics">1. 类型、对象和初始化</a></td>
+					<td>区分类型定义、变量和指针</td>
+			</tr>
+			<tr>
+					<td>理解内存</td>
+					<td><a href="/post/%E7%BB%93%E6%9E%84%E4%BD%93%E7%BB%86%E8%8A%82%E6%8E%A2%E7%A9%B6/#struct-layout">2. 布局与对齐</a>、<a href="/post/%E7%BB%93%E6%9E%84%E4%BD%93%E7%BB%86%E8%8A%82%E6%8E%A2%E7%A9%B6/#struct-layout-lab">3. 观察实验</a></td>
+					<td>算偏移、大小和数组步长</td>
+			</tr>
+			<tr>
+					<td>定位成员</td>
+					<td><a href="/post/%E7%BB%93%E6%9E%84%E4%BD%93%E7%BB%86%E8%8A%82%E6%8E%A2%E7%A9%B6/#struct-access">4. 成员访问</a></td>
+					<td>读懂点、箭头、取地址与解引用</td>
+			</tr>
+			<tr>
+					<td>设计参数</td>
+					<td><a href="/post/%E7%BB%93%E6%9E%84%E4%BD%93%E7%BB%86%E8%8A%82%E6%8E%A2%E7%A9%B6/#struct-parameters">5. 值与指针传递</a></td>
+					<td>选择传值、一级指针和二级指针</td>
+			</tr>
+			<tr>
+					<td>管理资源</td>
+					<td><a href="/post/%E7%BB%93%E6%9E%84%E4%BD%93%E7%BB%86%E8%8A%82%E6%8E%A2%E7%A9%B6/#struct-copy">6. 复制与所有权</a>、<a href="/post/%E7%BB%93%E6%9E%84%E4%BD%93%E7%BB%86%E8%8A%82%E6%8E%A2%E7%A9%B6/#struct-lifetime">7. 生命周期</a></td>
+					<td>避免共享误判、悬空和重复释放</td>
+			</tr>
+			<tr>
+					<td>组织行为</td>
+					<td><a href="/post/%E7%BB%93%E6%9E%84%E4%BD%93%E7%BB%86%E8%8A%82%E6%8E%A2%E7%A9%B6/#struct-function-pointer">8. 函数指针</a>、<a href="/post/%E7%BB%93%E6%9E%84%E4%BD%93%E7%BB%86%E8%8A%82%E6%8E%A2%E7%A9%B6/#struct-device">9. 设备接口案例</a></td>
+					<td>写出回调和可替换操作接口</td>
+			</tr>
+			<tr>
+					<td>延伸应用</td>
+					<td><a href="/post/%E7%BB%93%E6%9E%84%E4%BD%93%E7%BB%86%E8%8A%82%E6%8E%A2%E7%A9%B6/#struct-applications">10. 数据结构与封装</a></td>
+					<td>使用链表、柔性数组和不透明类型</td>
+			</tr>
+			<tr>
+					<td>明确边界</td>
+					<td><a href="/post/%E7%BB%93%E6%9E%84%E4%BD%93%E7%BB%86%E8%8A%82%E6%8E%A2%E7%A9%B6/#struct-boundaries">11. 协议、位域与硬件</a></td>
+					<td>判断哪些布局不能直接依赖</td>
+			</tr>
+			<tr>
+					<td>检验理解</td>
+					<td><a href="/post/%E7%BB%93%E6%9E%84%E4%BD%93%E7%BB%86%E8%8A%82%E6%8E%A2%E7%A9%B6/#struct-pitfalls">12. 排错清单</a>、<a href="/post/%E7%BB%93%E6%9E%84%E4%BD%93%E7%BB%86%E8%8A%82%E6%8E%A2%E7%A9%B6/#struct-exercises">13. 练习与答案</a></td>
+					<td>解释现象，验证自己的判断</td>
+			</tr>
+			<tr>
+					<td>查阅规则</td>
+					<td><a href="/post/%E7%BB%93%E6%9E%84%E4%BD%93%E7%BB%86%E8%8A%82%E6%8E%A2%E7%A9%B6/#struct-references">14. 实验方法与资料</a></td>
+					<td>编译实验并追溯语言依据</td>
+			</tr>
+	</tbody>
+</table>
+<h2 id="struct-basics">
+<a class="header-anchor" href="#struct-basics"></a>
+1. 结构体类型、结构体对象和结构体指针
+</h2><h3 id="11-为什么需要把数据组成一个对象">
+<a class="header-anchor" href="#11-%e4%b8%ba%e4%bb%80%e4%b9%88%e9%9c%80%e8%a6%81%e6%8a%8a%e6%95%b0%e6%8d%ae%e7%bb%84%e6%88%90%e4%b8%80%e4%b8%aa%e5%af%b9%e8%b1%a1"></a>
+1.1 为什么需要把数据组成一个对象
+</h3><p>假设程序要管理两台电机，每台电机都有编号、目标转速和是否启用三个属性。如果分别维护三个数组，就必须始终保证三个数组的同一个下标属于同一台电机。结构体让这种关联直接进入类型定义。</p>
+<p>下面是声明与初始化片段，变量部分放在函数体内即可：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">MotorState</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">int</span> <span class="n">id</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">float</span> <span class="n">target_rpm</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">int</span> <span class="n">enabled</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">MotorState</span> <span class="n">left</span> <span class="o">=</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="p">.</span><span class="n">id</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="p">.</span><span class="n">target_rpm</span> <span class="o">=</span> <span class="mf">1200.0f</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="p">.</span><span class="n">enabled</span> <span class="o">=</span> <span class="mi">1</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">MotorState</span> <span class="n">right</span> <span class="o">=</span> <span class="p">{</span><span class="mi">0</span><span class="p">};</span>
+</span></span><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">MotorState</span> <span class="o">*</span><span class="n">p</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">left</span><span class="p">;</span>
+</span></span></code></pre></div><p><code>struct MotorState</code> 是类型，<code>left</code> 和 <code>right</code> 是两个独立对象，<code>p</code> 是一个指针对象。只写类型定义不会创建电机对象；定义变量才建立该类型的对象。</p>
+<p><code>p</code> 自己有存储空间，里面保存一个指针值。<code>p</code> 指向 <code>left</code>，不代表 <code>p</code> 内部又包含一份 <code>left</code>。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">p 这个指针对象                left 这个结构体对象
+</span></span><span class="line"><span class="cl">┌────────────────┐          ┌─────────────────────┐
+</span></span><span class="line"><span class="cl">│ 指向 left 的值  │ ───────&gt; │ id / target / enabled│
+</span></span><span class="line"><span class="cl">└────────────────┘          └─────────────────────┘
+</span></span></code></pre></div><p>声明类型与创建对象的区别、结构体不能直接包含自身但可以包含自身指针，见 <a href="https://learn.microsoft.com/en-us/cpp/c-language/structure-declarations?view=msvc-170">Microsoft 的结构体声明说明</a>。</p>
+<h3 id="12-typedef-是别名不是创建对象">
+<a class="header-anchor" href="#12-typedef-%e6%98%af%e5%88%ab%e5%90%8d%e4%b8%8d%e6%98%af%e5%88%9b%e5%bb%ba%e5%af%b9%e8%b1%a1"></a>
+1.2 <code>typedef</code> 是别名，不是创建对象
+</h3><p>下面是等价的类型命名方式：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">typedef</span> <span class="k">struct</span> <span class="n">MotorState</span> <span class="n">MotorState</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="cm">/* 有了别名，后面可以不写 struct。 */</span>
+</span></span><span class="line"><span class="cl"><span class="n">MotorState</span> <span class="n">state</span> <span class="o">=</span> <span class="p">{</span><span class="mi">0</span><span class="p">};</span>
+</span></span><span class="line"><span class="cl"><span class="n">MotorState</span> <span class="o">*</span><span class="n">ptr</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">state</span><span class="p">;</span>
+</span></span></code></pre></div><p>也可以把定义与别名合在一起：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">typedef</span> <span class="k">struct</span> <span class="n">Node</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">int</span> <span class="n">value</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">struct</span> <span class="n">Node</span> <span class="o">*</span><span class="n">next</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span> <span class="n">Node</span><span class="p">;</span>
+</span></span></code></pre></div><p>在成员列表内部，末尾的别名 <code>Node</code> 还没有声明完成，因此这里使用 <code>struct Node *next</code>。<code>next</code> 只保存指针，不会让结构体无限嵌套。</p>
+<p>下面的定义则不合法：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="cm">/* 错误示例，不要放进正常实验程序。 */</span>
+</span></span><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">BadNode</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">int</span> <span class="n">value</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">struct</span> <span class="n">BadNode</span> <span class="n">next</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span></code></pre></div><p>编译器必须知道每个直接成员的大小，才能确定外层大小；此处 <code>struct BadNode</code> 尚未完整，而且如果直接嵌入自身，就永远没有“最后一层”。</p>
+<h3 id="13-初始化解决的是成员值不是内存的所有字节">
+<a class="header-anchor" href="#13-%e5%88%9d%e5%a7%8b%e5%8c%96%e8%a7%a3%e5%86%b3%e7%9a%84%e6%98%af%e6%88%90%e5%91%98%e5%80%bc%e4%b8%8d%e6%98%af%e5%86%85%e5%ad%98%e7%9a%84%e6%89%80%e6%9c%89%e5%ad%97%e8%8a%82"></a>
+1.3 初始化解决的是成员值，不是内存的所有字节
+</h3><p><code>MotorState state = {0};</code> 会把成员按语言规则初始化：整数成员为 0，浮点成员为浮点零，指针成员如果存在则为空指针。指定初始化只写出部分成员时，其余成员也按相应的零初始化规则处理。</p>
+<p>函数内单独写 <code>MotorState state;</code> 不会自动为这些普通成员赋初值。随后就读取尚未初始化的成员，不能得到可靠结果。静态存储期对象则有默认零初始化规则。</p>
+<p>不要由此推出 <code>memset(&amp;state, 0, sizeof state)</code> 在所有 C 平台上都与 <code>{0}</code> 等价：前者写入全零的字节表示，后者按成员类型初始化值。严格可移植代码不能假定所有指针或浮点类型的零值都用全零位表示，也不能把填充字节当成由成员初始化所确定的业务数据。</p>
+<p>结构体对象的初始化和后续赋值也要分清：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="cm">/* 函数体内片段；需要前面的 MotorState 类型。 */</span>
+</span></span><span class="line"><span class="cl"><span class="n">MotorState</span> <span class="n">a</span> <span class="o">=</span> <span class="p">{.</span><span class="n">id</span> <span class="o">=</span> <span class="mi">1</span><span class="p">};</span>
+</span></span><span class="line"><span class="cl"><span class="n">MotorState</span> <span class="n">b</span> <span class="o">=</span> <span class="n">a</span><span class="p">;</span>                 <span class="cm">/* 用 a 初始化 b */</span>
+</span></span><span class="line"><span class="cl"><span class="n">b</span> <span class="o">=</span> <span class="n">a</span><span class="p">;</span>                           <span class="cm">/* 给已经存在的 b 赋值 */</span>
+</span></span><span class="line"><span class="cl"><span class="n">b</span> <span class="o">=</span> <span class="p">(</span><span class="n">MotorState</span><span class="p">){.</span><span class="n">id</span> <span class="o">=</span> <span class="mi">2</span><span class="p">};</span>        <span class="cm">/* C99 复合字面量，再整体赋值 */</span>
+</span></span><span class="line"><span class="cl"><span class="cm">/* b = {.id = 2}; */</span>              <span class="cm">/* C11 中这不是合法赋值语法 */</span>
+</span></span></code></pre></div><p><a href="/post/%E7%BB%93%E6%9E%84%E4%BD%93%E7%BB%86%E8%8A%82%E6%8E%A2%E7%A9%B6/#struct-toc">返回目录</a></p>
+<h2 id="struct-layout">
+<a class="header-anchor" href="#struct-layout"></a>
+2. 内存布局：成员为什么不一定紧挨着
+</h2><h3 id="21-先区分标准规则与平台约定">
+<a class="header-anchor" href="#21-%e5%85%88%e5%8c%ba%e5%88%86%e6%a0%87%e5%87%86%e8%a7%84%e5%88%99%e4%b8%8e%e5%b9%b3%e5%8f%b0%e7%ba%a6%e5%ae%9a"></a>
+2.1 先区分标准规则与平台约定
+</h3><p>普通结构体的成员按声明顺序排列，中间可以有填充，末尾也可以有填充，开头没有填充。这里讨论可取地址的普通成员，位域另见后文。结构体本身是一块连续的对象存储区域，但“区域连续”不等于“所有字节都属于成员”。</p>
+<p><strong>某个成员占几个字节、需要几字节对齐、整个结构体最终多大，要结合目标平台、ABI 和编译选项。</strong> ABI 可以理解为编译器与平台之间关于数据布局和调用方式的约定。不能看到“64 位系统”，就断定所有整数和所有指针都是 8 字节。</p>
+<p>本文下面的手算采用常见的教学假设：</p>
+<table>
+	<thead>
+			<tr>
+					<th>类型</th>
+					<th><code>sizeof</code></th>
+					<th>对齐要求</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td><code>char</code></td>
+					<td>1</td>
+					<td>1</td>
+			</tr>
+			<tr>
+					<td><code>short</code></td>
+					<td>2</td>
+					<td>2</td>
+			</tr>
+			<tr>
+					<td><code>int</code></td>
+					<td>4</td>
+					<td>4</td>
+			</tr>
+			<tr>
+					<td><code>double</code></td>
+					<td>8</td>
+					<td>8</td>
+			</tr>
+	</tbody>
+</table>
+<p>这里的“字节”指 C 的字节，<code>sizeof(char)</code> 始终等于 1；一字节的位数由 <code>CHAR_BIT</code> 给出。图中的平台进一步假定一字节为 8 位。</p>
+<h3 id="22-对齐到底约束什么">
+<a class="header-anchor" href="#22-%e5%af%b9%e9%bd%90%e5%88%b0%e5%ba%95%e7%ba%a6%e6%9d%9f%e4%bb%80%e4%b9%88"></a>
+2.2 对齐到底约束什么
+</h3><p>某类型要求 4 字节对齐，直观上就是它的对象起始位置需要落在相应的 4 字节边界上。对齐有助于满足处理器和 ABI 的访问要求；不应把它简化成“CPU 每次一定读取 4 字节”。不同处理器对未对齐访问的行为和代价不同。</p>
+<p>观察这个类型定义片段：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">Sample</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">char</span> <span class="n">tag</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">int</span> <span class="n">count</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">short</span> <span class="n">code</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span></code></pre></div><p>按上述假设，把起始偏移设为 0：</p>
+<ol>
+<li><code>tag</code> 需要 1 字节对齐，放在偏移 0，占 1 字节，下一个空闲偏移是 1。</li>
+<li><code>count</code> 需要 4 字节对齐，偏移 1 不满足，因此跳到 4；偏移 1～3 是内部填充。</li>
+<li><code>count</code> 占偏移 4～7，下一个空闲偏移是 8。</li>
+<li><code>code</code> 需要 2 字节对齐，偏移 8 正好满足，占偏移 8～9。</li>
+<li>常见自然布局下，整个类型按最严格成员对齐，即 4。当前用了 10 字节，向上补到 12，偏移 10～11 是尾部填充。</li>
+</ol>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">字节偏移   0    1    2    3    4    5    6    7    8    9   10   11
+</span></span><span class="line"><span class="cl">         ┌────┬──────────────┬───────────────────┬─────────┬─────────┐
+</span></span><span class="line"><span class="cl">用途     │tag │ 内部填充 3 B │     count 4 B     │code 2 B │尾填充2 B│
+</span></span><span class="line"><span class="cl">         └────┴──────────────┴───────────────────┴─────────┴─────────┘
+</span></span><span class="line"><span class="cl">成员大小之和 = 1 + 4 + 2 = 7 B
+</span></span><span class="line"><span class="cl">对象总大小   = 7 + 3 + 2 = 12 B
+</span></span></code></pre></div><p>这是<strong>给定布局假设的推导</strong>，不是所有 C 实现都必须输出 12。普通自然布局的这套规则与实例可参照 <a href="https://www.gnu.org/software/c-intro-and-ref/manual/html_node/Structure-Layout.html">GNU 手册的结构体布局章节</a>。</p>
+<h3 id="23-用递推式复算任意普通结构体">
+<a class="header-anchor" href="#23-%e7%94%a8%e9%80%92%e6%8e%a8%e5%bc%8f%e5%a4%8d%e7%ae%97%e4%bb%bb%e6%84%8f%e6%99%ae%e9%80%9a%e7%bb%93%e6%9e%84%e4%bd%93"></a>
+2.3 用递推式复算任意普通结构体
+</h3><p>定义“向上取到对齐倍数”的函数：</p>
+$$
+\operatorname{up}(x,a)=\left\lceil\frac{x}{a}\right\rceil a.
+$$<p>其中，$x$ 是当前字节偏移，$a$ 是对齐要求。设第 $i$ 个成员的大小为 $s_i$、对齐为 $a_i$、起始偏移为 $o_i$，成员结束后的第一个空闲偏移为 $e_i$。从 $e_0=0$ 开始：</p>
+$$
+\begin{aligned}
+o_i &= \operatorname{up}(e_{i-1},a_i),\\
+e_i &= o_i+s_i.
+\end{aligned}
+$$<p>在本文采用的普通自然布局模型下，令 $A=\max_i a_i$，则最终大小为：</p>
+$$
+S=\operatorname{up}(e_n,A).
+$$<p>对于 <code>Sample</code>，偏移依次为 0、4、8，结束位置依次为 1、8、10，最终大小是 <code>up(10, 4) = 12</code>。不要先把所有成员大小相加，再只补一次尾部；那样会漏掉成员之间的填充。</p>
+<p><strong>适用边界：</strong> 位域、柔性数组、显式增强对齐、打包指令等不能直接套用这份简化模型。最终用 <code>sizeof</code>、<code>_Alignof</code> 和 <code>offsetof</code> 核对。这里 <code>_Alignof</code> 使用标准 C11 的类型名形式，例如 <code>_Alignof(struct Sample)</code>。</p>
+<h3 id="24-为什么末尾也要补齐看结构体数组">
+<a class="header-anchor" href="#24-%e4%b8%ba%e4%bb%80%e4%b9%88%e6%9c%ab%e5%b0%be%e4%b9%9f%e8%a6%81%e8%a1%a5%e9%bd%90%e7%9c%8b%e7%bb%93%e6%9e%84%e4%bd%93%e6%95%b0%e7%bb%84"></a>
+2.4 为什么末尾也要补齐：看结构体数组
+</h3><p>对于 <code>struct Sample samples[2];</code>，数组元素连续排列，第二个元素的起始地址相对第一个增加 <code>sizeof(struct Sample)</code> 个字节。</p>
+<p>如果第一个元素只占 10 字节，第二个元素从偏移 10 开始，其 <code>count</code> 位于相对数组起点的偏移 14，就破坏了需要的 4 字节对齐。把元素大小补到 12 后，第二个元素的 <code>count</code> 位于偏移 16，对齐恢复。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">samples[0]：起点  0，count 位于  4，大小 12
+</span></span><span class="line"><span class="cl">samples[1]：起点 12，count 位于 16，大小 12
+</span></span><span class="line"><span class="cl">samples[2]：起点 24，count 位于 28，大小 12
+</span></span></code></pre></div><p>上图第三行用于说明三元素数组的规律；真正定义两个元素时，不能访问 <code>samples[2]</code>。</p>
+<p>因此，<code>samples + 1</code> 跨过的是一个完整元素，<strong>包括填充</strong>。数组步长不是成员大小之和。</p>
+<h3 id="25-重排和嵌套怎么计算">
+<a class="header-anchor" href="#25-%e9%87%8d%e6%8e%92%e5%92%8c%e5%b5%8c%e5%a5%97%e6%80%8e%e4%b9%88%e8%ae%a1%e7%ae%97"></a>
+2.5 重排和嵌套怎么计算
+</h3><p>把成员重排为下面这样：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">CompactSample</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">int</span> <span class="n">count</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">short</span> <span class="n">code</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">char</span> <span class="n">tag</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">Frame</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">char</span> <span class="n">type</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">struct</span> <span class="n">Sample</span> <span class="n">payload</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">char</span> <span class="n">end</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span></code></pre></div><p>在同一假设下，<code>CompactSample</code> 的成员偏移为 0、4、6，结尾在 7，补齐到 8。相比 12 字节的版本，每个对象少 4 字节，一百万个对象理论上少占 4,000,000 字节，约 3.81 MiB。</p>
+<p>嵌套结构体按一个完整成员处理：<code>Frame.type</code> 在 0；<code>payload</code> 需要 4 字节对齐，所以从 4 开始，连同自己的填充占 12 字节；<code>end</code> 在 16；最后补齐到 20。<code>payload.count</code> 相对外层起点的偏移是 <code>4 + 4 = 8</code>。</p>
+<p>优先按较严格的对齐需求组织成员通常有助于减少填充，但重排会改变 ABI。已经被其他模块、库或硬件接口依赖的公开结构体，不能只为节省几个字节就随意重排。</p>
+<p><a href="/post/%E7%BB%93%E6%9E%84%E4%BD%93%E7%BB%86%E8%8A%82%E6%8E%A2%E7%A9%B6/#struct-toc">返回目录</a></p>
+<h2 id="struct-layout-lab">
+<a class="header-anchor" href="#struct-layout-lab"></a>
+3. 完整实验：亲眼观察大小、偏移和地址
+</h2><p>下面是独立完整程序，保存为 <code>layout.c</code>。它没有假定 <code>int</code> 一定是 4 字节，而是输出当前编译环境的实际结果。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;stddef.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">Sample</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">char</span> <span class="n">tag</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">int</span> <span class="n">count</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">short</span> <span class="n">code</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">CompactSample</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">int</span> <span class="n">count</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">short</span> <span class="n">code</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">char</span> <span class="n">tag</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">Frame</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">char</span> <span class="n">type</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">struct</span> <span class="n">Sample</span> <span class="n">payload</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">char</span> <span class="n">end</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">struct</span> <span class="n">Sample</span> <span class="n">a</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="p">{{</span><span class="mi">0</span><span class="p">},</span> <span class="p">{</span><span class="mi">0</span><span class="p">}};</span>
+</span></span><span class="line"><span class="cl">    <span class="k">struct</span> <span class="n">Sample</span> <span class="o">*</span><span class="n">p</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="nf">printf</span><span class="p">(</span><span class="s">&#34;int: size=%zu align=%zu</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="kt">int</span><span class="p">),</span> <span class="nf">_Alignof</span><span class="p">(</span><span class="kt">int</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">printf</span><span class="p">(</span><span class="s">&#34;Sample: size=%zu align=%zu</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">           <span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">Sample</span><span class="p">),</span> <span class="nf">_Alignof</span><span class="p">(</span><span class="k">struct</span> <span class="n">Sample</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">printf</span><span class="p">(</span><span class="s">&#34;offsets: tag=%zu count=%zu code=%zu</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">           <span class="nf">offsetof</span><span class="p">(</span><span class="k">struct</span> <span class="n">Sample</span><span class="p">,</span> <span class="n">tag</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">           <span class="nf">offsetof</span><span class="p">(</span><span class="k">struct</span> <span class="n">Sample</span><span class="p">,</span> <span class="n">count</span><span class="p">),</span>
+</span></span><span class="line"><span class="cl">           <span class="nf">offsetof</span><span class="p">(</span><span class="k">struct</span> <span class="n">Sample</span><span class="p">,</span> <span class="n">code</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">printf</span><span class="p">(</span><span class="s">&#34;Compact=%zu Frame=%zu</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">           <span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">CompactSample</span><span class="p">),</span> <span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">Frame</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">printf</span><span class="p">(</span><span class="s">&#34;whole=%zu element=%zu pointer=%zu</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">           <span class="k">sizeof</span> <span class="n">a</span><span class="p">,</span> <span class="k">sizeof</span> <span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="k">sizeof</span> <span class="n">p</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">printf</span><span class="p">(</span><span class="s">&#34;a[0]=%p a[1]=%p</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">a</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">printf</span><span class="p">(</span><span class="s">&#34;count address=%p</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="n">count</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="kt">unsigned</span> <span class="kt">char</span> <span class="o">*</span><span class="n">bytes</span> <span class="o">=</span> <span class="p">(</span><span class="kt">unsigned</span> <span class="kt">char</span> <span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">a</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">printf</span><span class="p">(</span><span class="s">&#34;array bytes: start=%p next=%p</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">           <span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="p">)</span><span class="n">bytes</span><span class="p">,</span> <span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="p">)(</span><span class="n">bytes</span> <span class="o">+</span> <span class="k">sizeof</span> <span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]));</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>在符合前面布局假设的环境中，前四行应为：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">int: size=4 align=4
+</span></span><span class="line"><span class="cl">Sample: size=12 align=4
+</span></span><span class="line"><span class="cl">offsets: tag=0 count=4 code=8
+</span></span><span class="line"><span class="cl">Compact=8 Frame=20
+</span></span></code></pre></div><p>地址每次运行可能不同，指针大小也要看目标环境。用 <code>%zu</code> 打印 <code>sizeof</code>、<code>_Alignof</code> 和 <code>offsetof</code> 的结果；用 <code>%p</code> 打印对象指针时显式转为 <code>void *</code>。</p>
+<p><code>offsetof</code> 来自 <code>&lt;stddef.h&gt;</code>。不要用“把空指针强转后取成员地址”的手写宏替代它，也不要对位域使用它。把<strong>整个数组</strong>的地址转成 <code>unsigned char *</code>，可以在整个数组的对象表示范围内按字节定位；这比对无关对象的地址随意相减更有明确边界。</p>
+<p>如果结果和手算不同，先查看实际成员类型的大小、对齐和编译选项，再更新假设。<strong>实验结果说明当前实现怎样布局，不能单独证明所有平台都一样。</strong></p>
+<p><a href="/post/%E7%BB%93%E6%9E%84%E4%BD%93%E7%BB%86%E8%8A%82%E6%8E%A2%E7%A9%B6/#struct-toc">返回目录</a></p>
+<h2 id="struct-access">
+<a class="header-anchor" href="#struct-access"></a>
+4. 成员访问：从表达式一直追到目标对象
+</h2><h3 id="41-点和箭头由左边的类型决定">
+<a class="header-anchor" href="#41-%e7%82%b9%e5%92%8c%e7%ae%ad%e5%a4%b4%e7%94%b1%e5%b7%a6%e8%be%b9%e7%9a%84%e7%b1%bb%e5%9e%8b%e5%86%b3%e5%ae%9a"></a>
+4.1 点和箭头由左边的类型决定
+</h3><p>使用第 1 节的 <code>MotorState</code>，下面是函数体内片段：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="n">MotorState</span> <span class="n">motor</span> <span class="o">=</span> <span class="p">{.</span><span class="n">id</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="p">.</span><span class="n">target_rpm</span> <span class="o">=</span> <span class="mf">500.0f</span><span class="p">};</span>
+</span></span><span class="line"><span class="cl"><span class="n">MotorState</span> <span class="o">*</span><span class="n">p</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">motor</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">motor</span><span class="p">.</span><span class="n">target_rpm</span> <span class="o">=</span> <span class="mf">600.0f</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">p</span><span class="o">-&gt;</span><span class="n">target_rpm</span> <span class="o">=</span> <span class="mf">700.0f</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">(</span><span class="o">*</span><span class="n">p</span><span class="p">).</span><span class="n">target_rpm</span> <span class="o">=</span> <span class="mf">800.0f</span><span class="p">;</span>
+</span></span></code></pre></div><p>三行都修改同一个成员。<code>p-&gt;target_rpm</code> 等价于 <code>(*p).target_rpm</code>：先通过指针定位对象，再选择对象里的成员。括号不可省；<code>*p.target_rpm</code> 会先尝试 <code>p.target_rpm</code>，但 <code>p</code> 是指针，不能这样使用点运算符。运算规则见 <a href="https://learn.microsoft.com/en-us/cpp/c-language/structure-and-union-members?view=msvc-170">Microsoft 的成员选择说明</a>。</p>
+<p>对于普通非位域成员，可以用“对象基址加成员偏移”理解定位。编译器已经从类型中知道偏移，所以正常代码直接写成员名，不必自己计算地址。优化后也不保证每次访问都真的从 RAM 读取，值可能留在寄存器中。</p>
+<h3 id="42-四种表达式不要混在一起">
+<a class="header-anchor" href="#42-%e5%9b%9b%e7%a7%8d%e8%a1%a8%e8%be%be%e5%bc%8f%e4%b8%8d%e8%a6%81%e6%b7%b7%e5%9c%a8%e4%b8%80%e8%b5%b7"></a>
+4.2 四种表达式不要混在一起
+</h3><table>
+	<thead>
+			<tr>
+					<th>表达式</th>
+					<th>类型或含义</th>
+					<th>主要用途</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td><code>p</code></td>
+					<td><code>MotorState *</code></td>
+					<td>保存目标对象的位置</td>
+			</tr>
+			<tr>
+					<td><code>*p</code></td>
+					<td><code>MotorState</code> 对象的左值</td>
+					<td>访问或整体赋值该对象</td>
+			</tr>
+			<tr>
+					<td><code>&amp;p</code></td>
+					<td><code>MotorState **</code></td>
+					<td>让别人修改这个指针变量</td>
+			</tr>
+			<tr>
+					<td><code>&amp;p-&gt;target_rpm</code></td>
+					<td><code>float *</code></td>
+					<td>单独传递一个成员的地址</td>
+			</tr>
+	</tbody>
+</table>
+<p><code>&amp;p</code> 指向指针变量自己的存储位置，<code>p</code> 指向电机对象的位置。两者通常都能打印成地址，但指向的东西、可执行的操作和类型完全不同。</p>
+<h3 id="43-嵌套访问时逐段看类型">
+<a class="header-anchor" href="#43-%e5%b5%8c%e5%a5%97%e8%ae%bf%e9%97%ae%e6%97%b6%e9%80%90%e6%ae%b5%e7%9c%8b%e7%b1%bb%e5%9e%8b"></a>
+4.3 嵌套访问时逐段看类型
+</h3><p>下面是类型定义与函数体内操作片段：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">Position</span> <span class="p">{</span> <span class="kt">float</span> <span class="n">x</span><span class="p">;</span> <span class="kt">float</span> <span class="n">y</span><span class="p">;</span> <span class="p">};</span>
+</span></span><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">Robot</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">struct</span> <span class="n">Position</span> <span class="n">position</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">struct</span> <span class="n">MotorState</span> <span class="o">*</span><span class="n">drive</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="cm">/* 以下放在函数体内，motor 使用前面的对象。 */</span>
+</span></span><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">Robot</span> <span class="n">robot</span> <span class="o">=</span> <span class="p">{.</span><span class="n">position</span> <span class="o">=</span> <span class="p">{</span><span class="mf">1.0f</span><span class="p">,</span> <span class="mf">2.0f</span><span class="p">},</span> <span class="p">.</span><span class="n">drive</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">motor</span><span class="p">};</span>
+</span></span><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">Robot</span> <span class="o">*</span><span class="n">r</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">robot</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">r</span><span class="o">-&gt;</span><span class="n">position</span><span class="p">.</span><span class="n">x</span> <span class="o">=</span> <span class="mf">3.0f</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">r</span><span class="o">-&gt;</span><span class="n">drive</span><span class="o">-&gt;</span><span class="n">target_rpm</span> <span class="o">=</span> <span class="mf">900.0f</span><span class="p">;</span>
+</span></span></code></pre></div><p><code>r</code> 是指针，所以先用箭头；<code>position</code> 是直接嵌入的结构体对象，所以接点；<code>drive</code> 是指针成员，所以继续用箭头。</p>
+<p><code>r-&gt;position</code> 的存储在 <code>robot</code> 里面；<code>r-&gt;drive</code> 这个指针值的存储也在 <code>robot</code> 里面，但它指向的 <code>motor</code> 是另一个对象。</p>
+<h3 id="44-数组优先级与有效访问">
+<a class="header-anchor" href="#44-%e6%95%b0%e7%bb%84%e4%bc%98%e5%85%88%e7%ba%a7%e4%b8%8e%e6%9c%89%e6%95%88%e8%ae%bf%e9%97%ae"></a>
+4.4 数组、优先级与有效访问
+</h3><p>如果 <code>MotorState motors[3]</code>、<code>MotorState *p = motors</code>，那么 <code>motors[i].id</code> 与 <code>(p + i)-&gt;id</code> 在合法下标内指向同一成员。<code>p + 1</code> 前进一个结构体；<code>++p-&gt;id</code> 增加成员值；<code>(p++)-&gt;id</code> 先选原来对象的成员，再让指针前进。学习阶段把“前进指针”和“修改成员”分成两句，通常更容易排查错误。</p>
+<p>能算出一个地址，并不意味着能合法访问它。<code>p-&gt;id</code> 要求指针正确指向一个仍然存活、类型和对齐均合适的对象。空指针、越界指针、已释放对象的指针，以及随意从字节缓冲区强转得到的指针，都可能不满足条件。</p>
+<p><strong><code>sizeof *p</code> 是一个容易混淆的例外：</strong> 对这里的普通完整结构体类型，<code>sizeof</code> 不求值其操作数，所以即使 <code>p</code> 是空指针，<code>sizeof *p</code> 仍能得到类型大小。这不意味着 <code>p-&gt;id</code> 也能访问。</p>
+<p><a href="/post/%E7%BB%93%E6%9E%84%E4%BD%93%E7%BB%86%E8%8A%82%E6%8E%A2%E7%A9%B6/#struct-toc">返回目录</a></p>
+<h2 id="struct-parameters">
+<a class="header-anchor" href="#struct-parameters"></a>
+5. 传结构体、传指针、传二级指针分别改变什么
+</h2><h3 id="51-c-的实参都是按值传递">
+<a class="header-anchor" href="#51-c-%e7%9a%84%e5%ae%9e%e5%8f%82%e9%83%bd%e6%98%af%e6%8c%89%e5%80%bc%e4%bc%a0%e9%80%92"></a>
+5.1 C 的实参都是按值传递
+</h3><p>传结构体时，形参得到结构体值；传指针时，形参得到指针值。后者复制的值可以指向原对象，因此能经由这个值修改原对象，但并没有把调用者的指针变量本身交给函数。</p>
+<p>下面是完整程序，保存为 <code>passing.c</code>：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">typedef</span> <span class="k">struct</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">int</span> <span class="n">value</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span> <span class="n">Box</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">static</span> <span class="kt">void</span> <span class="nf">set_copy</span><span class="p">(</span><span class="n">Box</span> <span class="n">box</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">box</span><span class="p">.</span><span class="n">value</span> <span class="o">=</span> <span class="mi">10</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">printf</span><span class="p">(</span><span class="s">&#34;inside copy=%d</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">box</span><span class="p">.</span><span class="n">value</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">static</span> <span class="kt">void</span> <span class="nf">set_object</span><span class="p">(</span><span class="n">Box</span> <span class="o">*</span><span class="n">box</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">box</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">box</span><span class="o">-&gt;</span><span class="n">value</span> <span class="o">=</span> <span class="mi">20</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">static</span> <span class="kt">void</span> <span class="nf">redirect_local</span><span class="p">(</span><span class="n">Box</span> <span class="o">*</span><span class="n">box</span><span class="p">,</span> <span class="n">Box</span> <span class="o">*</span><span class="n">other</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">box</span> <span class="o">=</span> <span class="n">other</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">box</span><span class="o">-&gt;</span><span class="n">value</span> <span class="o">=</span> <span class="mi">30</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">static</span> <span class="kt">void</span> <span class="nf">redirect_caller</span><span class="p">(</span><span class="n">Box</span> <span class="o">**</span><span class="n">box</span><span class="p">,</span> <span class="n">Box</span> <span class="o">*</span><span class="n">other</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">box</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="o">*</span><span class="n">box</span> <span class="o">=</span> <span class="n">other</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">Box</span> <span class="n">a</span> <span class="o">=</span> <span class="p">{.</span><span class="n">value</span> <span class="o">=</span> <span class="mi">1</span><span class="p">};</span>
+</span></span><span class="line"><span class="cl">    <span class="n">Box</span> <span class="n">b</span> <span class="o">=</span> <span class="p">{.</span><span class="n">value</span> <span class="o">=</span> <span class="mi">2</span><span class="p">};</span>
+</span></span><span class="line"><span class="cl">    <span class="n">Box</span> <span class="o">*</span><span class="n">p</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">a</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="nf">set_copy</span><span class="p">(</span><span class="n">a</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">printf</span><span class="p">(</span><span class="s">&#34;after copy: a=%d</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">a</span><span class="p">.</span><span class="n">value</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">set_object</span><span class="p">(</span><span class="n">p</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">printf</span><span class="p">(</span><span class="s">&#34;after pointer: a=%d</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">a</span><span class="p">.</span><span class="n">value</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">redirect_local</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">b</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">printf</span><span class="p">(</span><span class="s">&#34;local redirect: p_is_a=%d a=%d b=%d</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">           <span class="n">p</span> <span class="o">==</span> <span class="o">&amp;</span><span class="n">a</span><span class="p">,</span> <span class="n">a</span><span class="p">.</span><span class="n">value</span><span class="p">,</span> <span class="n">b</span><span class="p">.</span><span class="n">value</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">redirect_caller</span><span class="p">(</span><span class="o">&amp;</span><span class="n">p</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">b</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">printf</span><span class="p">(</span><span class="s">&#34;caller redirect: p_is_b=%d value=%d</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">p</span> <span class="o">==</span> <span class="o">&amp;</span><span class="n">b</span><span class="p">,</span> <span class="n">p</span><span class="o">-&gt;</span><span class="n">value</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>推导输出：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">inside copy=10
+</span></span><span class="line"><span class="cl">after copy: a=1
+</span></span><span class="line"><span class="cl">after pointer: a=20
+</span></span><span class="line"><span class="cl">local redirect: p_is_a=1 a=20 b=30
+</span></span><span class="line"><span class="cl">caller redirect: p_is_b=1 value=30
+</span></span></code></pre></div><p>第三个函数很值得仔细看：<code>box = other</code> 只改局部指针，却仍可用这个新指针去修改 <code>b</code>。所以“局部指针改变不影响调用者的指针”与“函数可以修改另一个对象”并不矛盾。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">redirect_local(p, &amp;b)：
+</span></span><span class="line"><span class="cl">调用者 p ──&gt; a       局部 box 最初 ──&gt; a
+</span></span><span class="line"><span class="cl">                     局部 box 改后 ──&gt; b
+</span></span><span class="line"><span class="cl">调用者 p 仍指向 a
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">redirect_caller(&amp;p, &amp;b)：
+</span></span><span class="line"><span class="cl">形参 box ──&gt; 调用者的 p ──&gt; a
+</span></span><span class="line"><span class="cl">执行 *box = other
+</span></span><span class="line"><span class="cl">             调用者的 p ──&gt; b
+</span></span></code></pre></div><h3 id="52-按任务选择接口">
+<a class="header-anchor" href="#52-%e6%8c%89%e4%bb%bb%e5%8a%a1%e9%80%89%e6%8b%a9%e6%8e%a5%e5%8f%a3"></a>
+5.2 按任务选择接口
+</h3><table>
+	<thead>
+			<tr>
+					<th>任务</th>
+					<th>常见形参或返回方式</th>
+					<th>语义</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td>输入小型值对象</td>
+					<td><code>Point point</code></td>
+					<td>使用一个值副本</td>
+			</tr>
+			<tr>
+					<td>只读已有对象</td>
+					<td><code>const Config *config</code></td>
+					<td>通过此接口只读结构体成员</td>
+			</tr>
+			<tr>
+					<td>修改已有对象</td>
+					<td><code>State *state</code></td>
+					<td>写入调用者提供的对象</td>
+			</tr>
+			<tr>
+					<td>改变调用者的指针</td>
+					<td><code>Node **head</code></td>
+					<td>修改 <code>head</code> 指针变量本身</td>
+			</tr>
+			<tr>
+					<td>返回多个相关结果</td>
+					<td>返回 <code>struct Result</code></td>
+					<td>一次返回组合值</td>
+			</tr>
+			<tr>
+					<td>返回新分配对象</td>
+					<td>返回 <code>T *</code> 或通过 <code>T **out</code></td>
+					<td>需要说明失败与释放约定</td>
+			</tr>
+	</tbody>
+</table>
+<p>是否使用二级指针的判断方法很简单：<strong>函数要修改的对象是什么？如果那个对象本身是一个 <code>T *</code> 指针变量，就需要它的地址 <code>T **</code>。</strong> 返回新指针让调用者赋值也是一种选择，不必为了“高级”而使用二级指针。</p>
+<h3 id="53-const-限制到哪一层">
+<a class="header-anchor" href="#53-const-%e9%99%90%e5%88%b6%e5%88%b0%e5%93%aa%e4%b8%80%e5%b1%82"></a>
+5.3 <code>const</code> 限制到哪一层
+</h3><p>下面是使用前面 <code>Box</code> 的函数体内声明片段：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="n">Box</span> <span class="n">a</span> <span class="o">=</span> <span class="p">{.</span><span class="n">value</span> <span class="o">=</span> <span class="mi">1</span><span class="p">};</span>
+</span></span><span class="line"><span class="cl"><span class="n">Box</span> <span class="n">b</span> <span class="o">=</span> <span class="p">{.</span><span class="n">value</span> <span class="o">=</span> <span class="mi">2</span><span class="p">};</span>
+</span></span><span class="line"><span class="cl"><span class="k">const</span> <span class="n">Box</span> <span class="o">*</span><span class="n">read_only</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">a</span><span class="p">;</span>      <span class="cm">/* 不能经此指针改 Box 的成员 */</span>
+</span></span><span class="line"><span class="cl"><span class="n">Box</span> <span class="o">*</span><span class="k">const</span> <span class="n">fixed_pointer</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">a</span><span class="p">;</span> <span class="cm">/* 指针自己不能改指向 */</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">read_only</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">b</span><span class="p">;</span>                <span class="cm">/* 可以 */</span>
+</span></span><span class="line"><span class="cl"><span class="n">fixed_pointer</span><span class="o">-&gt;</span><span class="n">value</span> <span class="o">=</span> <span class="mi">3</span><span class="p">;</span>      <span class="cm">/* 可以 */</span>
+</span></span><span class="line"><span class="cl"><span class="cm">/* read_only-&gt;value = 3; */</span>    <span class="cm">/* 不允许 */</span>
+</span></span><span class="line"><span class="cl"><span class="cm">/* fixed_pointer = &amp;b; */</span>      <span class="cm">/* 不允许 */</span>
+</span></span></code></pre></div><p><code>const T *</code> 不保证别的可写别名无法修改对象，也不会递归冻结指针成员指向的数据。例如下面的独立片段：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">View</span> <span class="p">{</span> <span class="kt">int</span> <span class="o">*</span><span class="n">data</span><span class="p">;</span> <span class="p">};</span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="n">number</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">View</span> <span class="n">view</span> <span class="o">=</span> <span class="p">{.</span><span class="n">data</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">number</span><span class="p">};</span>
+</span></span><span class="line"><span class="cl"><span class="k">const</span> <span class="k">struct</span> <span class="n">View</span> <span class="o">*</span><span class="n">v</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">view</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="o">*</span><span class="n">v</span><span class="o">-&gt;</span><span class="n">data</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span>                   <span class="cm">/* 允许：改的是 number */</span>
+</span></span><span class="line"><span class="cl"><span class="cm">/* v-&gt;data = NULL; */</span>          <span class="cm">/* 不允许：要改结构体成员本身 */</span>
+</span></span></code></pre></div><p>如果业务要求数据也只读，应把成员声明为 <code>const int *data</code>。即使如此，也只是限制经由该接口的写入能力，不等于消灭其他可写别名。</p>
+<h3 id="54-值返回没有错指针也不保证更快">
+<a class="header-anchor" href="#54-%e5%80%bc%e8%bf%94%e5%9b%9e%e6%b2%a1%e6%9c%89%e9%94%99%e6%8c%87%e9%92%88%e4%b9%9f%e4%b8%8d%e4%bf%9d%e8%af%81%e6%9b%b4%e5%bf%ab"></a>
+5.4 值返回没有错，指针也不保证更快
+</h3><p>下面是可以接入工程的函数定义片段：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">Point</span> <span class="p">{</span> <span class="kt">double</span> <span class="n">x</span><span class="p">;</span> <span class="kt">double</span> <span class="n">y</span><span class="p">;</span> <span class="p">};</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">Point</span> <span class="nf">midpoint</span><span class="p">(</span><span class="k">struct</span> <span class="n">Point</span> <span class="n">a</span><span class="p">,</span> <span class="k">struct</span> <span class="n">Point</span> <span class="n">b</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="p">(</span><span class="k">struct</span> <span class="n">Point</span><span class="p">){</span>
+</span></span><span class="line"><span class="cl">        <span class="p">.</span><span class="n">x</span> <span class="o">=</span> <span class="n">a</span><span class="p">.</span><span class="n">x</span> <span class="o">/</span> <span class="mf">2.0</span> <span class="o">+</span> <span class="n">b</span><span class="p">.</span><span class="n">x</span> <span class="o">/</span> <span class="mf">2.0</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="p">.</span><span class="n">y</span> <span class="o">=</span> <span class="n">a</span><span class="p">.</span><span class="n">y</span> <span class="o">/</span> <span class="mf">2.0</span> <span class="o">+</span> <span class="n">b</span><span class="p">.</span><span class="n">y</span> <span class="o">/</span> <span class="mf">2.0</span>
+</span></span><span class="line"><span class="cl">    <span class="p">};</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>它返回结构体值，不返回局部变量地址。值如何通过寄存器或隐藏的存储位置交付，由 ABI 和优化决定。语言层面是值语义，不应据此想象“一定在栈上完整复制两次”。</p>
+<p>小型结构体按值传递可以让接口更清楚；大型对象、需要修改的对象、具有身份或资源的对象通常更适合传指针。指针也可能带来间接访问和别名分析成本，性能结论应看实际编译结果与测量。</p>
+<p><a href="/post/%E7%BB%93%E6%9E%84%E4%BD%93%E7%BB%86%E8%8A%82%E6%8E%A2%E7%A9%B6/#struct-toc">返回目录</a></p>
+<h2 id="struct-copy">
+<a class="header-anchor" href="#struct-copy"></a>
+6. 结构体复制：成员复制了，资源不一定复制
+</h2><h3 id="61-数组成员与指针成员的差别">
+<a class="header-anchor" href="#61-%e6%95%b0%e7%bb%84%e6%88%90%e5%91%98%e4%b8%8e%e6%8c%87%e9%92%88%e6%88%90%e5%91%98%e7%9a%84%e5%b7%ae%e5%88%ab"></a>
+6.1 数组成员与指针成员的差别
+</h3><p>结构体赋值会复制成员的值，固定数组成员的内容也在复制范围内；指针成员复制的只是指针值。这个规则同样影响结构体按值传参和返回。可参照 <a href="https://www.gnu.org/software/c-intro-and-ref/manual/html_node/Structure-Assignment.html">GNU 的结构体赋值说明</a>。</p>
+<p>下面是完整程序，保存为 <code>copy.c</code>：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">Record</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">char</span> <span class="n">label</span><span class="p">[</span><span class="mi">8</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">int</span> <span class="o">*</span><span class="n">shared</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">int</span> <span class="n">number</span> <span class="o">=</span> <span class="mi">10</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">struct</span> <span class="n">Record</span> <span class="n">a</span> <span class="o">=</span> <span class="p">{.</span><span class="n">label</span> <span class="o">=</span> <span class="s">&#34;left&#34;</span><span class="p">,</span> <span class="p">.</span><span class="n">shared</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">number</span><span class="p">};</span>
+</span></span><span class="line"><span class="cl">    <span class="k">struct</span> <span class="n">Record</span> <span class="n">b</span> <span class="o">=</span> <span class="n">a</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="n">b</span><span class="p">.</span><span class="n">label</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="sc">&#39;L&#39;</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="o">*</span><span class="n">b</span><span class="p">.</span><span class="n">shared</span> <span class="o">=</span> <span class="mi">99</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="nf">printf</span><span class="p">(</span><span class="s">&#34;a=%s b=%s number=%d</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">a</span><span class="p">.</span><span class="n">label</span><span class="p">,</span> <span class="n">b</span><span class="p">.</span><span class="n">label</span><span class="p">,</span> <span class="n">number</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">printf</span><span class="p">(</span><span class="s">&#34;same target=%d</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">a</span><span class="p">.</span><span class="n">shared</span> <span class="o">==</span> <span class="n">b</span><span class="p">.</span><span class="n">shared</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>推导输出是 <code>a=left b=Left number=99</code> 和 <code>same target=1</code>。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">a.label [l e f t ...]       b.label [L e f t ...]
+</span></span><span class="line"><span class="cl">这是两份内嵌数组             修改 b 的数组不影响 a
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">a.shared ───┐
+</span></span><span class="line"><span class="cl">            ├──&gt; number = 99
+</span></span><span class="line"><span class="cl">b.shared ───┘
+</span></span><span class="line"><span class="cl">这是两个指针成员，共同指向一个 int 对象
+</span></span></code></pre></div><p>所以，“结构体按值传递就绝对不会影响外面”也不准确：函数虽然不能通过修改普通形参成员来改原结构体，但仍可能通过复制过来的指针成员写入共享目标。</p>
+<p><code>b.label = a.label</code> 单独写不合法，因为数组不支持这种赋值；<code>b = a</code> 合法，因为这里进行的是整个结构体的赋值。结构体含有 <code>const</code> 成员时，整体赋值还会受到可修改左值规则的限制，不能无条件套用。</p>
+<h3 id="62-浅复制不是错误所有权不清楚才危险">
+<a class="header-anchor" href="#62-%e6%b5%85%e5%a4%8d%e5%88%b6%e4%b8%8d%e6%98%af%e9%94%99%e8%af%af%e6%89%80%e6%9c%89%e6%9d%83%e4%b8%8d%e6%b8%85%e6%a5%9a%e6%89%8d%e5%8d%b1%e9%99%a9"></a>
+6.2 浅复制不是错误，所有权不清楚才危险
+</h3><p>如果两个对象本来就应该借用同一块只读数据，复制指针是合理设计。如果每个对象声称自己独占并负责释放该内存，简单的结构体赋值就可能让两个对象各自执行一次 <code>free</code>，造成重复释放。</p>
+<p>先约定三件事：</p>
+<ol>
+<li>谁创建或取得资源？</li>
+<li>谁可以使用，谁可以修改？</li>
+<li>谁释放，最晚可以使用到什么时候？</li>
+</ol>
+<p>“深复制”不是 <code>struct</code> 提供的自动操作，而是程序根据业务递归复制自己拥有的资源。链表、带环对象图和引用计数对象需要不同策略，不能统一写一句 <code>memcpy</code> 就解决。</p>
+<h3 id="63-完整示例独立复制动态数组">
+<a class="header-anchor" href="#63-%e5%ae%8c%e6%95%b4%e7%a4%ba%e4%be%8b%e7%8b%ac%e7%ab%8b%e5%a4%8d%e5%88%b6%e5%8a%a8%e6%80%81%e6%95%b0%e7%bb%84"></a>
+6.3 完整示例：独立复制动态数组
+</h3><p>下面的 <code>Buffer</code> 独占 <code>data</code>。它有两个有效状态：空状态 <code>{0, NULL}</code>，或者 <code>data</code> 指向至少 <code>len</code> 个可访问 <code>int</code>。<code>buffer_clone</code> 要求目标先处于空状态，失败时目标保持不变；它不能覆盖一个仍拥有旧资源的目标。</p>
+<p>这是完整程序，保存为 <code>clone.c</code>：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;stdint.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;stdlib.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;string.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">typedef</span> <span class="k">struct</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">size_t</span> <span class="n">len</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">int</span> <span class="o">*</span><span class="n">data</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span> <span class="n">Buffer</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">static</span> <span class="kt">int</span> <span class="nf">buffer_clone</span><span class="p">(</span><span class="n">Buffer</span> <span class="o">*</span><span class="n">dst</span><span class="p">,</span> <span class="k">const</span> <span class="n">Buffer</span> <span class="o">*</span><span class="n">src</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">dst</span> <span class="o">==</span> <span class="nb">NULL</span> <span class="o">||</span> <span class="n">src</span> <span class="o">==</span> <span class="nb">NULL</span> <span class="o">||</span> <span class="n">dst</span> <span class="o">==</span> <span class="n">src</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">dst</span><span class="o">-&gt;</span><span class="n">len</span> <span class="o">!=</span> <span class="mi">0</span> <span class="o">||</span> <span class="n">dst</span><span class="o">-&gt;</span><span class="n">data</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span> <span class="cm">/* 目标必须已经初始化为空 */</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">((</span><span class="n">src</span><span class="o">-&gt;</span><span class="n">len</span> <span class="o">==</span> <span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="n">src</span><span class="o">-&gt;</span><span class="n">data</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span> <span class="o">||</span>
+</span></span><span class="line"><span class="cl">        <span class="p">(</span><span class="n">src</span><span class="o">-&gt;</span><span class="n">len</span> <span class="o">!=</span> <span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="n">src</span><span class="o">-&gt;</span><span class="n">data</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">))</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">src</span><span class="o">-&gt;</span><span class="n">len</span> <span class="o">&gt;</span> <span class="n">SIZE_MAX</span> <span class="o">/</span> <span class="k">sizeof</span> <span class="o">*</span><span class="n">src</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="n">Buffer</span> <span class="n">tmp</span> <span class="o">=</span> <span class="p">{</span><span class="mi">0</span><span class="p">};</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">src</span><span class="o">-&gt;</span><span class="n">len</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">tmp</span><span class="p">.</span><span class="n">data</span> <span class="o">=</span> <span class="nf">malloc</span><span class="p">(</span><span class="n">src</span><span class="o">-&gt;</span><span class="n">len</span> <span class="o">*</span> <span class="k">sizeof</span> <span class="o">*</span><span class="n">tmp</span><span class="p">.</span><span class="n">data</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="p">(</span><span class="n">tmp</span><span class="p">.</span><span class="n">data</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">memcpy</span><span class="p">(</span><span class="n">tmp</span><span class="p">.</span><span class="n">data</span><span class="p">,</span> <span class="n">src</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">,</span> <span class="n">src</span><span class="o">-&gt;</span><span class="n">len</span> <span class="o">*</span> <span class="k">sizeof</span> <span class="o">*</span><span class="n">tmp</span><span class="p">.</span><span class="n">data</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">tmp</span><span class="p">.</span><span class="n">len</span> <span class="o">=</span> <span class="n">src</span><span class="o">-&gt;</span><span class="n">len</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="o">*</span><span class="n">dst</span> <span class="o">=</span> <span class="n">tmp</span><span class="p">;</span> <span class="cm">/* 把本次新资源交给目标 */</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">static</span> <span class="kt">void</span> <span class="nf">buffer_destroy</span><span class="p">(</span><span class="n">Buffer</span> <span class="o">*</span><span class="n">buffer</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">buffer</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">free</span><span class="p">(</span><span class="n">buffer</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="o">*</span><span class="n">buffer</span> <span class="o">=</span> <span class="p">(</span><span class="n">Buffer</span><span class="p">){</span><span class="mi">0</span><span class="p">};</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">Buffer</span> <span class="n">a</span> <span class="o">=</span> <span class="p">{</span><span class="mi">0</span><span class="p">};</span>
+</span></span><span class="line"><span class="cl">    <span class="n">Buffer</span> <span class="n">b</span> <span class="o">=</span> <span class="p">{</span><span class="mi">0</span><span class="p">};</span>
+</span></span><span class="line"><span class="cl">    <span class="n">a</span><span class="p">.</span><span class="n">data</span> <span class="o">=</span> <span class="nf">malloc</span><span class="p">(</span><span class="mi">3</span> <span class="o">*</span> <span class="k">sizeof</span> <span class="o">*</span><span class="n">a</span><span class="p">.</span><span class="n">data</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">a</span><span class="p">.</span><span class="n">data</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="n">EXIT_FAILURE</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="n">a</span><span class="p">.</span><span class="n">len</span> <span class="o">=</span> <span class="mi">3</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">a</span><span class="p">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">10</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">a</span><span class="p">.</span><span class="n">data</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">20</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">a</span><span class="p">.</span><span class="n">data</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="mi">30</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="nf">buffer_clone</span><span class="p">(</span><span class="o">&amp;</span><span class="n">b</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">a</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">buffer_destroy</span><span class="p">(</span><span class="o">&amp;</span><span class="n">a</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="n">EXIT_FAILURE</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="n">b</span><span class="p">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">99</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">printf</span><span class="p">(</span><span class="s">&#34;a[0]=%d b[0]=%d</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">a</span><span class="p">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">b</span><span class="p">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">buffer_destroy</span><span class="p">(</span><span class="o">&amp;</span><span class="n">b</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">buffer_destroy</span><span class="p">(</span><span class="o">&amp;</span><span class="n">a</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">EXIT_SUCCESS</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>成功路径的推导输出为 <code>a[0]=10 b[0]=99</code>。这里先分配、复制成功，再把临时结果写入目标，避免一开始就把目标弄成半完成状态。乘法溢出检查避免把“非常大的申请”算成一个很小的字节数。</p>
+<p><code>const Buffer *src</code> 只限制经由 <code>src</code> 修改结构体成员；本函数遵守只读约定，没有修改 <code>src-&gt;data</code> 指向的数据。调用者仍须保证 <code>src</code> 本身以及数组范围有效，这种有效性不能只靠检查非空推断出来。</p>
+<p>C 没有自动析构。<code>tmp</code> 退出作用域不会自动释放它曾经指向的内存，所以这里的指针值交付不会被退出作用域破坏；资源的释放责任已经交给 <code>dst</code>。</p>
+<h3 id="64-为什么-memcmp-不能代替结构体相等">
+<a class="header-anchor" href="#64-%e4%b8%ba%e4%bb%80%e4%b9%88-memcmp-%e4%b8%8d%e8%83%bd%e4%bb%a3%e6%9b%bf%e7%bb%93%e6%9e%84%e4%bd%93%e7%9b%b8%e7%ad%89"></a>
+6.4 为什么 <code>memcmp</code> 不能代替结构体相等
+</h3><p>两个结构体的成员值相等，不代表填充字节相同；某些类型也可能存在不同字节表示却具有相等值的情况。<code>memcmp</code> 比较对象表示，而业务通常比较成员含义。</p>
+<p>对于前面的 <code>Point</code>，若业务要求普通浮点相等，可以逐成员比较 <code>a.x == b.x &amp;&amp; a.y == b.y</code>。若业务要求数值误差容忍，还需要另外设计绝对误差或相对误差准则。C 本身不提供 <code>a == b</code> 这样的结构体整体相等运算。</p>
+<p><code>memcpy</code> 可以在有效、大小正确且互不重叠的存储区域之间复制字节，但它不会理解资源所有权，也不会替你把指针指向的内容深复制。</p>
+<p><a href="/post/%E7%BB%93%E6%9E%84%E4%BD%93%E7%BB%86%E8%8A%82%E6%8E%A2%E7%A9%B6/#struct-toc">返回目录</a></p>
+<h2 id="struct-lifetime">
+<a class="header-anchor" href="#struct-lifetime"></a>
+7. 生命周期：地址存在过，不代表现在还能用
+</h2><h3 id="71-结构体并不天然属于栈">
+<a class="header-anchor" href="#71-%e7%bb%93%e6%9e%84%e4%bd%93%e5%b9%b6%e4%b8%8d%e5%a4%a9%e7%84%b6%e5%b1%9e%e4%ba%8e%e6%a0%88"></a>
+7.1 结构体并不天然属于“栈”
+</h3><p>同一个结构体类型可以定义为自动存储期局部对象、静态存储期对象，也可以放在动态分配的内存里。常见实现会把许多局部对象放在栈上，但 C 的语义核心是<strong>存储期和生命周期</strong>，不是某个固定硬件区域。</p>
+<table>
+	<thead>
+			<tr>
+					<th>对象来源</th>
+					<th>通常何时失效</th>
+					<th>谁负责结束使用</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td>函数内普通局部对象</td>
+					<td>离开所属块时</td>
+					<td>调用者不能继续保存并使用其地址</td>
+			</tr>
+			<tr>
+					<td>静态存储期对象</td>
+					<td>程序结束时</td>
+					<td>注意共享状态与并发访问</td>
+			</tr>
+			<tr>
+					<td><code>malloc</code> 分配的对象</td>
+					<td>释放或相应重新分配时</td>
+					<td>明确的资源拥有者</td>
+			</tr>
+			<tr>
+					<td>借用的成员地址</td>
+					<td>外层对象失效时</td>
+					<td>借用者不能延长外层生命周期</td>
+			</tr>
+	</tbody>
+</table>
+<h3 id="72-返回值可以返回局部对象地址不可以">
+<a class="header-anchor" href="#72-%e8%bf%94%e5%9b%9e%e5%80%bc%e5%8f%af%e4%bb%a5%e8%bf%94%e5%9b%9e%e5%b1%80%e9%83%a8%e5%af%b9%e8%b1%a1%e5%9c%b0%e5%9d%80%e4%b8%8d%e5%8f%af%e4%bb%a5"></a>
+7.2 返回值可以，返回局部对象地址不可以
+</h3><p>下面是对比片段，错误函数仅用于阅读：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">Pair</span> <span class="p">{</span> <span class="kt">int</span> <span class="n">x</span><span class="p">;</span> <span class="kt">int</span> <span class="n">y</span><span class="p">;</span> <span class="p">};</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">Pair</span> <span class="nf">make_pair</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">struct</span> <span class="n">Pair</span> <span class="n">p</span> <span class="o">=</span> <span class="p">{.</span><span class="n">x</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="p">.</span><span class="n">y</span> <span class="o">=</span> <span class="mi">2</span><span class="p">};</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">p</span><span class="p">;</span> <span class="cm">/* 正确：返回值 */</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="cm">/* 错误示例：返回后局部 p 已结束生命周期。 */</span>
+</span></span><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">Pair</span> <span class="o">*</span><span class="nf">bad_pair</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">struct</span> <span class="n">Pair</span> <span class="n">p</span> <span class="o">=</span> <span class="p">{.</span><span class="n">x</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="p">.</span><span class="n">y</span> <span class="o">=</span> <span class="mi">2</span><span class="p">};</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="o">&amp;</span><span class="n">p</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>错误版本即使偶尔打印出 <code>1, 2</code>，也不能证明有效。退出函数后那片存储可能还没被改写，但对象生命周期已经结束。</p>
+<p>同理，不能从函数返回一个结构体，让它的指针成员指向该函数的普通局部数组。<strong>结构体值可以安全返回，不代表它携带的每个指针都安全。</strong></p>
+<h3 id="73-释放与重新分配会影响所有别名">
+<a class="header-anchor" href="#73-%e9%87%8a%e6%94%be%e4%b8%8e%e9%87%8d%e6%96%b0%e5%88%86%e9%85%8d%e4%bc%9a%e5%bd%b1%e5%93%8d%e6%89%80%e6%9c%89%e5%88%ab%e5%90%8d"></a>
+7.3 释放与重新分配会影响所有别名
+</h3><p>如果 <code>a</code> 和 <code>b</code> 都指向同一动态对象，<code>free(a); a = NULL;</code> 并不会顺带把 <code>b</code> 清空。<code>b</code> 已经失去有效目标。把一个变量置空只是减少该变量被误用的机会，不能自动修复其他别名。</p>
+<p>对结构体数组执行成功的 <code>realloc</code> 后，应基于新返回的基址重新取得所有元素和成员指针；不能因为新旧地址看起来相同，就继续依赖旧指针。实际代码用临时指针接返回值，避免失败时丢掉原分配；零大小请求要单独设计处理流程。</p>
+<h3 id="74-函数保存你的指针时要问保存多久">
+<a class="header-anchor" href="#74-%e5%87%bd%e6%95%b0%e4%bf%9d%e5%ad%98%e4%bd%a0%e7%9a%84%e6%8c%87%e9%92%88%e6%97%b6%e8%a6%81%e9%97%ae%e4%bf%9d%e5%ad%98%e5%a4%9a%e4%b9%85"></a>
+7.4 函数保存你的指针时，要问保存多久
+</h3><p>同步函数只在调用期间借用对象，要求对象活到调用结束即可。异步任务、事件订阅和回调注册会把指针保存到调用之后，要求对象一直活到最后一次使用结束。</p>
+<p>后文的回调例子使用 <code>void *context</code> 保存用户上下文。它不会延长上下文的生命周期，也不会自动复制内容。若上下文来自局部变量，就必须在该变量退出作用域前停止所有相关回调。</p>
+<p><a href="/post/%E7%BB%93%E6%9E%84%E4%BD%93%E7%BB%86%E8%8A%82%E6%8E%A2%E7%A9%B6/#struct-toc">返回目录</a></p>
+<h2 id="struct-function-pointer">
+<a class="header-anchor" href="#struct-function-pointer"></a>
+8. 函数指针：结构体怎样关联行为
+</h2><h3 id="81-先把声明读懂">
+<a class="header-anchor" href="#81-%e5%85%88%e6%8a%8a%e5%a3%b0%e6%98%8e%e8%af%bb%e6%87%82"></a>
+8.1 先把声明读懂
+</h3><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="cm">/* 类型声明片段。 */</span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="p">(</span><span class="o">*</span><span class="n">operation</span><span class="p">)(</span><span class="kt">int</span><span class="p">,</span> <span class="kt">int</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="o">*</span><span class="nf">make_value</span><span class="p">(</span><span class="kt">int</span><span class="p">,</span> <span class="kt">int</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="k">typedef</span> <span class="nf">int</span> <span class="p">(</span><span class="o">*</span><span class="n">BinaryOp</span><span class="p">)(</span><span class="kt">int</span><span class="p">,</span> <span class="kt">int</span><span class="p">);</span>
+</span></span></code></pre></div><p>第一行从名字开始读：<code>operation</code> 先与 <code>*</code> 结合，是一个指针；再看 <code>(int, int)</code>，它指向接受两个 <code>int</code> 的函数；最左边 <code>int</code> 表示函数返回类型。</p>
+<p>第二行没有把 <code>*make_value</code> 括起来，所以 <code>make_value</code> 是一个接受两个 <code>int</code>、返回 <code>int *</code> 的函数。<strong>函数指针</strong>与<strong>返回指针的函数</strong>是两件事。</p>
+<p><code>BinaryOp</code> 给第一种函数指针类型起了别名，后续可以写 <code>BinaryOp operation;</code>。</p>
+<h3 id="82-结构体里存的是函数指针不是函数体">
+<a class="header-anchor" href="#82-%e7%bb%93%e6%9e%84%e4%bd%93%e9%87%8c%e5%ad%98%e7%9a%84%e6%98%af%e5%87%bd%e6%95%b0%e6%8c%87%e9%92%88%e4%b8%8d%e6%98%af%e5%87%bd%e6%95%b0%e4%bd%93"></a>
+8.2 结构体里存的是函数指针，不是函数体
+</h3><p>下面是完整程序，保存为 <code>function_pointer.c</code>：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">typedef</span> <span class="nf">int</span> <span class="p">(</span><span class="o">*</span><span class="n">BinaryOp</span><span class="p">)(</span><span class="kt">int</span><span class="p">,</span> <span class="kt">int</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">Calculator</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">name</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">BinaryOp</span> <span class="n">apply</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">static</span> <span class="kt">int</span> <span class="nf">add</span><span class="p">(</span><span class="kt">int</span> <span class="n">a</span><span class="p">,</span> <span class="kt">int</span> <span class="n">b</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span><span class="p">;</span> <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="k">static</span> <span class="kt">int</span> <span class="nf">multiply</span><span class="p">(</span><span class="kt">int</span> <span class="n">a</span><span class="p">,</span> <span class="kt">int</span> <span class="n">b</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="n">a</span> <span class="o">*</span> <span class="n">b</span><span class="p">;</span> <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">struct</span> <span class="n">Calculator</span> <span class="n">calc</span> <span class="o">=</span> <span class="p">{.</span><span class="n">name</span> <span class="o">=</span> <span class="s">&#34;add&#34;</span><span class="p">,</span> <span class="p">.</span><span class="n">apply</span> <span class="o">=</span> <span class="n">add</span><span class="p">};</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">printf</span><span class="p">(</span><span class="s">&#34;%s: %d</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">calc</span><span class="p">.</span><span class="n">name</span><span class="p">,</span> <span class="n">calc</span><span class="p">.</span><span class="nf">apply</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">    <span class="n">calc</span> <span class="o">=</span> <span class="p">(</span><span class="k">struct</span> <span class="n">Calculator</span><span class="p">){.</span><span class="n">name</span> <span class="o">=</span> <span class="s">&#34;multiply&#34;</span><span class="p">,</span> <span class="p">.</span><span class="n">apply</span> <span class="o">=</span> <span class="n">multiply</span><span class="p">};</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">printf</span><span class="p">(</span><span class="s">&#34;%s: %d</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">calc</span><span class="p">.</span><span class="n">name</span><span class="p">,</span> <span class="p">(</span><span class="o">*</span><span class="n">calc</span><span class="p">.</span><span class="n">apply</span><span class="p">)(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>推导输出为 <code>add: 7</code>、<code>multiply: 12</code>。此例只使用很小的整数；真实整数运算仍须处理业务范围和溢出问题。</p>
+<p><code>add</code> 在这里转换为函数指针，写 <code>&amp;add</code> 也可以。<code>calc.apply(3, 4)</code> 与 <code>(*calc.apply)(3, 4)</code> 都调用成员指向的函数。把指针赋值给成员不会立即执行函数，后面的括号才触发调用。相关语法见 <a href="https://www.gnu.org/software/c-intro-and-ref/manual/html_node/Function-Pointers.html">GNU 的函数指针章节</a>。</p>
+<p>C 不允许把函数本体声明为结构体成员；函数指针作为数据成员却是允许的。每个对象可以保存一个指针值，多个对象还可以指向同一份函数实现，函数代码不会因此被复制到每个对象内部。</p>
+<h3 id="83-调用签名必须匹配">
+<a class="header-anchor" href="#83-%e8%b0%83%e7%94%a8%e7%ad%be%e5%90%8d%e5%bf%85%e9%a1%bb%e5%8c%b9%e9%85%8d"></a>
+8.3 调用签名必须匹配
+</h3><p>函数指针类型包含返回类型和参数类型。期待 <code>int (*)(int, int)</code> 的地方，不能塞入一个 <code>double (*)(double)</code>，再靠强制转换让警告消失。通过不兼容的函数指针类型调用函数会产生未定义行为。</p>
+<p>C11 中，声明无参数函数应写 <code>(void)</code>；<code>()</code> 在函数声明中不提供同样的参数原型信息。函数指针也应明确参数列表。</p>
+<p>函数指针不是普通数据指针：严格可移植 C 不保证它可以通过 <code>void *</code> 往返保存，也不保证它与对象指针大小相同。不要拿 <code>%p</code> 加强转作为通用函数指针打印方案。本文的 <code>void *context</code> 始终指向<strong>对象数据</strong>。</p>
+<h3 id="84-为什么回调通常配一个上下文指针">
+<a class="header-anchor" href="#84-%e4%b8%ba%e4%bb%80%e4%b9%88%e5%9b%9e%e8%b0%83%e9%80%9a%e5%b8%b8%e9%85%8d%e4%b8%80%e4%b8%aa%e4%b8%8a%e4%b8%8b%e6%96%87%e6%8c%87%e9%92%88"></a>
+8.4 为什么回调通常配一个上下文指针
+</h3><p>只有 <code>void (*callback)(int event)</code> 时，函数知道发生了什么事件，却不知道应该更新哪一个用户对象。若用全局变量补上，就很难同时服务多个实例。</p>
+<p>因此常见接口写成：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="cm">/* 类型定义片段。 */</span>
+</span></span><span class="line"><span class="cl"><span class="k">typedef</span> <span class="nf">void</span> <span class="p">(</span><span class="o">*</span><span class="n">EventCallback</span><span class="p">)(</span><span class="kt">void</span> <span class="o">*</span><span class="n">context</span><span class="p">,</span> <span class="kt">int</span> <span class="n">event</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">Subscription</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">EventCallback</span> <span class="n">callback</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">void</span> <span class="o">*</span><span class="n">context</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span></code></pre></div><p>调用方保存“函数指针 + 对象指针”，触发时执行 <code>callback(context, event)</code>。函数实现再把 <code>context</code> 还原成它约定的对象指针类型。还原必须与原对象真实类型匹配，不能任意猜测。</p>
+<p>函数指针决定“做什么”，上下文决定“对谁做”。它们的组合能表示带状态的回调，但需要手动维护类型约定和生命周期。</p>
+<p><a href="/post/%E7%BB%93%E6%9E%84%E4%BD%93%E7%BB%86%E8%8A%82%E6%8E%A2%E7%A9%B6/#struct-toc">返回目录</a></p>
+<h2 id="struct-device">
+<a class="header-anchor" href="#struct-device"></a>
+9. 完整工程案例：状态、操作表和回调协同工作
+</h2><h3 id="91-要解决的实际问题">
+<a class="header-anchor" href="#91-%e8%a6%81%e8%a7%a3%e5%86%b3%e7%9a%84%e5%ae%9e%e9%99%85%e9%97%ae%e9%a2%98"></a>
+9.1 要解决的实际问题
+</h3><p>假设上层希望统一调用“设置电机目标转速”。底层可能是真实驱动，也可能是测试用模拟驱动。把上层逻辑直接写死为某种硬件函数，会让测试和替换都困难。</p>
+<p>可以把实例状态放进 <code>Motor</code>，把可替换操作放进 <code>MotorOps</code>，把状态变化通知交给用户回调。这里的程序使用模拟驱动，只修改内存，不接触真实硬件。</p>
+<p>约定如下：目标转速单位为 rpm，范围 0～3000；失败返回非零且不修改状态；成功后同步通知一次；回调不销毁电机、不重入设置操作。示例只覆盖单线程同步调用。</p>
+<h3 id="92-可以单独保存运行的程序">
+<a class="header-anchor" href="#92-%e5%8f%af%e4%bb%a5%e5%8d%95%e7%8b%ac%e4%bf%9d%e5%ad%98%e8%bf%90%e8%a1%8c%e7%9a%84%e7%a8%8b%e5%ba%8f"></a>
+9.2 可以单独保存运行的程序
+</h3><p>保存为 <code>device.c</code>：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">typedef</span> <span class="k">struct</span> <span class="n">Motor</span> <span class="n">Motor</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">typedef</span> <span class="k">struct</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">int</span> <span class="p">(</span><span class="o">*</span><span class="n">set_target</span><span class="p">)(</span><span class="n">Motor</span> <span class="o">*</span><span class="n">self</span><span class="p">,</span> <span class="kt">int</span> <span class="n">rpm</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span> <span class="n">MotorOps</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">typedef</span> <span class="nf">void</span> <span class="p">(</span><span class="o">*</span><span class="n">TargetChanged</span><span class="p">)(</span><span class="kt">void</span> <span class="o">*</span><span class="n">context</span><span class="p">,</span> <span class="kt">int</span> <span class="n">rpm</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">Motor</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">int</span> <span class="n">id</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">int</span> <span class="n">target_rpm</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">const</span> <span class="n">MotorOps</span> <span class="o">*</span><span class="n">ops</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">TargetChanged</span> <span class="n">on_changed</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">void</span> <span class="o">*</span><span class="n">context</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">static</span> <span class="kt">int</span> <span class="nf">simulated_set_target</span><span class="p">(</span><span class="n">Motor</span> <span class="o">*</span><span class="n">self</span><span class="p">,</span> <span class="kt">int</span> <span class="n">rpm</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">self</span> <span class="o">==</span> <span class="nb">NULL</span> <span class="o">||</span> <span class="n">rpm</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="o">||</span> <span class="n">rpm</span> <span class="o">&gt;</span> <span class="mi">3000</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="n">self</span><span class="o">-&gt;</span><span class="n">target_rpm</span> <span class="o">=</span> <span class="n">rpm</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">static</span> <span class="k">const</span> <span class="n">MotorOps</span> <span class="n">simulated_ops</span> <span class="o">=</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="p">.</span><span class="n">set_target</span> <span class="o">=</span> <span class="n">simulated_set_target</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">static</span> <span class="kt">int</span> <span class="nf">motor_set_target</span><span class="p">(</span><span class="n">Motor</span> <span class="o">*</span><span class="n">motor</span><span class="p">,</span> <span class="kt">int</span> <span class="n">rpm</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">motor</span> <span class="o">==</span> <span class="nb">NULL</span> <span class="o">||</span> <span class="n">motor</span><span class="o">-&gt;</span><span class="n">ops</span> <span class="o">==</span> <span class="nb">NULL</span> <span class="o">||</span>
+</span></span><span class="line"><span class="cl">        <span class="n">motor</span><span class="o">-&gt;</span><span class="n">ops</span><span class="o">-&gt;</span><span class="n">set_target</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">int</span> <span class="n">status</span> <span class="o">=</span> <span class="n">motor</span><span class="o">-&gt;</span><span class="n">ops</span><span class="o">-&gt;</span><span class="nf">set_target</span><span class="p">(</span><span class="n">motor</span><span class="p">,</span> <span class="n">rpm</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">status</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="n">status</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">motor</span><span class="o">-&gt;</span><span class="n">on_changed</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">motor</span><span class="o">-&gt;</span><span class="nf">on_changed</span><span class="p">(</span><span class="n">motor</span><span class="o">-&gt;</span><span class="n">context</span><span class="p">,</span> <span class="n">motor</span><span class="o">-&gt;</span><span class="n">target_rpm</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">typedef</span> <span class="k">struct</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">unsigned</span> <span class="n">notifications</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">int</span> <span class="n">last_rpm</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span> <span class="n">Monitor</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">static</span> <span class="kt">void</span> <span class="nf">record_target</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">context</span><span class="p">,</span> <span class="kt">int</span> <span class="n">rpm</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">Monitor</span> <span class="o">*</span><span class="n">monitor</span> <span class="o">=</span> <span class="n">context</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">monitor</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="o">++</span><span class="n">monitor</span><span class="o">-&gt;</span><span class="n">notifications</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="n">monitor</span><span class="o">-&gt;</span><span class="n">last_rpm</span> <span class="o">=</span> <span class="n">rpm</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">Monitor</span> <span class="n">monitor</span> <span class="o">=</span> <span class="p">{</span><span class="mi">0</span><span class="p">};</span>
+</span></span><span class="line"><span class="cl">    <span class="n">Motor</span> <span class="n">left</span> <span class="o">=</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="p">.</span><span class="n">id</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="p">.</span><span class="n">target_rpm</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="p">.</span><span class="n">ops</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">simulated_ops</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="p">.</span><span class="n">on_changed</span> <span class="o">=</span> <span class="n">record_target</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="p">.</span><span class="n">context</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">monitor</span>
+</span></span><span class="line"><span class="cl">    <span class="p">};</span>
+</span></span><span class="line"><span class="cl">    <span class="n">Motor</span> <span class="n">right</span> <span class="o">=</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="p">.</span><span class="n">id</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">        <span class="p">.</span><span class="n">ops</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">simulated_ops</span>
+</span></span><span class="line"><span class="cl">    <span class="p">};</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="kt">int</span> <span class="n">ok</span> <span class="o">=</span> <span class="nf">motor_set_target</span><span class="p">(</span><span class="o">&amp;</span><span class="n">left</span><span class="p">,</span> <span class="mi">1200</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">int</span> <span class="n">bad</span> <span class="o">=</span> <span class="nf">motor_set_target</span><span class="p">(</span><span class="o">&amp;</span><span class="n">left</span><span class="p">,</span> <span class="mi">4000</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">int</span> <span class="n">other</span> <span class="o">=</span> <span class="nf">motor_set_target</span><span class="p">(</span><span class="o">&amp;</span><span class="n">right</span><span class="p">,</span> <span class="mi">600</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="nf">printf</span><span class="p">(</span><span class="s">&#34;status=%d,%d,%d</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">ok</span><span class="p">,</span> <span class="n">bad</span><span class="p">,</span> <span class="n">other</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">printf</span><span class="p">(</span><span class="s">&#34;left=%d right=%d events=%u last=%d</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">           <span class="n">left</span><span class="p">.</span><span class="n">target_rpm</span><span class="p">,</span> <span class="n">right</span><span class="p">.</span><span class="n">target_rpm</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">           <span class="n">monitor</span><span class="p">.</span><span class="n">notifications</span><span class="p">,</span> <span class="n">monitor</span><span class="p">.</span><span class="n">last_rpm</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>推导输出：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">status=0,-1,0
+</span></span><span class="line"><span class="cl">left=1200 right=600 events=1 last=1200
+</span></span></code></pre></div><h3 id="93-把一次调用拆开看">
+<a class="header-anchor" href="#93-%e6%8a%8a%e4%b8%80%e6%ac%a1%e8%b0%83%e7%94%a8%e6%8b%86%e5%bc%80%e7%9c%8b"></a>
+9.3 把一次调用拆开看
+</h3><p><code>motor_set_target(&amp;left, 1200)</code> 的执行路径如下：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">&amp;left
+</span></span><span class="line"><span class="cl">  │
+</span></span><span class="line"><span class="cl">  ▼
+</span></span><span class="line"><span class="cl">motor_set_target：检查接口
+</span></span><span class="line"><span class="cl">  │ motor-&gt;ops-&gt;set_target(motor, 1200)
+</span></span><span class="line"><span class="cl">  ▼
+</span></span><span class="line"><span class="cl">simulated_set_target：通过 self 修改 left.target_rpm
+</span></span><span class="line"><span class="cl">  │ 返回成功
+</span></span><span class="line"><span class="cl">  ▼
+</span></span><span class="line"><span class="cl">motor_set_target：调用 on_changed(context, 1200)
+</span></span><span class="line"><span class="cl">  │
+</span></span><span class="line"><span class="cl">  ▼
+</span></span><span class="line"><span class="cl">record_target：通过 context 修改 monitor
+</span></span></code></pre></div><p>这里有三个不同对象：电机实例 <code>left</code>、共享操作表 <code>simulated_ops</code>、用户状态 <code>monitor</code>。<code>left</code> 与 <code>right</code> 可以指向同一个只读操作表，同时拥有不同的目标转速。共享行为不等于共享全部状态。</p>
+<p><code>motor-&gt;ops-&gt;set_target(motor, rpm)</code> 的第一个 <code>motor</code> 用来找到操作表，括号里的 <code>motor</code> 把当前实例传给函数。C 不会像某些面向对象语言那样隐式传入 <code>this</code>，所以要显式写 <code>self</code> 参数。</p>
+<h3 id="94-每个实例内放函数指针还是共享操作表">
+<a class="header-anchor" href="#94-%e6%af%8f%e4%b8%aa%e5%ae%9e%e4%be%8b%e5%86%85%e6%94%be%e5%87%bd%e6%95%b0%e6%8c%87%e9%92%88%e8%bf%98%e6%98%af%e5%85%b1%e4%ba%ab%e6%93%8d%e4%bd%9c%e8%a1%a8"></a>
+9.4 每个实例内放函数指针，还是共享操作表
+</h3><table>
+	<thead>
+			<tr>
+					<th>组织方式</th>
+					<th>适用情况</th>
+					<th>成本与约束</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td>实例直接保存多个函数指针</td>
+					<td>每个实例行为经常独立变化</td>
+					<td>每个实例重复保存一组指针</td>
+			</tr>
+			<tr>
+					<td>实例保存 <code>const Ops *</code></td>
+					<td>大量实例共享同一种实现</td>
+					<td>多一次表访问，表须保持有效</td>
+			</tr>
+			<tr>
+					<td>普通函数接收 <code>State *</code></td>
+					<td>行为固定、无需运行时替换</td>
+					<td>最直接，通常也最容易调试</td>
+			</tr>
+	</tbody>
+</table>
+<p>不是每个结构体都需要函数指针。只有确实要运行时替换实现、做回调、驱动适配或测试替身时，这层间接调用才有明确收益。</p>
+<p>真实嵌入式程序还要确认中断与线程是否共享状态、回调是否能重入、操作是否阻塞。不能把本例中的打印或动态分配随意搬进实时中断路径；<code>volatile</code> 也不能代替同步机制。</p>
+<p><a href="/post/%E7%BB%93%E6%9E%84%E4%BD%93%E7%BB%86%E8%8A%82%E6%8E%A2%E7%A9%B6/#struct-toc">返回目录</a></p>
+<h2 id="struct-applications">
+<a class="header-anchor" href="#struct-applications"></a>
+10. 结构体在数据组织和模块设计中的应用
+</h2><h3 id="101-配置状态与结果分开组织">
+<a class="header-anchor" href="#101-%e9%85%8d%e7%bd%ae%e7%8a%b6%e6%80%81%e4%b8%8e%e7%bb%93%e6%9e%9c%e5%88%86%e5%bc%80%e7%bb%84%e7%bb%87"></a>
+10.1 配置、状态与结果分开组织
+</h3><p>控制算法常用三个角色：配置保存增益和限幅参数，状态保存积分或历史采样值，结果保存输出与诊断标志。拆开以后，函数签名就能说明哪些数据只读、哪些会更新。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="cm">/* 接口设计片段；只声明，不实现具体控制算法。 */</span>
+</span></span><span class="line"><span class="cl"><span class="k">typedef</span> <span class="k">struct</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">float</span> <span class="n">kp</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">float</span> <span class="n">ki</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">float</span> <span class="n">output_limit</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span> <span class="n">ControllerConfig</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">typedef</span> <span class="k">struct</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">float</span> <span class="n">integral</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span> <span class="n">ControllerState</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">typedef</span> <span class="k">struct</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">float</span> <span class="n">output</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">int</span> <span class="n">saturated</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span> <span class="n">ControllerResult</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">ControllerResult</span> <span class="nf">controller_step</span><span class="p">(</span><span class="k">const</span> <span class="n">ControllerConfig</span> <span class="o">*</span><span class="n">config</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                                 <span class="n">ControllerState</span> <span class="o">*</span><span class="n">state</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                                 <span class="kt">float</span> <span class="n">error</span><span class="p">,</span> <span class="kt">float</span> <span class="n">dt_seconds</span><span class="p">);</span>
+</span></span></code></pre></div><p>读取配置、更新状态、按值返回小型结果，各自的意图都直接体现在接口里。真实实现还需规定误差和输出的单位、<code>dt_seconds</code> 的有效范围，以及抗积分饱和策略。</p>
+<h3 id="102-链表为什么需要二级指针">
+<a class="header-anchor" href="#102-%e9%93%be%e8%a1%a8%e4%b8%ba%e4%bb%80%e4%b9%88%e9%9c%80%e8%a6%81%e4%ba%8c%e7%ba%a7%e6%8c%87%e9%92%88"></a>
+10.2 链表为什么需要二级指针
+</h3><p>下面是完整程序，保存为 <code>list.c</code>。链表拥有节点，<code>list_push</code> 在成功时把新节点交给链表，失败时不改变原链表。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;stdlib.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">typedef</span> <span class="k">struct</span> <span class="n">Node</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">int</span> <span class="n">value</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">struct</span> <span class="n">Node</span> <span class="o">*</span><span class="n">next</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span> <span class="n">Node</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">static</span> <span class="kt">int</span> <span class="nf">list_push</span><span class="p">(</span><span class="n">Node</span> <span class="o">**</span><span class="n">head</span><span class="p">,</span> <span class="kt">int</span> <span class="n">value</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">head</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="n">Node</span> <span class="o">*</span><span class="n">node</span> <span class="o">=</span> <span class="nf">malloc</span><span class="p">(</span><span class="k">sizeof</span> <span class="o">*</span><span class="n">node</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">node</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="o">*</span><span class="n">node</span> <span class="o">=</span> <span class="p">(</span><span class="n">Node</span><span class="p">){.</span><span class="n">value</span> <span class="o">=</span> <span class="n">value</span><span class="p">,</span> <span class="p">.</span><span class="n">next</span> <span class="o">=</span> <span class="o">*</span><span class="n">head</span><span class="p">};</span>
+</span></span><span class="line"><span class="cl">    <span class="o">*</span><span class="n">head</span> <span class="o">=</span> <span class="n">node</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">static</span> <span class="kt">void</span> <span class="nf">list_clear</span><span class="p">(</span><span class="n">Node</span> <span class="o">**</span><span class="n">head</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">head</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="k">while</span> <span class="p">(</span><span class="o">*</span><span class="n">head</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">Node</span> <span class="o">*</span><span class="n">node</span> <span class="o">=</span> <span class="o">*</span><span class="n">head</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="o">*</span><span class="n">head</span> <span class="o">=</span> <span class="n">node</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">;</span> <span class="cm">/* 先取下一节点，再释放当前节点 */</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">free</span><span class="p">(</span><span class="n">node</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">Node</span> <span class="o">*</span><span class="n">head</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="nf">list_push</span><span class="p">(</span><span class="o">&amp;</span><span class="n">head</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span> <span class="o">||</span> <span class="nf">list_push</span><span class="p">(</span><span class="o">&amp;</span><span class="n">head</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">list_clear</span><span class="p">(</span><span class="o">&amp;</span><span class="n">head</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="n">EXIT_FAILURE</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="k">for</span> <span class="p">(</span><span class="k">const</span> <span class="n">Node</span> <span class="o">*</span><span class="n">p</span> <span class="o">=</span> <span class="n">head</span><span class="p">;</span> <span class="n">p</span> <span class="o">!=</span> <span class="nb">NULL</span><span class="p">;</span> <span class="n">p</span> <span class="o">=</span> <span class="n">p</span><span class="o">-&gt;</span><span class="n">next</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">printf</span><span class="p">(</span><span class="s">&#34;%d</span><span class="se">\n</span><span class="s">&#34;</span><span class="p">,</span> <span class="n">p</span><span class="o">-&gt;</span><span class="n">value</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">list_clear</span><span class="p">(</span><span class="o">&amp;</span><span class="n">head</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">EXIT_SUCCESS</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>成功时先打印 20，再打印 10，因为每次插在头部。<code>head</code> 是调用者的指针变量，插入首节点就必须改变它，所以传 <code>&amp;head</code>。清理时要先读取 <code>next</code>，再释放当前节点；释放后再读 <code>node-&gt;next</code> 就已经晚了。</p>
+<h3 id="103-柔性数组一个分配里放头部和变长数据">
+<a class="header-anchor" href="#103-%e6%9f%94%e6%80%a7%e6%95%b0%e7%bb%84%e4%b8%80%e4%b8%aa%e5%88%86%e9%85%8d%e9%87%8c%e6%94%be%e5%a4%b4%e9%83%a8%e5%92%8c%e5%8f%98%e9%95%bf%e6%95%b0%e6%8d%ae"></a>
+10.3 柔性数组：一个分配里放头部和变长数据
+</h3><p>如果一条消息由长度和若干数据字节组成，可以使用末尾的柔性数组成员。它不是指针成员，而是同一分配块末尾的数据区域。</p>
+<p>下面是可接入工程的完整函数片段，调用者使用后执行 <code>free(message)</code>：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;stdint.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;stdlib.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">Message</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">size_t</span> <span class="n">length</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">unsigned</span> <span class="kt">char</span> <span class="n">data</span><span class="p">[];</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">Message</span> <span class="o">*</span><span class="nf">message_create</span><span class="p">(</span><span class="kt">size_t</span> <span class="n">n</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">n</span> <span class="o">&gt;</span> <span class="n">SIZE_MAX</span> <span class="o">-</span> <span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">Message</span><span class="p">))</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="k">struct</span> <span class="n">Message</span> <span class="o">*</span><span class="n">message</span> <span class="o">=</span> <span class="nf">malloc</span><span class="p">(</span><span class="k">sizeof</span> <span class="o">*</span><span class="n">message</span> <span class="o">+</span> <span class="n">n</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">message</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="nb">NULL</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="n">message</span><span class="o">-&gt;</span><span class="n">length</span> <span class="o">=</span> <span class="n">n</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">for</span> <span class="p">(</span><span class="kt">size_t</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">n</span><span class="p">;</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">message</span><span class="o">-&gt;</span><span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">message</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">一次 malloc 得到的块
+</span></span><span class="line"><span class="cl">┌───────────────────┬──────────────────────────────┐
+</span></span><span class="line"><span class="cl">│ 固定头部及所需填充 │ 尾部可用存储，容纳 n 个字节  │
+</span></span><span class="line"><span class="cl">└───────────────────┴──────────────────────────────┘
+</span></span><span class="line"><span class="cl">data 起点由 offsetof 决定；不要假定一定等于 sizeof。
+</span></span></code></pre></div><p>柔性数组必须是结构体最后一个成员，并且结构体需有不止一个具名成员。<code>sizeof(struct Message)</code> 不计运行时的 <code>n</code> 个元素，但仍可能包含必要填充，因此分配用 <code>sizeof *message + n</code>，不要只用 <code>sizeof(length) + n</code>。</p>
+<p>当 <code>n == 0</code> 时，本接口禁止访问 <code>data[0]</code>。复制这种消息必须同时处理长度和载荷，<code>*dst = *src</code> 不会按 <code>length</code> 自动复制尾部数据。标准 C11 还限制含柔性数组成员的结构体直接作为数组元素或另一结构体成员。规则可查 <a href="https://www.open-std.org/jtc1/sc22/wg14/www/docs/n1570.pdf">C11 草案 6.7.2.1</a>。</p>
+<h3 id="104-不透明结构体把实现细节藏在模块里">
+<a class="header-anchor" href="#104-%e4%b8%8d%e9%80%8f%e6%98%8e%e7%bb%93%e6%9e%84%e4%bd%93%e6%8a%8a%e5%ae%9e%e7%8e%b0%e7%bb%86%e8%8a%82%e8%97%8f%e5%9c%a8%e6%a8%a1%e5%9d%97%e9%87%8c"></a>
+10.4 不透明结构体：把实现细节藏在模块里
+</h3><p>头文件可以只暴露不完整类型和操作接口：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="cm">/* motor.h 接口片段，与第 9 节是另一种设计方案。 */</span>
+</span></span><span class="line"><span class="cl"><span class="k">typedef</span> <span class="k">struct</span> <span class="n">Motor</span> <span class="n">Motor</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="n">Motor</span> <span class="o">*</span><span class="nf">motor_create</span><span class="p">(</span><span class="kt">int</span> <span class="n">id</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">motor_set_target</span><span class="p">(</span><span class="n">Motor</span> <span class="o">*</span><span class="n">motor</span><span class="p">,</span> <span class="kt">int</span> <span class="n">rpm</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">motor_destroy</span><span class="p">(</span><span class="n">Motor</span> <span class="o">*</span><span class="n">motor</span><span class="p">);</span>
+</span></span></code></pre></div><p><code>motor.c</code> 再提供完整的 <code>struct Motor { ... };</code> 和函数实现。外部可以持有 <code>Motor *</code>，却不能访问成员、对这个不完整类型求 <code>sizeof</code> 或直接定义一个 <code>Motor</code> 对象。</p>
+<p>这种设计把“哪些操作允许做”集中在接口函数里，也减少外部代码对布局的依赖。它不强制必须使用堆分配；嵌入式系统也能通过模块内部静态池管理对象，但要额外定义容量和生命周期规则。</p>
+<h3 id="105-大量数据结构体数组和成员数组">
+<a class="header-anchor" href="#105-%e5%a4%a7%e9%87%8f%e6%95%b0%e6%8d%ae%e7%bb%93%e6%9e%84%e4%bd%93%e6%95%b0%e7%bb%84%e5%92%8c%e6%88%90%e5%91%98%e6%95%b0%e7%bb%84"></a>
+10.5 大量数据：结构体数组和成员数组
+</h3><p><code>Particle particles[N]</code> 把每个粒子的全部成员放在一起，适合一次处理一个完整粒子。如果循环只更新所有粒子的 <code>x</code>，而其他成员很多，就可能把不需要的数据也带进缓存。</p>
+<p>把 <code>x[N]</code>、<code>y[N]</code>、<code>velocity[N]</code> 分开保存，则让同一字段连续排列，可能更利于批处理和向量化。这通常称为 AoS 与 SoA 的区别。选择取决于访问模式、缓存与向量化结果，应以实际测量验证；不能只根据“结构体更整齐”或“数组一定更快”决定。</p>
+<p><a href="/post/%E7%BB%93%E6%9E%84%E4%BD%93%E7%BB%86%E8%8A%82%E6%8E%A2%E7%A9%B6/#struct-toc">返回目录</a></p>
+<h2 id="struct-boundaries">
+<a class="header-anchor" href="#struct-boundaries"></a>
+11. 协议、位域和硬件寄存器的边界
+</h2><h3 id="111-为什么不能直接发送-sizeofstruct-个字节">
+<a class="header-anchor" href="#111-%e4%b8%ba%e4%bb%80%e4%b9%88%e4%b8%8d%e8%83%bd%e7%9b%b4%e6%8e%a5%e5%8f%91%e9%80%81-sizeofstruct-%e4%b8%aa%e5%ad%97%e8%8a%82"></a>
+11.1 为什么不能直接发送 <code>sizeof(struct)</code> 个字节
+</h3><p>进程内布局不等于外部数据格式。直接写出原始结构体，至少会碰到填充、整数宽度、字节序、指针值只对当前地址空间有意义，以及版本演进等问题。填充还可能把没有业务意义的旧字节一起带出去。</p>
+<p>设计文件或通信协议时，应明确每个字段的宽度、顺序、编码和合法范围，再逐字段编码。</p>
+<p>下面是完整程序，保存为 <code>wire.c</code>。协议固定为 4 个八位字节：版本 1 字节、编号 2 字节按高字节在前、状态 1 字节。示例要求平台提供 <code>uint8_t</code> 和 <code>uint16_t</code>，并用静态断言确认八位字节。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;assert.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;limits.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;stddef.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;stdint.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="nf">_Static_assert</span><span class="p">(</span><span class="n">CHAR_BIT</span> <span class="o">==</span> <span class="mi">8</span><span class="p">,</span> <span class="s">&#34;Protocol requires 8-bit bytes&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">Status</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">uint8_t</span> <span class="n">version</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">uint16_t</span> <span class="n">id</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">uint8_t</span> <span class="n">enabled</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">static</span> <span class="kt">int</span> <span class="nf">encode_status</span><span class="p">(</span><span class="kt">unsigned</span> <span class="kt">char</span> <span class="o">*</span><span class="n">out</span><span class="p">,</span> <span class="kt">size_t</span> <span class="n">capacity</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                         <span class="k">const</span> <span class="k">struct</span> <span class="n">Status</span> <span class="o">*</span><span class="n">status</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">out</span> <span class="o">==</span> <span class="nb">NULL</span> <span class="o">||</span> <span class="n">status</span> <span class="o">==</span> <span class="nb">NULL</span> <span class="o">||</span> <span class="n">capacity</span> <span class="o">&lt;</span> <span class="mi">4</span> <span class="o">||</span>
+</span></span><span class="line"><span class="cl">        <span class="n">status</span><span class="o">-&gt;</span><span class="n">version</span> <span class="o">!=</span> <span class="mi">1</span> <span class="o">||</span> <span class="n">status</span><span class="o">-&gt;</span><span class="n">enabled</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="n">out</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">status</span><span class="o">-&gt;</span><span class="n">version</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">out</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="kt">unsigned</span> <span class="kt">char</span><span class="p">)(</span><span class="n">status</span><span class="o">-&gt;</span><span class="n">id</span> <span class="o">&gt;&gt;</span> <span class="mi">8</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">out</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="kt">unsigned</span> <span class="kt">char</span><span class="p">)(</span><span class="n">status</span><span class="o">-&gt;</span><span class="n">id</span> <span class="o">&amp;</span> <span class="mh">0xffu</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">out</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">status</span><span class="o">-&gt;</span><span class="n">enabled</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">static</span> <span class="kt">int</span> <span class="nf">decode_status</span><span class="p">(</span><span class="k">struct</span> <span class="n">Status</span> <span class="o">*</span><span class="n">out</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                         <span class="k">const</span> <span class="kt">unsigned</span> <span class="kt">char</span> <span class="o">*</span><span class="n">bytes</span><span class="p">,</span> <span class="kt">size_t</span> <span class="n">length</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">out</span> <span class="o">==</span> <span class="nb">NULL</span> <span class="o">||</span> <span class="n">bytes</span> <span class="o">==</span> <span class="nb">NULL</span> <span class="o">||</span> <span class="n">length</span> <span class="o">!=</span> <span class="mi">4</span> <span class="o">||</span>
+</span></span><span class="line"><span class="cl">        <span class="n">bytes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">1</span> <span class="o">||</span> <span class="n">bytes</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="k">struct</span> <span class="n">Status</span> <span class="n">tmp</span> <span class="o">=</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="p">.</span><span class="n">version</span> <span class="o">=</span> <span class="n">bytes</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+</span></span><span class="line"><span class="cl">        <span class="p">.</span><span class="n">id</span> <span class="o">=</span> <span class="p">(</span><span class="kt">uint16_t</span><span class="p">)(((</span><span class="kt">unsigned</span> <span class="kt">int</span><span class="p">)</span><span class="n">bytes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;&lt;</span> <span class="mi">8</span><span class="p">)</span> <span class="o">|</span> <span class="n">bytes</span><span class="p">[</span><span class="mi">2</span><span class="p">]),</span>
+</span></span><span class="line"><span class="cl">        <span class="p">.</span><span class="n">enabled</span> <span class="o">=</span> <span class="n">bytes</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">    <span class="p">};</span>
+</span></span><span class="line"><span class="cl">    <span class="o">*</span><span class="n">out</span> <span class="o">=</span> <span class="n">tmp</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">struct</span> <span class="n">Status</span> <span class="n">source</span> <span class="o">=</span> <span class="p">{.</span><span class="n">version</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="p">.</span><span class="n">id</span> <span class="o">=</span> <span class="mh">0x1234</span><span class="p">,</span> <span class="p">.</span><span class="n">enabled</span> <span class="o">=</span> <span class="mi">1</span><span class="p">};</span>
+</span></span><span class="line"><span class="cl">    <span class="k">struct</span> <span class="n">Status</span> <span class="n">decoded</span> <span class="o">=</span> <span class="p">{</span><span class="mi">0</span><span class="p">};</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">unsigned</span> <span class="kt">char</span> <span class="n">wire</span><span class="p">[</span><span class="mi">4</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="nf">encode_status</span><span class="p">(</span><span class="n">wire</span><span class="p">,</span> <span class="k">sizeof</span> <span class="n">wire</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">source</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span> <span class="o">||</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">decode_status</span><span class="p">(</span><span class="o">&amp;</span><span class="n">decoded</span><span class="p">,</span> <span class="n">wire</span><span class="p">,</span> <span class="k">sizeof</span> <span class="n">wire</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">assert</span><span class="p">(</span><span class="n">decoded</span><span class="p">.</span><span class="n">id</span> <span class="o">==</span> <span class="n">source</span><span class="p">.</span><span class="n">id</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">assert</span><span class="p">(</span><span class="n">decoded</span><span class="p">.</span><span class="n">version</span> <span class="o">==</span> <span class="n">source</span><span class="p">.</span><span class="n">version</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">assert</span><span class="p">(</span><span class="n">decoded</span><span class="p">.</span><span class="n">enabled</span> <span class="o">==</span> <span class="n">source</span><span class="p">.</span><span class="n">enabled</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">for</span> <span class="p">(</span><span class="kt">size_t</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="k">sizeof</span> <span class="n">wire</span><span class="p">;</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nf">printf</span><span class="p">(</span><span class="s">&#34;%02X%s&#34;</span><span class="p">,</span> <span class="p">(</span><span class="kt">unsigned</span> <span class="kt">int</span><span class="p">)</span><span class="n">wire</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
+</span></span><span class="line"><span class="cl">               <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">==</span> <span class="k">sizeof</span> <span class="n">wire</span> <span class="o">?</span> <span class="s">&#34;</span><span class="se">\n</span><span class="s">&#34;</span> <span class="o">:</span> <span class="s">&#34; &#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>推导输出固定为 <code>01 12 34 01</code>，不依赖 <code>struct Status</code> 在当前编译器下是否有填充。接口约定输入和输出有效且互不重叠；解析失败时不会把部分字段写入调用者对象。字节宽度正确不等于业务内容正确，所以还检查了版本与状态范围。</p>
+<h3 id="112-packed-与-pragma-pack-改变了什么">
+<a class="header-anchor" href="#112-packed-%e4%b8%8e-pragma-pack-%e6%94%b9%e5%8f%98%e4%ba%86%e4%bb%80%e4%b9%88"></a>
+11.2 <code>packed</code> 与 <code>#pragma pack</code> 改变了什么
+</h3><p>打包扩展可以减少填充，却不会自动解决字节序、字段合法性和版本问题，还可能让成员处于非自然对齐的位置。取得这种成员的地址，再通过普通类型指针解引用，在某些目标上会出问题。</p>
+<p>如果特定 ABI 要求打包，应采用目标编译器文档约定，并用 <code>sizeof</code>、<code>offsetof</code> 和静态断言检查。<code>#pragma pack(push, n)</code> 与 <code>#pragma pack(pop)</code> 要配对，避免设置泄漏到后续类型。GCC 对这些指令及其与 <code>packed</code> 属性的相互作用有明确说明，见 <a href="https://gcc.gnu.org/onlinedocs/gcc/Structure-Layout-Pragmas.html">GCC 结构体布局指令文档</a>。</p>
+<p>把任意 <code>unsigned char</code> 接收缓冲区强转成 <code>struct Packet *</code>，还可能违反对齐、有效类型或访问范围要求。普通协议解析优先逐字段读写，不能认为“加了 packed 就全部合法”。</p>
+<h3 id="113-位域表达小整数不承诺可移植的线缆位序">
+<a class="header-anchor" href="#113-%e4%bd%8d%e5%9f%9f%e8%a1%a8%e8%be%be%e5%b0%8f%e6%95%b4%e6%95%b0%e4%b8%8d%e6%89%bf%e8%af%ba%e5%8f%af%e7%a7%bb%e6%a4%8d%e7%9a%84%e7%ba%bf%e7%bc%86%e4%bd%8d%e5%ba%8f"></a>
+11.3 位域表达小整数，不承诺可移植的线缆位序
+</h3><p>下面是声明片段：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">Flags</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">unsigned</span> <span class="kt">int</span> <span class="nl">ready</span> <span class="p">:</span> <span class="mi">1</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">unsigned</span> <span class="kt">int</span> <span class="nl">mode</span> <span class="p">:</span> <span class="mi">3</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">unsigned</span> <span class="kt">int</span> <span class="nl">error</span> <span class="p">:</span> <span class="mi">4</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span></code></pre></div><p>它很适合表达几个有限位宽的状态字段，但具体分配单元、单元内从哪一端开始分配等规则由实现决定，不能假定一定占 1 字节，也不能假定位域声明顺序就是通信协议的位序。</p>
+<p>位域不能单独取地址，也不能直接对位域表达式使用 <code>sizeof</code>。声明为普通 <code>int</code> 的位域还有符号性相关实现差异；明确的无符号字段通常更易理解。</p>
+<p>如果协议规定某位含义，应对明确定义的无符号整数使用掩码和移位；如果映射硬件寄存器，要遵循芯片头文件与编译器的专门约定。</p>
+<h3 id="114-volatile-struct-不等于线程安全">
+<a class="header-anchor" href="#114-volatile-struct-%e4%b8%8d%e7%ad%89%e4%ba%8e%e7%ba%bf%e7%a8%8b%e5%ae%89%e5%85%a8"></a>
+11.4 <code>volatile struct</code> 不等于线程安全
+</h3><p>硬件寄存器映射经常通过含 <code>volatile</code> 成员的结构体表达，让编译器按实现规则保留所需访问。但它不自动提供原子性，不建立线程间同步，也不保证多个字段构成一致快照。</p>
+<p>普通共享结构体被多个线程读写时，需要锁、原子操作或其他明确同步协议；中断与主循环之间也要结合平台采用合适机制。硬件寄存器还可能具有写一清零、读清零等副作用，不能随意进行整个结构体的复制或读改写。</p>
+<p><a href="/post/%E7%BB%93%E6%9E%84%E4%BD%93%E7%BB%86%E8%8A%82%E6%8E%A2%E7%A9%B6/#struct-toc">返回目录</a></p>
+<h2 id="struct-pitfalls">
+<a class="header-anchor" href="#struct-pitfalls"></a>
+12. 常见误区与排错顺序
+</h2><table>
+	<thead>
+			<tr>
+					<th>现象或说法</th>
+					<th>根本问题</th>
+					<th>应该怎样检查</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td>成员之和为 7，大小却为 12</td>
+					<td>忽略内部和尾部填充</td>
+					<td>输出大小、对齐和偏移</td>
+			</tr>
+			<tr>
+					<td>64 位系统的结构体大小固定</td>
+					<td>混淆机器位数与 ABI</td>
+					<td>查询每个实际类型的布局</td>
+			</tr>
+			<tr>
+					<td>指针非空就能访问</td>
+					<td>未证明对象仍然有效</td>
+					<td>检查来源、范围与生命周期</td>
+			</tr>
+			<tr>
+					<td>函数里 <code>p = other</code> 没改变外面的 p</td>
+					<td>改的是局部指针副本</td>
+					<td>传 <code>&amp;p</code> 或返回新指针</td>
+			</tr>
+			<tr>
+					<td>传值以后修改了外部数据</td>
+					<td>副本里的指针仍指向共享目标</td>
+					<td>画出对象与指针关系</td>
+			</tr>
+			<tr>
+					<td>赋值后释放两次崩溃</td>
+					<td>两个副本重复拥有一份资源</td>
+					<td>明确借用、转移或深复制</td>
+			</tr>
+			<tr>
+					<td>数组成员无法直接赋值</td>
+					<td>数组赋值与结构体赋值不同</td>
+					<td>整体赋值或显式复制元素</td>
+			</tr>
+			<tr>
+					<td><code>memcmp</code> 不相等但字段相等</td>
+					<td>对象表示不等于成员语义</td>
+					<td>按业务逐成员比较</td>
+			</tr>
+			<tr>
+					<td>函数指针强转后能编译却崩溃</td>
+					<td>调用签名不兼容</td>
+					<td>修正函数原型，禁止掩盖警告</td>
+			</tr>
+			<tr>
+					<td>返回局部地址偶尔正常</td>
+					<td>对象已结束生命周期</td>
+					<td>返回值或明确持有的对象</td>
+			</tr>
+			<tr>
+					<td>packed 后能直接传网络</td>
+					<td>没有定义外部编码</td>
+					<td>明确字段宽度、字节序和范围</td>
+			</tr>
+			<tr>
+					<td>volatile 解决并发问题</td>
+					<td>缺少原子性与同步</td>
+					<td>使用平台支持的同步协议</td>
+			</tr>
+	</tbody>
+</table>
+<p>排错时沿着五个问题追踪：<strong>这个表达式是什么类型？指向哪个对象？对象现在是否有效？访问的是成员自身还是它指向的目标？谁拥有并释放目标？</strong> 比起盯着十六进制地址猜，这条路径更容易找到根因。</p>
+<p><a href="/post/%E7%BB%93%E6%9E%84%E4%BD%93%E7%BB%86%E8%8A%82%E6%8E%A2%E7%A9%B6/#struct-toc">返回目录</a></p>
+<h2 id="struct-exercises">
+<a class="header-anchor" href="#struct-exercises"></a>
+13. 动手练习与参考答案
+</h2><p>先独立回答，再查看答案。练习中的代码片段不作为完整程序提供。</p>
+<h3 id="131-手算一个含-double-的布局">
+<a class="header-anchor" href="#131-%e6%89%8b%e7%ae%97%e4%b8%80%e4%b8%aa%e5%90%ab-double-%e7%9a%84%e5%b8%83%e5%b1%80"></a>
+13.1 手算一个含 <code>double</code> 的布局
+</h3><p>在 <code>char</code> 大小/对齐为 1/1、<code>short</code> 为 2/2、<code>double</code> 为 8/8，采用普通自然布局的条件下：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">Example</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">char</span> <span class="n">a</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">double</span> <span class="n">b</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">short</span> <span class="n">c</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">};</span>
+</span></span></code></pre></div><p>求各成员偏移、整体对齐、总大小，以及两个元素的数组大小。</p>
+<p><strong>答案：</strong> 偏移依次为 0、8、16；整体对齐为 8；最后一个成员结束位置为 18，向上补齐得到 24；两个元素占 48。若改为 <code>double b; short c; char a;</code>，偏移为 0、8、10，大小为 16。改变平台假设后必须重新计算。</p>
+<h3 id="132-参数只差一个星号效果差多少">
+<a class="header-anchor" href="#132-%e5%8f%82%e6%95%b0%e5%8f%aa%e5%b7%ae%e4%b8%80%e4%b8%aa%e6%98%9f%e5%8f%b7%e6%95%88%e6%9e%9c%e5%b7%ae%e5%a4%9a%e5%b0%91"></a>
+13.2 参数只差一个星号，效果差多少
+</h3><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="cm">/* 需要先定义 struct Node。 */</span>
+</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">reset_local</span><span class="p">(</span><span class="k">struct</span> <span class="n">Node</span> <span class="o">*</span><span class="n">p</span><span class="p">)</span> <span class="p">{</span> <span class="n">p</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span> <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">reset_caller</span><span class="p">(</span><span class="k">struct</span> <span class="n">Node</span> <span class="o">**</span><span class="n">p</span><span class="p">)</span> <span class="p">{</span> <span class="o">*</span><span class="n">p</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span> <span class="p">}</span>
+</span></span></code></pre></div><p>设 <code>head</code> 原本非空，依次调用 <code>reset_local(head)</code>、<code>reset_caller(&amp;head)</code> 后，<code>head</code> 分别是什么？原节点释放了吗？</p>
+<p><strong>答案：</strong> 第一次调用后 <code>head</code> 不变，第二次调用后为空。这两个函数都没有释放任何节点；如果 <code>head</code> 是访问该链表的唯一入口，直接清空会丢失资源。还应为第二个函数规定参数 <code>p</code> 必须非空，或加检查。</p>
+<h3 id="133-看起来只读为什么还能修改数据">
+<a class="header-anchor" href="#133-%e7%9c%8b%e8%b5%b7%e6%9d%a5%e5%8f%aa%e8%af%bb%e4%b8%ba%e4%bb%80%e4%b9%88%e8%bf%98%e8%83%bd%e4%bf%ae%e6%94%b9%e6%95%b0%e6%8d%ae"></a>
+13.3 看起来“只读”，为什么还能修改数据
+</h3><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">Data</span> <span class="p">{</span> <span class="kt">int</span> <span class="o">*</span><span class="n">value</span><span class="p">;</span> <span class="p">};</span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="n">n</span> <span class="o">=</span> <span class="mi">5</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="k">struct</span> <span class="n">Data</span> <span class="n">data</span> <span class="o">=</span> <span class="p">{.</span><span class="n">value</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">n</span><span class="p">};</span>
+</span></span><span class="line"><span class="cl"><span class="k">const</span> <span class="k">struct</span> <span class="n">Data</span> <span class="o">*</span><span class="n">p</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">data</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="o">*</span><span class="n">p</span><span class="o">-&gt;</span><span class="n">value</span> <span class="o">=</span> <span class="mi">8</span><span class="p">;</span>
+</span></span></code></pre></div><p>最后一行合法吗？怎样从这个接口禁止写入 <code>n</code>？</p>
+<p><strong>答案：</strong> 合法，<code>const</code> 限制的是结构体成员本身。把成员类型改为 <code>const int *value</code>，就不能经由 <code>p-&gt;value</code> 写目标；其他可写别名仍可能修改 <code>n</code>。</p>
+<h3 id="134-深复制究竟复制到哪里">
+<a class="header-anchor" href="#134-%e6%b7%b1%e5%a4%8d%e5%88%b6%e7%a9%b6%e7%ab%9f%e5%a4%8d%e5%88%b6%e5%88%b0%e5%93%aa%e9%87%8c"></a>
+13.4 深复制究竟复制到哪里
+</h3><p>给定 <code>struct Item { char name[16]; int *scores; };</code>，执行 <code>b = a</code> 后修改 <code>b.name[0]</code>、<code>b.scores[0]</code>，哪些变化会通过 <code>a</code> 看到？</p>
+<p><strong>答案：</strong> <code>name</code> 是两份内嵌数组，前一种不会改变 <code>a.name</code>；<code>scores</code> 默认指向同一个数组，后一种会通过 <code>a.scores</code> 看到。前提是指针有效且至少有一个可写元素。若要独立修改分数，要有长度信息并单独分配、复制数组。</p>
+<h3 id="135-修改设备实验来检验接口边界">
+<a class="header-anchor" href="#135-%e4%bf%ae%e6%94%b9%e8%ae%be%e5%a4%87%e5%ae%9e%e9%aa%8c%e6%9d%a5%e6%a3%80%e9%aa%8c%e6%8e%a5%e5%8f%a3%e8%be%b9%e7%95%8c"></a>
+13.5 修改设备实验来检验接口边界
+</h3><p>在第 9 节中依次做三种修改：把 <code>left.on_changed</code> 设为空；把 <code>left.ops</code> 设为空；把目标转速改成 3000 和 3001。先预测状态和通知次数，再运行。</p>
+<p><strong>答案：</strong> 回调为空仍允许有效设置，只是不通知；操作表为空时返回失败，目标保持原值；3000 成功、3001 失败。不同变体建议每次从初始化状态重新运行，避免前一次状态干扰判断。</p>
+<h3 id="136-一个看似省事的协议实现">
+<a class="header-anchor" href="#136-%e4%b8%80%e4%b8%aa%e7%9c%8b%e4%bc%bc%e7%9c%81%e4%ba%8b%e7%9a%84%e5%8d%8f%e8%ae%ae%e5%ae%9e%e7%8e%b0"></a>
+13.6 一个看似省事的协议实现
+</h3><p>有人建议直接 <code>memcpy(wire, &amp;status, sizeof status)</code> 发送第 11 节的状态，这样就不用写编码函数。至少列出三个失败条件。</p>
+<p><strong>答案：</strong> <code>wire</code> 可能只有 4 字节而结构体更大，造成越界；成员间可能有填充；16 位编号在内存中的字节序不一定符合协议；以后成员重排或类型变化会悄悄改变格式；无业务意义的填充也可能被发送。逐字段编码把协议与内部布局分开，并提供输入范围检查。</p>
+<p><a href="/post/%E7%BB%93%E6%9E%84%E4%BD%93%E7%BB%86%E8%8A%82%E6%8E%A2%E7%A9%B6/#struct-toc">返回目录</a></p>
+<h2 id="struct-references">
+<a class="header-anchor" href="#struct-references"></a>
+14. 如何运行实验，如何查证结论
+</h2><h3 id="141-每个完整程序单独保存和编译">
+<a class="header-anchor" href="#141-%e6%af%8f%e4%b8%aa%e5%ae%8c%e6%95%b4%e7%a8%8b%e5%ba%8f%e5%8d%95%e7%8b%ac%e4%bf%9d%e5%ad%98%e5%92%8c%e7%bc%96%e8%af%91"></a>
+14.1 每个完整程序单独保存和编译
+</h3><p>本文标注为“完整程序”的代码块各有自己的 <code>main</code>，应分别保存，不要把所有代码直接拼进一个文件。其余代码块是类型、接口、函数片段或明确标注的错误示例，需要相应上下文。</p>
+<p>如果环境已安装 GCC，可在实验文件所在目录使用：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-powershell" data-lang="powershell"><span class="line"><span class="cl"><span class="n">gcc</span> <span class="n">-std</span><span class="p">=</span><span class="n">c11</span> <span class="n">-Wall</span> <span class="n">-Wextra</span> <span class="n">-Wpedantic</span> <span class="n">-O0</span> <span class="n">-g</span> <span class="n">layout</span><span class="p">.</span><span class="py">c</span> <span class="n">-o</span> <span class="n">layout</span><span class="p">.</span><span class="py">exe</span>
+</span></span><span class="line"><span class="cl"><span class="p">.\</span><span class="n">layout</span><span class="p">.</span><span class="py">exe</span>
+</span></span></code></pre></div><p>其他完整程序只需替换文件名。Clang 可使用相近选项；支持 C11 的 MSVC 可在其开发者命令提示符中使用 <code>cl /std:c11 /W4 /TC layout.c</code>。错误示例应单独编译观察诊断，不要混进正确程序。</p>
+<p>建议依次完成以下观察：</p>
+<ol>
+<li>运行 <code>layout.c</code>，记录类型大小、对齐与成员偏移，再和手算比较。</li>
+<li>运行 <code>passing.c</code>，在每次调用前后画出 <code>p</code>、<code>a</code>、<code>b</code> 的关系。</li>
+<li>对比 <code>copy.c</code> 与 <code>clone.c</code>，确认改变目标数据时是否影响源对象。</li>
+<li>运行 <code>function_pointer.c</code> 与 <code>device.c</code>，观察函数指针赋值与实际调用的区别。</li>
+<li>运行 <code>list.c</code>，确认头插顺序和清理责任；运行 <code>wire.c</code>，确认字节序与往返一致。</li>
+</ol>
+<p>条件允许时，在支持的平台上启用 AddressSanitizer、UndefinedBehaviorSanitizer 等工具辅助发现越界、释放后使用和部分未定义行为。它们不能证明所有代码正确，也不能代替接口和所有权设计。</p>
+<p><strong>验证范围说明：</strong> 本文的布局数值基于明确给出的教学假设；示例输出是按代码推导的预期结果。本次写作环境未提供可用的 C 编译器，因此不把这些程序标记为已在本机编译运行。请在自己的目标工具链上复现实验，尤其是涉及布局和 ABI 的部分。</p>
+<h3 id="142-阅读原始资料时区分语言规则与扩展">
+<a class="header-anchor" href="#142-%e9%98%85%e8%af%bb%e5%8e%9f%e5%a7%8b%e8%b5%84%e6%96%99%e6%97%b6%e5%8c%ba%e5%88%86%e8%af%ad%e8%a8%80%e8%a7%84%e5%88%99%e4%b8%8e%e6%89%a9%e5%b1%95"></a>
+14.2 阅读原始资料时区分语言规则与扩展
+</h3><table>
+	<thead>
+			<tr>
+					<th>资料</th>
+					<th>适合核对的内容</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td><a href="https://www.open-std.org/jtc1/sc22/wg14/www/docs/n1570.pdf">WG14 C11 委员会草案 N1570</a></td>
+					<td>6.2.4 生命周期；6.5.2.2 调用；6.5.2.3 成员；6.7.2.1 结构体与柔性数组；7.19 <code>offsetof</code></td>
+			</tr>
+			<tr>
+					<td><a href="https://learn.microsoft.com/en-us/cpp/c-language/structure-declarations?view=msvc-170">Microsoft：结构体声明</a></td>
+					<td>类型声明、自引用指针与不完整类型</td>
+			</tr>
+			<tr>
+					<td><a href="https://learn.microsoft.com/en-us/cpp/c-language/structure-and-union-members?view=msvc-170">Microsoft：成员选择</a></td>
+					<td>点、箭头及其等价关系</td>
+			</tr>
+			<tr>
+					<td><a href="https://www.gnu.org/software/c-intro-and-ref/manual/html_node/Structure-Assignment.html">GNU：结构体赋值</a></td>
+					<td>固定数组成员与整体赋值</td>
+			</tr>
+			<tr>
+					<td><a href="https://www.gnu.org/software/c-intro-and-ref/manual/html_node/Function-Pointers.html">GNU：函数指针</a></td>
+					<td>函数指针的声明、赋值与调用</td>
+			</tr>
+			<tr>
+					<td><a href="https://gcc.gnu.org/onlinedocs/gcc/Structure-Layout-Pragmas.html">GCC：结构体布局指令</a></td>
+					<td><code>#pragma pack</code> 等实现扩展</td>
+			</tr>
+	</tbody>
+</table>
+<p>N1570 是公开的委员会草案，用于核对本文 C11 规则，不应把它当成最新语言版本或所有编译器扩展的说明。GNU 与 Microsoft 的文档还包含实现相关内容，遇到打包、特殊对齐或函数指针转换时，应回到自己的目标工具链核对。</p>
+<p>学习时保留一条检查习惯：看到结构体，先区分<strong>直接包含的数据、借用的目标、拥有的资源和可调用的行为</strong>。把这四者画清楚，内存、传参、复制和接口设计就能放到同一张图上理解。</p>
+<p><a href="/post/%E7%BB%93%E6%9E%84%E4%BD%93%E7%BB%86%E8%8A%82%E6%8E%A2%E7%A9%B6/#struct-toc">返回目录</a></p>
+</div>
+    <footer class="article-footer"><ul class="article-category-list"><li class="article-tag-list-item" data-aos="zoom-in">
+    <a
+      class="article-category-link"
+      href="/categories/c%e8%af%ad%e8%a8%80"
+      data-aos="zoom-in"
+      >C语言</a
+    >
+    </li></ul>
+<ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item" data-aos="zoom-in">
+      <a
+        class="article-tag-list-link"
+        href="/tags/%e7%bb%93%e6%9e%84%e4%bd%93"
+        rel="tag"
+        >结构体</a
+      >
+    </li><li class="article-tag-list-item" data-aos="zoom-in">
+      <a
+        class="article-tag-list-link"
+        href="/tags/%e8%80%83%e7%82%b9"
+        rel="tag"
+        >考点</a
+      >
+    </li></ul>
+</footer>
+  </div><nav
+    id="article-nav"
+    aria-label="Article navigation"
+    data-aos="fade-up"
+  ><div class="article-nav-link-wrap left"><img
+            data-src="/images/cover/%e5%88%9d%e8%a7%81%e7%b4%ab%e7%81%b5.jpg"
+            data-sizes="auto"
+            alt="PID参数整定方法"
+            class="lazyload"
+          /><a
+          href="/post/pid%E5%8F%82%E6%95%B0%E6%95%B4%E5%AE%9A%E6%96%B9%E6%B3%95/"
+          aria-label="前一篇:PID参数整定方法"
+          title="前一篇:PID参数整定方法"
+        ></a>
+        <div class="article-nav-caption">前一篇</div>
+        <h3 class="article-nav-title">PID参数整定方法</h3>
+      </div></nav></article></section>
+        </div><footer id="footer" aria-label="Site footer">
+  <div style="width: 100%; overflow: hidden">
+    <div class="footer-line"></div>
+  </div>
+  <div id="footer-info"><div>
+      <span class="icon-copyright"></span>2020-2026<span class="footer-info-sep rotate"></span>云想衣裳花想荣
+    </div><div>
+        <span class="icon-brush"
+          >&nbsp;53.2k</span
+        >
+        &nbsp;|&nbsp;
+        <span class="icon-coffee">&nbsp;01:49</span>
+      </div></div>
+</footer>
+<div id="mask" class="hide"></div>
+      </div><nav id="mobile-nav" aria-label="Mobile navigation">
+  <div class="sidebar-wrap"><div class="sidebar-toc-sidebar"><h3 class="toc-title">文章目录</h3>
+<div class="sidebar-toc-wrapper toc-div-class">
+  <nav id="TableOfContents">
+  <ul>
+    <li><a href="#struct-toc">阅读导航</a></li>
+    <li><a href="#struct-basics">1. 结构体类型、结构体对象和结构体指针</a>
+      <ul>
+        <li><a href="#11-为什么需要把数据组成一个对象">1.1 为什么需要把数据组成一个对象</a></li>
+        <li><a href="#12-typedef-是别名不是创建对象">1.2 <code>typedef</code> 是别名，不是创建对象</a></li>
+        <li><a href="#13-初始化解决的是成员值不是内存的所有字节">1.3 初始化解决的是成员值，不是内存的所有字节</a></li>
+      </ul>
+    </li>
+    <li><a href="#struct-layout">2. 内存布局：成员为什么不一定紧挨着</a>
+      <ul>
+        <li><a href="#21-先区分标准规则与平台约定">2.1 先区分标准规则与平台约定</a></li>
+        <li><a href="#22-对齐到底约束什么">2.2 对齐到底约束什么</a></li>
+        <li><a href="#23-用递推式复算任意普通结构体">2.3 用递推式复算任意普通结构体</a></li>
+        <li><a href="#24-为什么末尾也要补齐看结构体数组">2.4 为什么末尾也要补齐：看结构体数组</a></li>
+        <li><a href="#25-重排和嵌套怎么计算">2.5 重排和嵌套怎么计算</a></li>
+      </ul>
+    </li>
+    <li><a href="#struct-layout-lab">3. 完整实验：亲眼观察大小、偏移和地址</a></li>
+    <li><a href="#struct-access">4. 成员访问：从表达式一直追到目标对象</a>
+      <ul>
+        <li><a href="#41-点和箭头由左边的类型决定">4.1 点和箭头由左边的类型决定</a></li>
+        <li><a href="#42-四种表达式不要混在一起">4.2 四种表达式不要混在一起</a></li>
+        <li><a href="#43-嵌套访问时逐段看类型">4.3 嵌套访问时逐段看类型</a></li>
+        <li><a href="#44-数组优先级与有效访问">4.4 数组、优先级与有效访问</a></li>
+      </ul>
+    </li>
+    <li><a href="#struct-parameters">5. 传结构体、传指针、传二级指针分别改变什么</a>
+      <ul>
+        <li><a href="#51-c-的实参都是按值传递">5.1 C 的实参都是按值传递</a></li>
+        <li><a href="#52-按任务选择接口">5.2 按任务选择接口</a></li>
+        <li><a href="#53-const-限制到哪一层">5.3 <code>const</code> 限制到哪一层</a></li>
+        <li><a href="#54-值返回没有错指针也不保证更快">5.4 值返回没有错，指针也不保证更快</a></li>
+      </ul>
+    </li>
+    <li><a href="#struct-copy">6. 结构体复制：成员复制了，资源不一定复制</a>
+      <ul>
+        <li><a href="#61-数组成员与指针成员的差别">6.1 数组成员与指针成员的差别</a></li>
+        <li><a href="#62-浅复制不是错误所有权不清楚才危险">6.2 浅复制不是错误，所有权不清楚才危险</a></li>
+        <li><a href="#63-完整示例独立复制动态数组">6.3 完整示例：独立复制动态数组</a></li>
+        <li><a href="#64-为什么-memcmp-不能代替结构体相等">6.4 为什么 <code>memcmp</code> 不能代替结构体相等</a></li>
+      </ul>
+    </li>
+    <li><a href="#struct-lifetime">7. 生命周期：地址存在过，不代表现在还能用</a>
+      <ul>
+        <li><a href="#71-结构体并不天然属于栈">7.1 结构体并不天然属于“栈”</a></li>
+        <li><a href="#72-返回值可以返回局部对象地址不可以">7.2 返回值可以，返回局部对象地址不可以</a></li>
+        <li><a href="#73-释放与重新分配会影响所有别名">7.3 释放与重新分配会影响所有别名</a></li>
+        <li><a href="#74-函数保存你的指针时要问保存多久">7.4 函数保存你的指针时，要问保存多久</a></li>
+      </ul>
+    </li>
+    <li><a href="#struct-function-pointer">8. 函数指针：结构体怎样关联行为</a>
+      <ul>
+        <li><a href="#81-先把声明读懂">8.1 先把声明读懂</a></li>
+        <li><a href="#82-结构体里存的是函数指针不是函数体">8.2 结构体里存的是函数指针，不是函数体</a></li>
+        <li><a href="#83-调用签名必须匹配">8.3 调用签名必须匹配</a></li>
+        <li><a href="#84-为什么回调通常配一个上下文指针">8.4 为什么回调通常配一个上下文指针</a></li>
+      </ul>
+    </li>
+    <li><a href="#struct-device">9. 完整工程案例：状态、操作表和回调协同工作</a>
+      <ul>
+        <li><a href="#91-要解决的实际问题">9.1 要解决的实际问题</a></li>
+        <li><a href="#92-可以单独保存运行的程序">9.2 可以单独保存运行的程序</a></li>
+        <li><a href="#93-把一次调用拆开看">9.3 把一次调用拆开看</a></li>
+        <li><a href="#94-每个实例内放函数指针还是共享操作表">9.4 每个实例内放函数指针，还是共享操作表</a></li>
+      </ul>
+    </li>
+    <li><a href="#struct-applications">10. 结构体在数据组织和模块设计中的应用</a>
+      <ul>
+        <li><a href="#101-配置状态与结果分开组织">10.1 配置、状态与结果分开组织</a></li>
+        <li><a href="#102-链表为什么需要二级指针">10.2 链表为什么需要二级指针</a></li>
+        <li><a href="#103-柔性数组一个分配里放头部和变长数据">10.3 柔性数组：一个分配里放头部和变长数据</a></li>
+        <li><a href="#104-不透明结构体把实现细节藏在模块里">10.4 不透明结构体：把实现细节藏在模块里</a></li>
+        <li><a href="#105-大量数据结构体数组和成员数组">10.5 大量数据：结构体数组和成员数组</a></li>
+      </ul>
+    </li>
+    <li><a href="#struct-boundaries">11. 协议、位域和硬件寄存器的边界</a>
+      <ul>
+        <li><a href="#111-为什么不能直接发送-sizeofstruct-个字节">11.1 为什么不能直接发送 <code>sizeof(struct)</code> 个字节</a></li>
+        <li><a href="#112-packed-与-pragma-pack-改变了什么">11.2 <code>packed</code> 与 <code>#pragma pack</code> 改变了什么</a></li>
+        <li><a href="#113-位域表达小整数不承诺可移植的线缆位序">11.3 位域表达小整数，不承诺可移植的线缆位序</a></li>
+        <li><a href="#114-volatile-struct-不等于线程安全">11.4 <code>volatile struct</code> 不等于线程安全</a></li>
+      </ul>
+    </li>
+    <li><a href="#struct-pitfalls">12. 常见误区与排错顺序</a></li>
+    <li><a href="#struct-exercises">13. 动手练习与参考答案</a>
+      <ul>
+        <li><a href="#131-手算一个含-double-的布局">13.1 手算一个含 <code>double</code> 的布局</a></li>
+        <li><a href="#132-参数只差一个星号效果差多少">13.2 参数只差一个星号，效果差多少</a></li>
+        <li><a href="#133-看起来只读为什么还能修改数据">13.3 看起来“只读”，为什么还能修改数据</a></li>
+        <li><a href="#134-深复制究竟复制到哪里">13.4 深复制究竟复制到哪里</a></li>
+        <li><a href="#135-修改设备实验来检验接口边界">13.5 修改设备实验来检验接口边界</a></li>
+        <li><a href="#136-一个看似省事的协议实现">13.6 一个看似省事的协议实现</a></li>
+      </ul>
+    </li>
+    <li><a href="#struct-references">14. 如何运行实验，如何查证结论</a>
+      <ul>
+        <li><a href="#141-每个完整程序单独保存和编译">14.1 每个完整程序单独保存和编译</a></li>
+        <li><a href="#142-阅读原始资料时区分语言规则与扩展">14.2 阅读原始资料时区分语言规则与扩展</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+</div></div>
+        <div class="sidebar-common-sidebar hidden"><div class="sidebar-author">
+  <img
+    data-src="/avatar/avatar.webp"
+    data-sizes="auto"
+    alt="云想衣裳花想荣"
+    class="lazyload"
+  />
+  <div class="sidebar-author-name">云想衣裳花想荣</div>
+  <div class="sidebar-description">嵌入式开发学习笔记，技术分享</div>
+</div>
+<div class="sidebar-state">
+  <div class="sidebar-state-article">
+    <div>文章</div><div class="sidebar-state-number">6</div>
+  </div>
+  <a class="sidebar-state-category" href="/categories/" aria-label="sidebar-state-category-link">
+    <div>分类</div>
+    <div class="sidebar-state-number">
+      6
+    </div>
+  </a>
+  <a class="sidebar-state-tag" href="/tags/" aria-label="sidebar-state-tag-link">
+    <div>标签</div>
+    <div class="sidebar-state-number">15</div>
+  </a>
+</div>
+<div class="sidebar-social" ></div><div class="sidebar-menu"><div class="sidebar-menu-link-wrap">
+      <a
+        class="sidebar-menu-link-dummy"
+        href="/"
+        aria-label="首页"
+      ></a><div class="sidebar-menu-link">首页</div>
+    </div><div class="sidebar-menu-link-wrap">
+      <a
+        class="sidebar-menu-link-dummy"
+        href="/archives"
+        aria-label="归档"
+      ></a><div class="sidebar-menu-link">归档</div>
+    </div><div class="sidebar-menu-link-wrap">
+      <a
+        class="sidebar-menu-link-dummy"
+        href="/about"
+        aria-label="关于"
+      ></a><div class="sidebar-menu-link">关于</div>
+    </div><div class="sidebar-menu-link-wrap">
+      <a
+        class="sidebar-menu-link-dummy"
+        href="/friend"
+        aria-label="友链"
+      ></a><div class="sidebar-menu-link">友链</div>
+    </div></div></div></div><div class="sidebar-btn-wrapper">
+        <div class="sidebar-toc-btn current"></div>
+        <div class="sidebar-common-btn"></div>
+      </div></nav>
+</div><script
+    src="https://npm.webcache.cn/lazysizes@5.3.2/lazysizes.min.js"
+    
+    
+    
+    
+    integrity="sha384-3gT/vsepWkfz/ff7PpWNUeMzeWoH3cDhm/A8jM7ouoAK0/fP/9bcHHR5kHq2nf&#43;e" crossorigin="anonymous"></script><script
+    src="https://npm.webcache.cn/clipboard@2.0.11/dist/clipboard.min.js"
+    
+    
+    
+    
+    integrity="sha384-J08i8An/QeARD9ExYpvphB8BsyOj3Gh2TSh1aLINKO3L0cMSH2dN3E22zFoXEi0Q" crossorigin="anonymous"></script><script
+    src="https://npm.webcache.cn/material-theme@1.0.0/dist/material-theme.umd.js"
+    
+    
+    
+    
+    integrity="sha384-vLev0II0HKFaxkcm&#43;/7kX5IGwVFBASkGchU311wmU/veIj2bB0UcBkQbW6yw2asK" crossorigin="anonymous"></script><script src="/js/main.js"  ></script><script src="/js/aos.js"  ></script><script>
+    var aosInit = () => {
+      AOS.init({
+        duration: 1000,
+        easing: "ease",
+        once: true,
+        offset: 50,
+      });
+    };
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", aosInit);
+    } else {
+      aosInit();
+    }
+  </script><script src="/js/pjax_main.js" data-pjax ></script>
+
+<div id="lazy-script">
+  <div><script data-pjax>
+        window.REIMU_POST = {
+          author: "云想衣裳花想荣",
+          title: "【结构体】探究",
+          url: "http:\/\/localhost:1313\/post\/%E7%BB%93%E6%9E%84%E4%BD%93%E7%BB%86%E8%8A%82%E6%8E%A2%E7%A9%B6\/",
+          description: "从内存布局与对齐出发，理解成员访问、值与指针传参、浅深复制、生命周期和函数指针，并用设备接口案例学习结构体的工程应用。",
+          cover: "http:\/\/localhost:1313\/images\/cover\/%E9%9F%A9%E7%AB%8B%E7%BD%91%E5%9B%BE%E5%A3%81%E7%BA%B8.jpg",
+        };
+      </script><script src="/js/insert_highlight.js" data-pjax ></script><script src="/js/tabs.js" data-pjax defer></script><script type="module" data-pjax>const PhotoSwipeLightbox = (await safeImport("https:\/\/npm.webcache.cn\/photoswipe@5.4.4\/dist\/photoswipe-lightbox.esm.min.js", "sha384-DiL6M\/gG\u002bwmTxmCRZyD1zee6lIhawn5TGvED0FOh7fXcN9B0aZ9dexSF\/N6lrZi\/")).default;const initPswp = (gallery, children) => {
+          if (_$$(`${gallery} ${children}`).length > 0) {
+            new PhotoSwipeLightbox({
+              gallery,
+              children,pswpModule: () => safeImport("https:\/\/npm.webcache.cn\/photoswipe@5.4.4\/dist\/photoswipe.esm.min.js", "sha384-WkkO3GCmgkC3VQWpaV8DqhKJqpzpF9JoByxDmnV8\u002boTJ7m3DfYEWX1fu1scuS4\u002bs")}).init();
+          }
+        }
+        const pswp = () => {
+          initPswp('.article-entry', 'a.article-gallery-item');
+          initPswp('.article-gallery', 'a.article-gallery-item');
+        }
+        pswp()
+      </script><script
+    src="https://npm.webcache.cn/katex@0.16.47/dist/katex.min.js"
+    
+    
+    data-pjax
+    
+    integrity="sha384-CwjPRVHTvLiMBFjEoij&#43;QZViMV5rhTOIp7CJzl24JEqpRDA1sJFHVXXLURktbYYp" crossorigin="anonymous"></script><script
+    src="https://npm.webcache.cn/katex@0.16.47/dist/contrib/auto-render.min.js"
+    
+    
+    data-pjax
+    
+    integrity="sha384-bjyGPfbij8/NDKJhSGZNP/khQVgtHUE5exjm4Ydllo42FwIgYsdLO2lXGmRBf5Mz" crossorigin="anonymous"></script><script data-pjax>
+          var renderMath = () => {
+            if (!window.renderMathInElement) return;
+            window.renderMathInElement(_$("article"), {
+              delimiters: [
+                { left: "$$", right: "$$", display: true },
+                { left: "\\[", right: "\\]", display: true },
+                { left: "$", right: "$", display: false },
+                { left: "\\(", right: "\\)", display: false },
+              ],
+            });
+            window.katexTagOverflowHandler?.();
+          };
+          if (document.readyState === "loading") {
+            document.addEventListener("DOMContentLoaded", renderMath, { once: true });
+          } else {
+            renderMath();
+          }
+        </script></div>
+</div><script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.getRegistrations().then((registrations) => {
+        for (let registration of registrations) {
+          registration.unregister();
+        }
+      });
+    }
+  </script><script>
+  const reimuCopyright = String.raw`
+   ______     ______     __     __    __     __  __    
+  /\  == \   /\  ___\   /\ \   /\ "-./  \   /\ \/\ \   
+  \ \  __<   \ \  __\   \ \ \  \ \ \-./\ \  \ \ \_\ \  
+   \ \_\ \_\  \ \_____\  \ \_\  \ \_\ \ \_\  \ \_____\ 
+    \/_/ /_/   \/_____/   \/_/   \/_/  \/_/   \/_____/ 
+                                                    
+  `;
+  console.log(String.raw`%c ${reimuCopyright}`, "color: #ff5252;");
+  console.log(
+    "%c Theme.Reimu" + " %c https://github.com/D-Sketon/hugo-theme-reimu ",
+    "color: white; background: #ff5252; padding:5px 0;",
+    "padding:4px;border:1px solid #ff5252;",
+  );
+</script><script
+    src="https://npm.webcache.cn/pangu@4.0.7/dist/browser/pangu.min.js"
+    
+    
+    
+    
+    integrity="sha384-HeUHqi0nVsPUm/E0ss7OfnIV/yD96JWB8ehZvUuoVax9DpNHL17jj9pdfXHzqDxm" crossorigin="anonymous"></script><script data-pjax>
+    if (document.readyState === "loading") {
+      document.addEventListener('DOMContentLoaded', () => {
+        pangu?.spacingPage();
+      });
+    } else {
+      pangu?.spacingPage();
+    }
+  </script></body>
+</html>

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>C语言 on 博客首页</title>
+    <link>http://localhost:1313/categories/c%E8%AF%AD%E8%A8%80/</link>
+    <description>Recent content from 博客首页</description>
+    <generator>Hugo</generator>
+    <language>zh-CN</language>
+    
+    <managingEditor>zennaro.zhang@outlook.com (云想衣裳花想荣)</managingEditor>
+    <webMaster>zennaro.zhang@outlook.com (云想衣裳花想荣)</webMaster>
+    
+    <copyright>本博客所有文章除特别声明外，均采用 BY-NC-SA 许可协议。转载请注明出处！</copyright>
+    
+    <lastBuildDate>Wed, 21 Oct 2026 00:00:00 +0000</lastBuildDate>
+    
+    
+    <atom:link href="http://localhost:1313/categories/c%E8%AF%AD%E8%A8%80/index.xml" rel="self" type="application/rss&#43;xml" />
+    
+
+    
+    
+
+    <item>
+      <title>【结构体】探究</title>
+      <link>http://localhost:1313/post/%E7%BB%93%E6%9E%84%E4%BD%93%E7%BB%86%E8%8A%82%E6%8E%A2%E7%A9%B6/</link>
+      <pubDate>Wed, 21 Oct 2026 00:00:00 &#43;0800</pubDate>
+      <author>zennaro.zhang@outlook.com (云想衣裳花想荣)</author>
+      <guid>http://localhost:1313/post/%E7%BB%93%E6%9E%84%E4%BD%93%E7%BB%86%E8%8A%82%E6%8E%A2%E7%A9%B6/</guid>
+      <description>
+        <![CDATA[<h1>【结构体】探究</h1><p>作者：云想衣裳花想荣（zennaro.zhang@outlook.com）</p>
+        
+          <p>刚开始学结构体时，常见写法只有两句：用 <code>struct</code> 把数据放在一起，用 <code>.</code> 或 <code>-&gt;</code> 访问成员。但真正写程序以后，问题会接连出现：三个成员加起来只有 7 字节，为什么结构体占 12 字节？函数已经收到了指针，为什么不能替调用者修改指针？复制一个结构体后，为什么两个对象还是共享一块内存？一个结构体里怎么还能放“函数”？</p>
+        
+        <hr><p>本文2026-10-21首发于<a href='http://localhost:1313/'>博客首页</a>，最后修改于2026-10-21</p>]]>
+      </description>
+      
+        <category>C语言</category>
+      
+    </item>
+    
+  </channel>
+</rss>
