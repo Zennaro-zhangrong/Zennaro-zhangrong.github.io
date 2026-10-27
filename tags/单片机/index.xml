@@ -12,12 +12,32 @@
     
     <copyright>本博客所有文章除特别声明外，均采用 BY-NC-SA 许可协议。转载请注明出处！</copyright>
     
-    <lastBuildDate>Fri, 20 Mar 2026 00:00:00 +0800</lastBuildDate>
+    <lastBuildDate>Tue, 27 Oct 2026 00:00:00 +0800</lastBuildDate>
     
     
     <atom:link href="http://localhost:1313/tags/%E5%8D%95%E7%89%87%E6%9C%BA/index.xml" rel="self" type="application/rss&#43;xml" />
     
 
+    
+    
+
+    <item>
+      <title>嵌入式笔试面试高频问答：单片机、FreeRTOS、软件架构与 C 语言</title>
+      <link>http://localhost:1313/post/%E5%B5%8C%E5%85%A5%E5%BC%8F%E7%AC%94%E8%AF%95%E9%9D%A2%E8%AF%95%E9%AB%98%E9%A2%91%E9%97%AE%E7%AD%94%E5%8D%95%E7%89%87%E6%9C%BAfreertos%E8%BD%AF%E4%BB%B6%E6%9E%B6%E6%9E%84%E4%B8%8Ec%E8%AF%AD%E8%A8%80/</link>
+      <pubDate>Tue, 27 Oct 2026 00:00:00 &#43;0800</pubDate>
+      <author>zennaro.zhang@outlook.com (云想衣裳花想荣)</author>
+      <guid>http://localhost:1313/post/%E5%B5%8C%E5%85%A5%E5%BC%8F%E7%AC%94%E8%AF%95%E9%9D%A2%E8%AF%95%E9%AB%98%E9%A2%91%E9%97%AE%E7%AD%94%E5%8D%95%E7%89%87%E6%9C%BAfreertos%E8%BD%AF%E4%BB%B6%E6%9E%B6%E6%9E%84%E4%B8%8Ec%E8%AF%AD%E8%A8%80/</guid>
+      <description>
+        <![CDATA[<h1>嵌入式笔试面试高频问答：单片机、FreeRTOS、软件架构与 C 语言</h1><p>作者：云想衣裳花想荣（zennaro.zhang@outlook.com）</p>
+        
+          <p>面试题如果只背一句定义，很容易在追问“为什么”“什么情况下不成立”时卡住。本文按“<strong>单片机如何执行 → C 如何表达数据 → 软件如何划分职责 → FreeRTOS 如何安排并发</strong>”组织学习。每个模块先建立原理模型，再用高频题复习，最后用有答案的自测检查理解。原有 62 道问答和场景题保留，并增加一个贯穿四个模块的采集控制案例。</p>
+        
+        <hr><p>本文2026-10-27首发于<a href='http://localhost:1313/'>博客首页</a>，最后修改于2026-10-27</p>]]>
+      </description>
+      
+        <category>嵌入式</category>
+      
+    </item>
     
     
 

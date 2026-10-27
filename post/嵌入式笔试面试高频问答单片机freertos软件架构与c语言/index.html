@@ -1,0 +1,1748 @@
+<!doctype html>
+<html
+  lang="zh-CN"data-theme-mode="auto"
+>
+  <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8" />
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1, shrink-to-fit=no"
+/><title>
+  嵌入式笔试面试高频问答：单片机、FreeRTOS、软件架构与 C 语言 | 云想衣裳花想荣
+</title>
+<meta name="description" content="从硬件执行、C语言内存模型、模块职责到FreeRTOS并发，通过62道高频题、推演、自测和采集控制案例建立完整的嵌入式知识体系。"/><script>
+  window.siteConfig = JSON.parse("{\"anchor\":{\"auto\":{\"enable\":false,\"length\":60},\"explicit\":{\"enable\":false,\"marker\":\"{#anchor-\",\"prefix\":\"anchor-\"}},\"anchor_icon\":null,\"base\":\"http://localhost:1313/\",\"clipboard\":{\"copyright\":{\"count\":50,\"enable\":false,\"license_type\":\"by-nc-sa\"},\"fail\":{\"en\":\"Copy failed (ﾟ⊿ﾟ)ﾂ\",\"ja\":\"コピー失敗 (ﾟ⊿ﾟ)ﾂ\",\"pt-br\":\"Falha ao copiar (ﾟ⊿ﾟ)ﾂ\",\"zh-cn\":\"复制失败 (ﾟ⊿ﾟ)ﾂ\",\"zh-tw\":\"複製失敗 (ﾟ⊿ﾟ)ﾂ\"},\"success\":{\"en\":\"Copy successfully (*^▽^*)\",\"ja\":\"コピー成功 (*^▽^*)\",\"pt-br\":\"Copiado com sucesso (*^▽^*)\",\"zh-cn\":\"复制成功 (*^▽^*)\",\"zh-tw\":\"複製成功 (*^▽^*)\"}},\"code_block\":{\"expand\":30},\"dark_mode\":{\"button\":true,\"mode\":\"auto\"},\"icon_font\":\"4552607_ex15nbittbh\",\"outdate\":{\"daysago\":180,\"enable\":false,\"message\":{\"en\":\"This article was last updated on {time}. Please note that the content may no longer be applicable.\",\"ja\":\"この記事は最終更新日：{time}。記載内容が現在有効でない可能性がありますのでご注意ください。\",\"pt-br\":\"Este artigo foi atualizado pela última vez em {time}. Observe que o conteúdo pode não ser mais aplicável.\",\"zh-cn\":\"本文最后更新于 {time}，请注意文中内容可能已不适用。\",\"zh-tw\":\"本文最後更新於 {time}，請注意文中內容可能已不適用。\"}}}");
+  
+</script>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+  rel="preload"
+  as="style"
+  href="https://fonts.googleapis.com/css?family=Mulish:400,400italic,700,700italic%7cNoto%20Serif%20SC:400,400italic,700,700italic%7c&amp;display=swap"
+/>
+<link
+  rel="stylesheet"
+  href="https://fonts.googleapis.com/css?family=Mulish:400,400italic,700,700italic%7cNoto%20Serif%20SC:400,400italic,700,700italic%7c&amp;display=swap"
+  media="print"
+  onload="this.media='all'"
+/>
+<link
+    rel="preload"
+    href="//at.alicdn.com/t/c/font_4552607_ex15nbittbh.woff2"
+    as="font"
+    type="font/woff2"
+    crossorigin="anonymous"
+  /><link rel="stylesheet" href="/css/loader.css" /><meta property="og:type" content="website" />
+  <meta property="og:title" content="嵌入式笔试面试高频问答：单片机、FreeRTOS、软件架构与 C 语言 | 云想衣裳花想荣" />
+  <meta
+    property="og:description"
+    content="从硬件执行、C语言内存模型、模块职责到FreeRTOS并发，通过62道高频题、推演、自测和采集控制案例建立完整的嵌入式知识体系。"
+  />
+  <meta property="og:url" content="http://localhost:1313/post/%E5%B5%8C%E5%85%A5%E5%BC%8F%E7%AC%94%E8%AF%95%E9%9D%A2%E8%AF%95%E9%AB%98%E9%A2%91%E9%97%AE%E7%AD%94%E5%8D%95%E7%89%87%E6%9C%BAfreertos%E8%BD%AF%E4%BB%B6%E6%9E%B6%E6%9E%84%E4%B8%8Ec%E8%AF%AD%E8%A8%80/" />
+  <meta
+    property="og:site_name"
+    content="博客首页"
+  />
+  <meta property="og:image" content="http://localhost:1313/images/cover/%E5%88%9D%E8%A7%81%E7%B4%AB%E7%81%B5.jpg" />
+  <meta property="article:author" content="云想衣裳花想荣" />
+  <meta property="article:published_time" content="2026-10-27T00:00:00&#43;08:00" />
+  <meta property="article:modified_time" content="2026-10-27T00:00:00&#43;08:00" /><meta property="article:tag" content="单片机, FreeRTOS, 软件架构, C语言, 面试" /><meta name="twitter:card" content="summary" /><meta name="twitter:image" content="http://localhost:1313/images/cover/%E5%88%9D%E8%A7%81%E7%B4%AB%E7%81%B5.jpg" />
+<link rel="shortcut icon" href="/favicon.ico"><link rel="stylesheet" href="/css/main.css" /><link
+    rel="preload"
+    as="style"
+    href="https://npm.webcache.cn/photoswipe@5.4.4/dist/photoswipe.css"
+    integrity="sha384-IfxC36XL/toUyJ939C73PcgMuRzAZuIzZxE38drsmO5p6jD7ei&#43;Zx/1oA/0l8ysE" crossorigin="anonymous"
+    onload="this.onload=null;this.rel='stylesheet'"
+  /><link
+    rel="preload"
+    as="style"
+    href="https://npm.webcache.cn/katex@0.16.47/dist/katex.min.css"
+    integrity="sha384-nH0MfJ44wi1dd7w6jinlyBgljjS8EJAh2JBoRad8a3VDw2K69vfaaqm4WnR&#43;gXtA" crossorigin="anonymous"
+    onload="this.onload=null;this.rel='stylesheet'"
+  /><script
+    src="https://npm.webcache.cn/pace-js@1.2.4/pace.min.js"
+    
+    
+    
+    
+    integrity="sha384-k6YtvFUEIuEFBdrLKJ3YAUbBki333tj1CSUisai5Cswsg9wcLNaPzsTHDswp4Az8" crossorigin="anonymous"></script><link
+    rel="stylesheet"
+    href="https://npm.webcache.cn/@reimujs/aos@0.1.3/dist/aos.css"
+    integrity="sha384-GMRP93c6Hkz9JVKGAuRR3nTS7M07RwPgTFenXiosjq2VbVgvdDNcz1g6Mkj8AONa" crossorigin="anonymous"/></head>
+  <body><div id='loader'>
+    <div class="loading-left-bg loading-bg"></div>
+    <div class="loading-right-bg loading-bg"></div>
+    <div class="spinner-box">
+      <div class="loading-taichi rotate"><svg width="150" height="150" viewBox="0 0 1024 1024" class="icon" version="1.1" xmlns="https://www.w3.org/2000/svg" shape-rendering="geometricPrecision">
+            <path d="M303.5 432A80 80 0 0 1 291.5 592A80 80 0 0 1 303.5 432z" fill="var(--red-1, #ff5252)" />
+            <path d="M512 65A447 447 0 0 1 512 959L512 929A417 417 0 0 0 512 95A417 417 0 0 0 512 929L512 959A447 447 0 0 1 512 65z 
+          M512 95A417 417 0 0 1 929 512A208.5 208.5 0 0 1 720.5 720.5L720.5 592A80 80 0 0 0 720.5 432A80 80 0 0 0 720.5 592L720.5 720.5A208.5 208.5 0 0 1 512 512A208.5 208.5 0 0 0 303.5 303.5A208.5 208.5 0 0 0 95 512A417 417 0 0 1 512 95z" fill="var(--red-1, #ff5252)" />
+          </svg></div><div class="loading-word">左风右雷，可随心意而动...</div>
+    </div>
+  </div>
+  </div>
+  <script>
+    var time = null;
+    var loaderEl = document.getElementById('loader');
+    var startLoading = () => {
+      time = Date.now();
+      loaderEl.classList.remove("loading");
+    }
+    var hideLoader = () => {
+      document.body.style.overflow = 'auto';
+      loader.classList.add('loading');
+    };
+
+    var endLoading = () => {
+      if (!time) {
+        hideLoader();
+      } else {
+        if (Date.now() - time > 500) {
+          time = null;
+          hideLoader();
+        } else {
+          setTimeout(endLoading, 500 - (Date.now() - time));
+          time = null;
+        }
+      }
+    }
+    window.addEventListener('DOMContentLoaded', endLoading);
+    loaderEl.addEventListener('click', endLoading);
+  </script><div id="copy-tooltip"></div>
+<div id="lang-tooltip">
+本文章没有找到对应的语言版本
+</div>
+<div id="heatmap-tooltip"></div><div id="container">
+      <div id="wrap"><div id="header-nav">
+  <nav id="main-nav" aria-label="Primary navigation"><a class="main-nav-link-wrap" href="/"><span class="main-nav-link">首页</span>
+      </a><a class="main-nav-link-wrap" href="/archives"><span class="main-nav-link">归档</span>
+      </a><a class="main-nav-link-wrap" href="/about"><span class="main-nav-link">关于</span>
+      </a><a class="main-nav-link-wrap" href="/friend"><span class="main-nav-link">友链</span>
+      </a><a id="main-nav-toggle" class="nav-icon" aria-label="Toggle navigation" role="button"></a>
+  </nav>
+  <nav id="sub-nav" aria-label="Secondary navigation"></nav><a href="https://github.com/Zennaro-zhangrong" class="triangle-badge" title="github" target="_blank" rel="noopener nofollow noreferrer">
+      <div class="icon icon-github triangle-badge-icon"></div>
+    </a></div>
+<header id="header" aria-label="Site header"><picture></picture>
+    <img crossorigin="anonymous" fetchpriority="high" src="/images/cover/%e5%88%9d%e8%a7%81%e7%b4%ab%e7%81%b5.jpg" alt="嵌入式笔试面试高频问答：单片机、FreeRTOS、软件架构与 C 语言"><div id="header-outer">
+    <div id="header-title"><span id="logo">
+            <h1 data-aos="slide-up">嵌入式笔试面试高频问答：单片机、FreeRTOS、软件架构与 C 语言</h1>
+          </span><h2 id="subtitle-wrap" data-aos="slide-down"></h2></div>
+  </div>
+</header><div id="content"
+          aria-label="Page content"
+          class="sidebar-left"
+            ><aside id="sidebar" aria-label="Sidebar"><div class="sidebar-wrapper-container sticky"><div class="sidebar-wrapper">
+    <div
+      class="sidebar-wrap"
+      data-aos="fade-up"
+    ><div class="sidebar-toc-sidebar"><h3 class="toc-title">文章目录</h3>
+<div class="sidebar-toc-wrapper toc-div-class">
+  <nav id="TableOfContents">
+  <ul>
+    <li><a href="#interview-toc">阅读导航</a></li>
+    <li><a href="#interview-map">1. 从一个样本建立四个知识模块的联系</a>
+      <ul>
+        <li><a href="#11-先把常见术语翻译成具体对象">1.1 先把常见术语翻译成具体对象</a></li>
+        <li><a href="#12-怎样知道自己已经掌握">1.2 怎样知道自己已经掌握</a></li>
+      </ul>
+    </li>
+    <li><a href="#interview-mcu">2. 单片机高频题：程序如何与硬件配合</a>
+      <ul>
+        <li><a href="#interview-mcu-model">2.0 先建立模型：CPU 执行指令，外设按自己的状态机工作</a></li>
+        <li><a href="#21-上电后为什么不是立刻执行-main">2.1 上电后为什么不是立刻执行 <code>main</code>？</a></li>
+        <li><a href="#22-flashram栈和堆分别装什么">2.2 Flash、RAM、栈和堆分别装什么？</a></li>
+        <li><a href="#23-中断轮询和-dma-怎么选">2.3 中断、轮询和 DMA 怎么选？</a></li>
+        <li><a href="#24-为什么中断服务函数要短">2.4 为什么中断服务函数要短？</a></li>
+        <li><a href="#25-中断优先级数字越大优先级越高吗">2.5 中断优先级数字越大，优先级越高吗？</a></li>
+        <li><a href="#26-volatile-为什么常用于外设寄存器和中断共享标志">2.6 <code>volatile</code> 为什么常用于外设寄存器和中断共享标志？</a></li>
+        <li><a href="#27-什么是原子操作关中断就一定安全吗">2.7 什么是原子操作？关中断就一定安全吗？</a></li>
+        <li><a href="#28-定时器如何算更新周期为什么实际频率不对">2.8 定时器如何算更新周期？为什么实际频率不对？</a></li>
+        <li><a href="#29-uartspiic-最核心的区别是什么">2.9 UART、SPI、I²C 最核心的区别是什么？</a></li>
+        <li><a href="#210-adc-采样值不稳先查什么">2.10 ADC 采样值不稳，先查什么？</a></li>
+        <li><a href="#211-看门狗如何正确使用">2.11 看门狗如何正确使用？</a></li>
+        <li><a href="#212-hardfault-出现后先怎么定位">2.12 HardFault 出现后先怎么定位？</a></li>
+        <li><a href="#213-bootloader-和应用程序如何分工">2.13 Bootloader 和应用程序如何分工？</a></li>
+        <li><a href="#interview-mcu-check">2.14 模块自测：解释硬件现象</a></li>
+      </ul>
+    </li>
+    <li><a href="#interview-c">3. C 语言高频题：表达、内存和未定义行为</a>
+      <ul>
+        <li><a href="#interview-c-model">3.0 先建立模型：类型、对象、地址和生命周期</a></li>
+        <li><a href="#31-static-在函数内和文件作用域分别做什么">3.1 <code>static</code> 在函数内和文件作用域分别做什么？</a></li>
+        <li><a href="#32-声明定义和-extern-有什么区别">3.2 声明、定义和 <code>extern</code> 有什么区别？</a></li>
+        <li><a href="#33-constvolatile-和-const-volatile-怎么读">3.3 <code>const</code>、<code>volatile</code> 和 <code>const volatile</code> 怎么读？</a></li>
+        <li><a href="#34-数组和指针完全一样吗">3.4 数组和指针完全一样吗？</a></li>
+        <li><a href="#35-sizeofstrlen-和缓冲区容量有什么区别">3.5 <code>sizeof</code>、<code>strlen</code> 和缓冲区容量有什么区别？</a></li>
+        <li><a href="#36-指针参数为什么有时需要二级指针">3.6 指针参数为什么有时需要二级指针？</a></li>
+        <li><a href="#37-为什么返回局部变量地址是错的">3.7 为什么返回局部变量地址是错的？</a></li>
+        <li><a href="#38-结构体大小为什么常大于成员大小之和">3.8 结构体大小为什么常大于成员大小之和？</a></li>
+        <li><a href="#39-位域适合直接映射外设寄存器或协议帧吗">3.9 位域适合直接映射外设寄存器或协议帧吗？</a></li>
+        <li><a href="#310-有符号与无符号混算为什么危险">3.10 有符号与无符号混算为什么危险？</a></li>
+        <li><a href="#311-左移和右移有哪些边界">3.11 左移和右移有哪些边界？</a></li>
+        <li><a href="#312-宏和-static-inline-有何区别">3.12 宏和 <code>static inline</code> 有何区别？</a></li>
+        <li><a href="#313-大端小端和字节序如何判断">3.13 大端、小端和字节序如何判断？</a></li>
+        <li><a href="#314-memcpystrcpystrncpy-使用时注意什么">3.14 <code>memcpy</code>、<code>strcpy</code>、<code>strncpy</code> 使用时注意什么？</a></li>
+        <li><a href="#315-什么是未定义行为笔试题怎样判断">3.15 什么是未定义行为？笔试题怎样判断？</a></li>
+        <li><a href="#316-函数指针和回调常见用途是什么">3.16 函数指针和回调常见用途是什么？</a></li>
+        <li><a href="#interview-c-check">3.17 模块自测：先分类，再计算</a></li>
+      </ul>
+    </li>
+    <li><a href="#interview-architecture">4. 单片机软件结构高频题：如何写得清楚又可靠</a>
+      <ul>
+        <li><a href="#interview-architecture-model">4.0 先建立模型：模块管职责，状态机管行为，接口管约定</a></li>
+        <li><a href="#41-裸机超级循环和-rtos-各适合什么项目">4.1 裸机超级循环和 RTOS 各适合什么项目？</a></li>
+        <li><a href="#42-halbsp驱动服务和应用层怎么分">4.2 HAL、BSP、驱动、服务和应用层怎么分？</a></li>
+        <li><a href="#43-为什么不要把所有逻辑都塞进中断或一个任务">4.3 为什么不要把所有逻辑都塞进中断或一个任务？</a></li>
+        <li><a href="#44-状态机解决什么问题">4.4 状态机解决什么问题？</a></li>
+        <li><a href="#45-驱动接口为什么要区分初始化启动和读写">4.5 驱动接口为什么要区分初始化、启动和读写？</a></li>
+        <li><a href="#46-如何设计模块间数据所有权">4.6 如何设计模块间数据所有权？</a></li>
+        <li><a href="#47-环形缓冲区要解决哪些边界">4.7 环形缓冲区要解决哪些边界？</a></li>
+        <li><a href="#48-初始化顺序如何安排">4.8 初始化顺序如何安排？</a></li>
+        <li><a href="#49-错误码日志和断言如何分工">4.9 错误码、日志和断言如何分工？</a></li>
+        <li><a href="#410-如何验证软件实时性">4.10 如何验证软件“实时性”？</a></li>
+        <li><a href="#411-什么是可测试的软件结构">4.11 什么是可测试的软件结构？</a></li>
+        <li><a href="#interview-architecture-check">4.12 模块自测：把口头需求变成规则</a></li>
+      </ul>
+    </li>
+    <li><a href="#interview-rtos">5. FreeRTOS 高频题：任务如何并发与协作</a>
+      <ul>
+        <li><a href="#interview-rtos-model">5.0 先建立模型：一颗 CPU 怎样表现得像同时做多件事</a></li>
+        <li><a href="#51-任务有哪些常见状态">5.1 任务有哪些常见状态？</a></li>
+        <li><a href="#52-freertos-是怎么决定下一个任务的">5.2 FreeRTOS 是怎么决定下一个任务的？</a></li>
+        <li><a href="#53-vtaskdelay-和-vtaskdelayuntil-有什么区别">5.3 <code>vTaskDelay()</code> 和 <code>vTaskDelayUntil()</code> 有什么区别？</a></li>
+        <li><a href="#54-xtaskcreate-创建了什么栈大小单位是什么">5.4 <code>xTaskCreate()</code> 创建了什么？栈大小单位是什么？</a></li>
+        <li><a href="#55-vtaskdelay-与忙等有什么差别">5.5 <code>vTaskDelay()</code> 与忙等有什么差别？</a></li>
+        <li><a href="#56-队列和任务通知怎么选">5.6 队列和任务通知怎么选？</a></li>
+        <li><a href="#57-二值信号量计数信号量和互斥量区别是什么">5.7 二值信号量、计数信号量和互斥量区别是什么？</a></li>
+        <li><a href="#58-什么是优先级反转">5.8 什么是优先级反转？</a></li>
+        <li><a href="#59-事件组和任务通知位图有什么不同">5.9 事件组和任务通知位图有什么不同？</a></li>
+        <li><a href="#510-为什么-isr-要用-fromisr末尾还要请求切换">5.10 为什么 ISR 要用 <code>...FromISR()</code>，末尾还要请求切换？</a></li>
+        <li><a href="#511-临界区暂停调度器和互斥量能互相替代吗">5.11 临界区、暂停调度器和互斥量能互相替代吗？</a></li>
+        <li><a href="#512-heap_1-到-heap_5-的常考区别">5.12 <code>heap_1</code> 到 <code>heap_5</code> 的常考区别？</a></li>
+        <li><a href="#513-软件定时器回调是不是硬件中断">5.13 软件定时器回调是不是硬件中断？</a></li>
+        <li><a href="#514-空闲任务能删吗任务删除后内存立即全回收吗">5.14 空闲任务能删吗？任务删除后内存立即全回收吗？</a></li>
+        <li><a href="#515-tickless-idle-是否意味着任务延时变准">5.15 Tickless idle 是否意味着任务延时变准？</a></li>
+        <li><a href="#516-任务无响应时按什么顺序排查">5.16 任务无响应时按什么顺序排查？</a></li>
+        <li><a href="#interview-rtos-check">5.17 模块自测：在纸上推演调度</a></li>
+      </ul>
+    </li>
+    <li><a href="#interview-project">6. 贯穿案例：每 1 ms 采样，每 10 ms 处理一次</a>
+      <ul>
+        <li><a href="#61-先写需求和假设再画任务图">6.1 先写需求和假设，再画任务图</a></li>
+        <li><a href="#62-先算三个数量级">6.2 先算三个数量级</a></li>
+        <li><a href="#63-用按值入队说明数据生命周期">6.3 用“按值入队”说明数据生命周期</a></li>
+        <li><a href="#interview-control-lab">6.4 把风扇逻辑写成可在电脑上验证的 C 程序</a></li>
+        <li><a href="#65-把验证结果写成可观察的证据">6.5 把验证结果写成可观察的证据</a></li>
+      </ul>
+    </li>
+    <li><a href="#interview-scenarios">7. 综合场景题：把知识连起来</a>
+      <ul>
+        <li><a href="#场景-1串口-115200-bits-连续收包偶尔丢字节怎么办">场景 1：串口 115200 bit/s 连续收包，偶尔丢字节，怎么办？</a></li>
+        <li><a href="#场景-2高优先级任务在等-ic-数据但系统卡住怎么解释">场景 2：高优先级任务在等 I²C 数据，但系统卡住，怎么解释？</a></li>
+        <li><a href="#场景-3dma-完成中断触发了任务读到旧数据为什么">场景 3：DMA 完成中断触发了，任务读到旧数据，为什么？</a></li>
+        <li><a href="#场景-4任务栈偶发溢出平时高水位却看起来足够怎么查">场景 4：任务栈偶发溢出，平时高水位却看起来足够，怎么查？</a></li>
+        <li><a href="#场景-5按键每按一次却触发很多次如何设计">场景 5：按键每按一次，却触发很多次，如何设计？</a></li>
+        <li><a href="#场景-6面试官让你设计一个采样控制通信升级的系统怎么答">场景 6：面试官让你设计一个“采样、控制、通信、升级”的系统，怎么答？</a></li>
+      </ul>
+    </li>
+    <li><a href="#interview-review">8. 一页速记与原始资料</a></li>
+  </ul>
+</nav>
+</div></div>
+          <div class="sidebar-common-sidebar hidden"><div class="sidebar-author">
+  <img
+    data-src="/avatar/avatar.webp"
+    data-sizes="auto"
+    alt="云想衣裳花想荣"
+    class="lazyload"
+  />
+  <div class="sidebar-author-name">云想衣裳花想荣</div>
+  <div class="sidebar-description">嵌入式开发学习笔记，技术分享</div>
+</div>
+<div class="sidebar-state">
+  <div class="sidebar-state-article">
+    <div>文章</div><div class="sidebar-state-number">7</div>
+  </div>
+  <a class="sidebar-state-category" href="/categories/" aria-label="sidebar-state-category-link">
+    <div>分类</div>
+    <div class="sidebar-state-number">
+      7
+    </div>
+  </a>
+  <a class="sidebar-state-tag" href="/tags/" aria-label="sidebar-state-tag-link">
+    <div>标签</div>
+    <div class="sidebar-state-number">19</div>
+  </a>
+</div>
+<div class="sidebar-social" ></div><div class="sidebar-menu"><div class="sidebar-menu-link-wrap">
+      <a
+        class="sidebar-menu-link-dummy"
+        href="/"
+        aria-label="首页"
+      ></a><div class="sidebar-menu-link">首页</div>
+    </div><div class="sidebar-menu-link-wrap">
+      <a
+        class="sidebar-menu-link-dummy"
+        href="/archives"
+        aria-label="归档"
+      ></a><div class="sidebar-menu-link">归档</div>
+    </div><div class="sidebar-menu-link-wrap">
+      <a
+        class="sidebar-menu-link-dummy"
+        href="/about"
+        aria-label="关于"
+      ></a><div class="sidebar-menu-link">关于</div>
+    </div><div class="sidebar-menu-link-wrap">
+      <a
+        class="sidebar-menu-link-dummy"
+        href="/friend"
+        aria-label="友链"
+      ></a><div class="sidebar-menu-link">友链</div>
+    </div></div></div><div class="sidebar-btn-wrapper" style="position:static">
+            <div class="sidebar-toc-btn current"></div>
+            <div class="sidebar-common-btn"></div>
+          </div></div>
+  </div><div class="sidebar-widget"></div></div></aside>
+<section id="main" aria-label="Main content"><article
+  class="h-entry article"
+  itemscope
+  itemtype="https://schema.org/BlogPosting"
+>
+  <div
+    class="article-inner"
+    data-aos="fade-up"
+  >
+    <div class="article-meta"><div class="article-date">
+  <span
+    class="article-date-link icon-calendar"
+    data-aos="zoom-in"
+  >
+    <time datetime="2026-10-27 00:00:00 &#43;0800 CST" itemprop="datePublished"
+      >2026-10-27</time
+    >
+    <time style="display: none;" id="post-update-time"
+      >2026-10-27</time
+    >
+  </span></div>
+</div><div class="hr-line"></div><div class="e-content article-entry" itemprop="articleBody"><p>面试题如果只背一句定义，很容易在追问“为什么”“什么情况下不成立”时卡住。本文按“<strong>单片机如何执行 → C 如何表达数据 → 软件如何划分职责 → FreeRTOS 如何安排并发</strong>”组织学习。每个模块先建立原理模型，再用高频题复习，最后用有答案的自测检查理解。原有 62 道问答和场景题保留，并增加一个贯穿四个模块的采集控制案例。</p>
+<p><strong>适用范围</strong>：默认讨论常见 Cortex-M 单片机、单核 FreeRTOS 和 C11。具体寄存器、时钟树、中断优先级位数、DMA 缓存一致性及 FreeRTOS 配置必须以目标芯片手册和工程设置为准。文中的代码是说明思路的片段，不可不核对硬件与接口便直接复制进项目。</p>
+<h2 id="interview-toc">
+<a class="header-anchor" href="#interview-toc"></a>
+阅读导航
+</h2><table>
+	<thead>
+			<tr>
+					<th>学习顺序</th>
+					<th>阅读位置</th>
+					<th>学完应能独立完成</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td>先建全局模型</td>
+					<td><a href="/post/%E5%B5%8C%E5%85%A5%E5%BC%8F%E7%AC%94%E8%AF%95%E9%9D%A2%E8%AF%95%E9%AB%98%E9%A2%91%E9%97%AE%E7%AD%94%E5%8D%95%E7%89%87%E6%9C%BAfreertos%E8%BD%AF%E4%BB%B6%E6%9E%B6%E6%9E%84%E4%B8%8Ec%E8%AF%AD%E8%A8%80/#interview-map">1. 学习路线</a></td>
+					<td>追踪一个样本从硬件到业务的全过程</td>
+			</tr>
+			<tr>
+					<td>第一遍：硬件</td>
+					<td><a href="/post/%E5%B5%8C%E5%85%A5%E5%BC%8F%E7%AC%94%E8%AF%95%E9%9D%A2%E8%AF%95%E9%AB%98%E9%A2%91%E9%97%AE%E7%AD%94%E5%8D%95%E7%89%87%E6%9C%BAfreertos%E8%BD%AF%E4%BB%B6%E6%9E%B6%E6%9E%84%E4%B8%8Ec%E8%AF%AD%E8%A8%80/#interview-mcu">2. 单片机</a></td>
+					<td>解释寄存器、中断、DMA与时间预算</td>
+			</tr>
+			<tr>
+					<td>第二遍：数据</td>
+					<td><a href="/post/%E5%B5%8C%E5%85%A5%E5%BC%8F%E7%AC%94%E8%AF%95%E9%9D%A2%E8%AF%95%E9%AB%98%E9%A2%91%E9%97%AE%E7%AD%94%E5%8D%95%E7%89%87%E6%9C%BAfreertos%E8%BD%AF%E4%BB%B6%E6%9E%B6%E6%9E%84%E4%B8%8Ec%E8%AF%AD%E8%A8%80/#interview-c">3. C 语言</a></td>
+					<td>判断类型、存储期、越界与并发读写</td>
+			</tr>
+			<tr>
+					<td>第三遍：职责</td>
+					<td><a href="/post/%E5%B5%8C%E5%85%A5%E5%BC%8F%E7%AC%94%E8%AF%95%E9%9D%A2%E8%AF%95%E9%AB%98%E9%A2%91%E9%97%AE%E7%AD%94%E5%8D%95%E7%89%87%E6%9C%BAfreertos%E8%BD%AF%E4%BB%B6%E6%9E%B6%E6%9E%84%E4%B8%8Ec%E8%AF%AD%E8%A8%80/#interview-architecture">4. 软件结构</a></td>
+					<td>画出依赖关系、状态转换和数据所有权</td>
+			</tr>
+			<tr>
+					<td>第四遍：时间</td>
+					<td><a href="/post/%E5%B5%8C%E5%85%A5%E5%BC%8F%E7%AC%94%E8%AF%95%E9%9D%A2%E8%AF%95%E9%AB%98%E9%A2%91%E9%97%AE%E7%AD%94%E5%8D%95%E7%89%87%E6%9C%BAfreertos%E8%BD%AF%E4%BB%B6%E6%9E%B6%E6%9E%84%E4%B8%8Ec%E8%AF%AD%E8%A8%80/#interview-rtos">5. FreeRTOS</a></td>
+					<td>推演调度并选择通信、同步和互斥机制</td>
+			</tr>
+			<tr>
+					<td>串起四个模块</td>
+					<td><a href="/post/%E5%B5%8C%E5%85%A5%E5%BC%8F%E7%AC%94%E8%AF%95%E9%9D%A2%E8%AF%95%E9%AB%98%E9%A2%91%E9%97%AE%E7%AD%94%E5%8D%95%E7%89%87%E6%9C%BAfreertos%E8%BD%AF%E4%BB%B6%E6%9E%B6%E6%9E%84%E4%B8%8Ec%E8%AF%AD%E8%A8%80/#interview-project">6. 采集控制案例</a></td>
+					<td>计算容量，设计任务，验证故障行为</td>
+			</tr>
+			<tr>
+					<td>面试与复习</td>
+					<td><a href="/post/%E5%B5%8C%E5%85%A5%E5%BC%8F%E7%AC%94%E8%AF%95%E9%9D%A2%E8%AF%95%E9%AB%98%E9%A2%91%E9%97%AE%E7%AD%94%E5%8D%95%E7%89%87%E6%9C%BAfreertos%E8%BD%AF%E4%BB%B6%E6%9E%B6%E6%9E%84%E4%B8%8Ec%E8%AF%AD%E8%A8%80/#interview-scenarios">7. 综合场景题</a>、<a href="/post/%E5%B5%8C%E5%85%A5%E5%BC%8F%E7%AC%94%E8%AF%95%E9%9D%A2%E8%AF%95%E9%AB%98%E9%A2%91%E9%97%AE%E7%AD%94%E5%8D%95%E7%89%87%E6%9C%BAfreertos%E8%BD%AF%E4%BB%B6%E6%9E%B6%E6%9E%84%E4%B8%8Ec%E8%AF%AD%E8%A8%80/#interview-review">8. 速记与资料</a></td>
+					<td>根据证据排错并解释设计取舍</td>
+			</tr>
+	</tbody>
+</table>
+<p>第一次阅读按表格顺序走；面试前可直接跳到各模块的问答。遇到陌生缩写，先看下节的术语表。<strong>每一题都要能回答三个追问：为什么成立、什么情况下不成立、用什么证据验证。</strong></p>
+<h2 id="interview-map">
+<a class="header-anchor" href="#interview-map"></a>
+1. 从一个样本建立四个知识模块的联系
+</h2><p>假设要做一个温度采集控制器：定时采样，温度过高时开启风扇，通过串口上传状态。先沿着一个样本走一遍：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">定时器触发 ADC → ADC 产生数值 → DMA 写入 RAM
+</span></span><span class="line"><span class="cl">                                      ↓ 完成中断
+</span></span><span class="line"><span class="cl">                             把样本交给处理者
+</span></span><span class="line"><span class="cl">                                      ↓
+</span></span><span class="line"><span class="cl">                     换算温度 → 检查有效性 → 状态机
+</span></span><span class="line"><span class="cl">                                      ↓
+</span></span><span class="line"><span class="cl">                            更新风扇 / 上传状态
+</span></span></code></pre></div><p>图中每一条箭头都值得问：<strong>谁来执行、数据存在哪里、谁能修改、最迟什么时候完成、失败以后怎么办？</strong> 这五个问题就是后面所有考点的共同骨架。</p>
+<table>
+	<thead>
+			<tr>
+					<th>模块</th>
+					<th>负责回答的问题</th>
+					<th>只背结论容易漏掉什么</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td>单片机</td>
+					<td>指令与外设实际上做了什么</td>
+					<td>时钟、寄存器语义、异常入口</td>
+			</tr>
+			<tr>
+					<td>C 语言</td>
+					<td>数据如何表示和被合法访问</td>
+					<td>对齐、生命周期、转换、越界</td>
+			</tr>
+			<tr>
+					<td>软件结构</td>
+					<td>每项责任交给哪个模块</td>
+					<td>依赖方向、所有权、故障恢复</td>
+			</tr>
+			<tr>
+					<td>FreeRTOS</td>
+					<td>哪段程序何时获得 CPU</td>
+					<td>就绪与阻塞、优先级、竞争条件</td>
+			</tr>
+	</tbody>
+</table>
+<h3 id="11-先把常见术语翻译成具体对象">
+<a class="header-anchor" href="#11-%e5%85%88%e6%8a%8a%e5%b8%b8%e8%a7%81%e6%9c%af%e8%af%ad%e7%bf%bb%e8%af%91%e6%88%90%e5%85%b7%e4%bd%93%e5%af%b9%e8%b1%a1"></a>
+1.1 先把常见术语翻译成具体对象
+</h3><table>
+	<thead>
+			<tr>
+					<th>术语</th>
+					<th>在本例中指什么</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td>CPU / 内核</td>
+					<td>执行指令，响应异常；ADC、DMA 不属于 CPU 指令本身</td>
+			</tr>
+			<tr>
+					<td>寄存器</td>
+					<td>内核寄存器保存执行现场；外设寄存器控制或反映外设状态</td>
+			</tr>
+			<tr>
+					<td>ISR</td>
+					<td>中断服务程序，处理一次中断来源，不可像任务一样阻塞等待</td>
+			</tr>
+			<tr>
+					<td>RAM / 缓冲区</td>
+					<td>RAM 是存储介质；缓冲区是程序在其中划出的一段对象存储</td>
+			</tr>
+			<tr>
+					<td>ABI</td>
+					<td>工具链约定的参数传递、寄存器使用、类型布局等规则</td>
+			</tr>
+			<tr>
+					<td>任务 / 上下文</td>
+					<td>可被调度的执行流，以及恢复它所需的寄存器和栈等状态</td>
+			</tr>
+			<tr>
+					<td>截止期</td>
+					<td>结果最晚必须准备好的时间，不等同于平均执行时间</td>
+			</tr>
+			<tr>
+					<td>所有权</td>
+					<td>当前谁有权写入、释放或复用一块数据存储的约定</td>
+			</tr>
+	</tbody>
+</table>
+<h3 id="12-怎样知道自己已经掌握">
+<a class="header-anchor" href="#12-%e6%80%8e%e6%a0%b7%e7%9f%a5%e9%81%93%e8%87%aa%e5%b7%b1%e5%b7%b2%e7%bb%8f%e6%8e%8c%e6%8f%a1"></a>
+1.2 怎样知道自己已经掌握
+</h3><p>看完定义后，合上答案，尝试画图或推演：能从 C 的 <code>count++</code> 写出读、加、写三个步骤；能说出低优先级任务为何一直运行不到；能给缓冲区算容量；能列出某个故障的验证证据。说不清的地方回到对应模块，重新跑一遍例子。</p>
+<p><strong>面试表达模板</strong>：先给结论，说明成立条件，解释机制，再举一个具体例子。比如讲 <code>volatile</code>，要继续解释它为什么不能让“读、加、写”成为不可分割的一步。</p>
+<p><a href="/post/%E5%B5%8C%E5%85%A5%E5%BC%8F%E7%AC%94%E8%AF%95%E9%9D%A2%E8%AF%95%E9%AB%98%E9%A2%91%E9%97%AE%E7%AD%94%E5%8D%95%E7%89%87%E6%9C%BAfreertos%E8%BD%AF%E4%BB%B6%E6%9E%B6%E6%9E%84%E4%B8%8Ec%E8%AF%AD%E8%A8%80/#interview-toc">返回目录</a></p>
+<h2 id="interview-mcu">
+<a class="header-anchor" href="#interview-mcu"></a>
+2. 单片机高频题：程序如何与硬件配合
+</h2><h3 id="interview-mcu-model">
+<a class="header-anchor" href="#interview-mcu-model"></a>
+2.0 先建立模型：CPU 执行指令，外设按自己的状态机工作
+</h3><h4 id="从一条-c-语句追到引脚">
+<a class="header-anchor" href="#%e4%bb%8e%e4%b8%80%e6%9d%a1-c-%e8%af%ad%e5%8f%a5%e8%bf%bd%e5%88%b0%e5%bc%95%e8%84%9a"></a>
+从一条 C 语句追到引脚
+</h4><p><code>GPIOx-&gt;ODR |= mask</code> 在典型内存映射外设中表达的是：读取输出寄存器、把掩码对应的位设为 1、再写回。编译器把它转换成目标机器的指令，CPU 通过总线访问外设，外设根据引脚模式和寄存器状态驱动引脚。</p>
+<p>因此，“代码执行了”不等于“引脚一定变高”：还需要外设时钟开启、引脚复用正确、电气模式正确，也要确认你写的寄存器确实控制这个引脚。这条链路帮助你把软件排错和硬件排错连起来。</p>
+<p>下面只操作普通 RAM 变量，是位运算教学片段；真实寄存器必须先读手册确认访问宽度和读写语义。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;stdint.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="kt">uint32_t</span> <span class="n">value</span> <span class="o">=</span> <span class="nf">UINT32_C</span><span class="p">(</span><span class="mh">0xA0</span><span class="p">);</span>   <span class="cm">/* 二进制 ...1010 0000 */</span>
+</span></span><span class="line"><span class="cl"><span class="n">value</span> <span class="o">|=</span> <span class="nf">UINT32_C</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="mi">2</span><span class="p">;</span>         <span class="cm">/* 置 bit 2，得到 0xA4 */</span>
+</span></span><span class="line"><span class="cl"><span class="n">value</span> <span class="o">&amp;=</span> <span class="o">~</span><span class="p">(</span><span class="nf">UINT32_C</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="mi">5</span><span class="p">);</span>      <span class="cm">/* 清 bit 5，得到 0x84 */</span>
+</span></span><span class="line"><span class="cl"><span class="kt">uint32_t</span> <span class="n">field</span> <span class="o">=</span> <span class="p">(</span><span class="n">value</span> <span class="o">&gt;&gt;</span> <span class="mi">2</span><span class="p">)</span> <span class="o">&amp;</span> <span class="nf">UINT32_C</span><span class="p">(</span><span class="mi">3</span><span class="p">);</span> <span class="cm">/* 读 bit 3:2，得到 1 */</span>
+</span></span></code></pre></div><p><strong>反例</strong>：若状态寄存器中的标志位“写 1 清零”，<code>STATUS |= flag</code> 会先读取全部已置位标志，再将它们一并写回，可能顺带清掉别的事件。此时应按手册指定方式写入需要清除的掩码；若存在特殊保留位要求，也必须一并满足。</p>
+<h4 id="gpio-的1为什么有时不是主动输出高电平">
+<a class="header-anchor" href="#gpio-%e7%9a%841%e4%b8%ba%e4%bb%80%e4%b9%88%e6%9c%89%e6%97%b6%e4%b8%8d%e6%98%af%e4%b8%bb%e5%8a%a8%e8%be%93%e5%87%ba%e9%ab%98%e7%94%b5%e5%b9%b3"></a>
+GPIO 的“1”为什么有时不是主动输出高电平
+</h4><p>推挽输出通常能主动拉高和拉低；开漏输出通常只能主动拉低，输出“1”表示释放线路，由上拉电阻使它升高。因此 I²C 上拉太弱、总线电容太大时，软件寄存器已经写“1”，实际电压仍可能上升太慢。悬空输入、错误复用和上下拉配置都能造成“程序正确但读值不对”。</p>
+<h4 id="中断为什么能在函数执行一半时插进来">
+<a class="header-anchor" href="#%e4%b8%ad%e6%96%ad%e4%b8%ba%e4%bb%80%e4%b9%88%e8%83%bd%e5%9c%a8%e5%87%bd%e6%95%b0%e6%89%a7%e8%a1%8c%e4%b8%80%e5%8d%8a%e6%97%b6%e6%8f%92%e8%bf%9b%e6%9d%a5"></a>
+中断为什么能在函数执行一半时插进来
+</h4><p>以常见 Cortex-M3/M4 基本异常栈帧为例，异常入口硬件保存 <code>R0–R3、R12、LR、PC、xPSR</code>，然后执行处理程序；异常返回按保存的现场恢复。额外的保存、栈对齐及浮点扩展取决于具体内核、编译器和异常情况。普通函数调用不等于一次异常入口。</p>
+<p>中断的作用是让 CPU 及时处理事件；DMA 的作用是让数据搬运可以由独立硬件进行。二者往往协作：DMA 搬完一块数据后才中断 CPU。它们都不会自动替应用保证缓冲区生命周期。</p>
+<h4 id="先列时间预算再讨论够不够快">
+<a class="header-anchor" href="#%e5%85%88%e5%88%97%e6%97%b6%e9%97%b4%e9%a2%84%e7%ae%97%e5%86%8d%e8%ae%a8%e8%ae%ba%e5%a4%9f%e4%b8%8d%e5%a4%9f%e5%bf%ab"></a>
+先列时间预算，再讨论“够不够快”
+</h4><p>假设定时器输入为 72 MHz，向上计数、无重复计数等特殊配置，取 <code>PSC=71</code>，得到 1 MHz 计数时钟；再取 <code>ARR=999</code>，每 1000 次计数产生一次更新，即 1 kHz。一次采样触发间隔是 1 ms，不能把 CPU 的主频直接当作采样率。</p>
+<p>实时路径的延迟要把“事件等待响应、中断处理、任务等 CPU、等锁、业务处理”分别算进去。<strong>这些分项必须避免重复计数，并覆盖可能发生的干扰。</strong> 平均处理 100 μs，并不能证明每次都能在 1 ms 内完成。</p>
+<p>下面的 13 道题分别补齐启动、内存、事件、电气接口、故障恢复这条主线。</p>
+<h3 id="21-上电后为什么不是立刻执行-main">
+<a class="header-anchor" href="#21-%e4%b8%8a%e7%94%b5%e5%90%8e%e4%b8%ba%e4%bb%80%e4%b9%88%e4%b8%8d%e6%98%af%e7%ab%8b%e5%88%bb%e6%89%a7%e8%a1%8c-main"></a>
+2.1 上电后为什么不是立刻执行 <code>main</code>？
+</h3><p><strong>答案</strong>：以 Cortex-M 为例，复位后内核从向量表取得初始主栈指针和复位处理入口，进入启动代码。启动代码通常复制已初始化数据到 RAM、清零 <code>.bss</code>、完成运行库和系统初始化，然后调用 <code>main</code>。</p>
+<p><strong>解析</strong>：C 程序默认全局已初始化变量可读、零初始化变量为零，这些条件需要在 <code>main</code> 前建立。向量表映射地址和启动顺序由芯片、链接脚本及启动文件共同决定；不要把某款 STM32 的 Flash 地址当作所有 Cortex-M 的固定地址。想继续深入可读本站的《单片机复位到main函数的过程》。参考 <a href="https://developer.arm.com/-/media/Arm%20Developer%20Community/PDF/Processor%20Datasheets/Arm%20Cortex-M3%20Processor%20Datasheet.pdf">Arm Cortex-M 处理器资料</a>。</p>
+<h3 id="22-flashram栈和堆分别装什么">
+<a class="header-anchor" href="#22-flashram%e6%a0%88%e5%92%8c%e5%a0%86%e5%88%86%e5%88%ab%e8%a3%85%e4%bb%80%e4%b9%88"></a>
+2.2 Flash、RAM、栈和堆分别装什么？
+</h3><p><strong>答案</strong>：程序指令和常量通常放在 Flash；运行时可写数据在 RAM。栈通常保存函数调用现场、局部自动对象及任务上下文；堆用于动态申请。它们是<strong>用途和链接布局</strong>，不是 C 语言强制规定的某几个物理地址。</p>
+<p><strong>解析</strong>：<code>.data</code> 初值常存于 Flash，启动时复制到 RAM；<code>.bss</code> 在 RAM 中清零；<code>const</code> 对象放在哪里取决于工具链和链接脚本。FreeRTOS 的每个任务通常有自己的栈，而中断栈如何使用取决于移植端。<strong>易错点</strong>：“局部变量一定在栈上”“<code>const</code> 一定在 Flash”都不是无条件成立。</p>
+<h3 id="23-中断轮询和-dma-怎么选">
+<a class="header-anchor" href="#23-%e4%b8%ad%e6%96%ad%e8%bd%ae%e8%af%a2%e5%92%8c-dma-%e6%80%8e%e4%b9%88%e9%80%89"></a>
+2.3 中断、轮询和 DMA 怎么选？
+</h3><p><strong>答案</strong>：低频、简单状态检查可轮询；不规则事件可用中断及时响应；连续或成块搬运数据通常考虑 DMA，并用中断通知传输完成。</p>
+<p><strong>解析</strong>：中断减少等待，但每次进入都有现场处理开销；DMA 降低 CPU 搬运负担，却要处理缓冲区所有权、完成时机和缓存一致性。典型 UART 接收方案是“DMA 写环形缓冲区 → 空闲/半满/满事件 → 任务解析”。<strong>易错点</strong>：DMA 不等于零 CPU 开销，也不自动保证数据已经对 CPU 可见；带数据缓存的芯片需按手册维护缓存。</p>
+<h3 id="24-为什么中断服务函数要短">
+<a class="header-anchor" href="#24-%e4%b8%ba%e4%bb%80%e4%b9%88%e4%b8%ad%e6%96%ad%e6%9c%8d%e5%8a%a1%e5%87%bd%e6%95%b0%e8%a6%81%e7%9f%ad"></a>
+2.4 为什么中断服务函数要短？
+</h3><p><strong>答案</strong>：中断会打断当前执行流；处理过久会提高其他中断的响应延迟，并可能破坏实时性。ISR 一般只确认事件、保存必要数据、清除中断源和唤醒后续处理者。</p>
+<p><strong>解析</strong>：例如串口中断先读状态与数据、放入缓冲区，再通知解析任务。不要在 ISR 中等待互斥锁、做长时间打印或调用可能阻塞的函数。<strong>易错点</strong>：“短”不是固定微秒数，应按最坏执行时间和系统截止期评估。Arm 的 NVIC 支持嵌套、自动保存现场等机制，见 <a href="https://developer.arm.com/community/arm-community-blogs/b/architectures-and-processors-blog/posts/beginner-guide-on-interrupt-latency-and-interrupt-latency-of-the-arm-cortex-m-processors">Arm 中断延迟说明</a>。</p>
+<h3 id="25-中断优先级数字越大优先级越高吗">
+<a class="header-anchor" href="#25-%e4%b8%ad%e6%96%ad%e4%bc%98%e5%85%88%e7%ba%a7%e6%95%b0%e5%ad%97%e8%b6%8a%e5%a4%a7%e4%bc%98%e5%85%88%e7%ba%a7%e8%b6%8a%e9%ab%98%e5%90%97"></a>
+2.5 中断优先级数字越大，优先级越高吗？
+</h3><p><strong>答案</strong>：在常见 Cortex-M NVIC 的逻辑优先级中，<strong>数字越小，紧急程度越高</strong>；实际可配置位数、分组和库函数的参数表示方式要看芯片及 CMSIS/HAL。</p>
+<p><strong>解析</strong>：任务优先级和硬件中断优先级是两套体系，不能直接比较。若使用 FreeRTOS 的 <code>...FromISR()</code> API，中断还必须处于该移植端允许调用内核 API 的优先级范围。优先级 0 往往过高，直接用来调用内核 API 很危险。参考 <a href="https://developer.arm.com/community/arm-community-blogs/b/embedded-and-microcontrollers-blog/posts/cutting-through-the-confusion-with-arm-cortex-m-interrupt-priorities">Arm 优先级解释</a>和 <a href="https://www.freertos.org/Documentation/02-Kernel/03-Supported-devices/02-Customization">FreeRTOS 中断优先级配置</a>。</p>
+<h3 id="26-volatile-为什么常用于外设寄存器和中断共享标志">
+<a class="header-anchor" href="#26-volatile-%e4%b8%ba%e4%bb%80%e4%b9%88%e5%b8%b8%e7%94%a8%e4%ba%8e%e5%a4%96%e8%ae%be%e5%af%84%e5%ad%98%e5%99%a8%e5%92%8c%e4%b8%ad%e6%96%ad%e5%85%b1%e4%ba%ab%e6%a0%87%e5%bf%97"></a>
+2.6 <code>volatile</code> 为什么常用于外设寄存器和中断共享标志？
+</h3><p><strong>答案</strong>：被声明为 <code>volatile</code> 的对象每次访问都要按该实现的规则保留可观察访问，适合描述可能被硬件或异步执行路径改变的值。</p>
+<p><strong>解析</strong>：轮询状态寄存器时，编译器不能把读取简单缓存成一次；ISR 修改的标志也需要让主程序重新读取。但 <code>volatile</code> <strong>不保证原子性、互斥、跨核内存顺序或整体线程安全</strong>。共享计数器的 <code>count++</code> 是读、加、写，仍可能丢更新。C11 对 <code>volatile</code> 的精确定义见 <a href="https://www.open-std.org/jtc1/sc22/wg14/www/docs/n1570.pdf">WG14 N1570 §6.7.3</a>。</p>
+<h3 id="27-什么是原子操作关中断就一定安全吗">
+<a class="header-anchor" href="#27-%e4%bb%80%e4%b9%88%e6%98%af%e5%8e%9f%e5%ad%90%e6%93%8d%e4%bd%9c%e5%85%b3%e4%b8%ad%e6%96%ad%e5%b0%b1%e4%b8%80%e5%ae%9a%e5%ae%89%e5%85%a8%e5%90%97"></a>
+2.7 什么是原子操作？关中断就一定安全吗？
+</h3><p><strong>答案</strong>：原子操作对其他参与者表现为不可拆分。关中断可以在<strong>同一内核、相关共享者只在当前线程和可屏蔽 ISR</strong>等条件下保护短临界区；它不是所有平台上的通用锁。</p>
+<p><strong>解析</strong>：DMA、另一颗核、不可屏蔽中断不会因为本核普通关中断就停止。对寄存器读改写也要看硬件是否提供置位/清零专用寄存器。临界区应尽量短，并使用芯片或 RTOS 提供的匹配进入/退出接口。</p>
+<h3 id="28-定时器如何算更新周期为什么实际频率不对">
+<a class="header-anchor" href="#28-%e5%ae%9a%e6%97%b6%e5%99%a8%e5%a6%82%e4%bd%95%e7%ae%97%e6%9b%b4%e6%96%b0%e5%91%a8%e6%9c%9f%e4%b8%ba%e4%bb%80%e4%b9%88%e5%ae%9e%e9%99%85%e9%a2%91%e7%8e%87%e4%b8%8d%e5%af%b9"></a>
+2.8 定时器如何算更新周期？为什么实际频率不对？
+</h3><p><strong>答案</strong>：对典型向上计数定时器，在没有特殊计数模式和额外分频时，更新事件频率可写为 <code>f_update = f_timer / ((PSC + 1) × (ARR + 1))</code>。</p>
+<p><strong>解析</strong>：先确认真正输入定时器的时钟 <code>f_timer</code>，再检查预分频寄存器 <code>PSC</code>、自动重装寄存器 <code>ARR</code> 的“加一”关系。某些芯片的总线分频会改变定时器时钟；中心对齐 PWM、重复计数器也会改变事件频率。<strong>例子</strong>：1 MHz 定时器时钟、<code>PSC=99</code>、<code>ARR=999</code>，更新频率为 10 Hz。</p>
+<h3 id="29-uartspiic-最核心的区别是什么">
+<a class="header-anchor" href="#29-uartspiic-%e6%9c%80%e6%a0%b8%e5%bf%83%e7%9a%84%e5%8c%ba%e5%88%ab%e6%98%af%e4%bb%80%e4%b9%88"></a>
+2.9 UART、SPI、I²C 最核心的区别是什么？
+</h3><p><strong>答案</strong>：UART 通常是异步、点对点收发；SPI 通常由时钟同步，主从双方可同时移位；I²C 是带地址和应答的共享总线，常见物理实现为开漏配上拉。</p>
+<p><strong>解析</strong>：“全双工/半双工”只是其中一个维度，还要考虑引脚数、寻址、速率、距离与错误恢复。UART 要确认波特率、帧格式和错误标志；SPI 要确认模式 CPOL/CPHA、片选与字节序；I²C 要确认上拉、地址、ACK/NACK、时钟拉伸及总线卡死恢复。具体速率不是由协议名称单独决定的。</p>
+<h3 id="210-adc-采样值不稳先查什么">
+<a class="header-anchor" href="#210-adc-%e9%87%87%e6%a0%b7%e5%80%bc%e4%b8%8d%e7%a8%b3%e5%85%88%e6%9f%a5%e4%bb%80%e4%b9%88"></a>
+2.10 ADC 采样值不稳，先查什么？
+</h3><p><strong>答案</strong>：先区分真实输入噪声、参考电压变化、采样时间不足、源阻抗过高、时序问题和数字处理造成的抖动。</p>
+<p><strong>解析</strong>：ADC 输入采样电容需要充电时间；高阻传感器与短采样窗口容易出现前一通道残留。检查参考电压、接地、滤波、电源和通道切换后的首样；再看过采样或平均是否适合信号带宽。<strong>易错点</strong>：均值滤波只能压低某些随机噪声，不能修复错误接线或系统性偏差。</p>
+<h3 id="211-看门狗如何正确使用">
+<a class="header-anchor" href="#211-%e7%9c%8b%e9%97%a8%e7%8b%97%e5%a6%82%e4%bd%95%e6%ad%a3%e7%a1%ae%e4%bd%bf%e7%94%a8"></a>
+2.11 看门狗如何正确使用？
+</h3><p><strong>答案</strong>：看门狗要求软件在规定时间内喂狗，超时触发复位或其他动作；喂狗应代表关键功能确实在正常推进。</p>
+<p><strong>解析</strong>：若在永远会运行的定时中断里无条件喂狗，业务任务死锁时仍可能持续喂狗。更稳妥的设计是监控各关键任务的心跳、执行周期和故障标志，由健康管理模块在条件全部满足时喂狗。窗口看门狗还要求不能喂得太早。复位后读取复位原因并记录故障上下文。</p>
+<h3 id="212-hardfault-出现后先怎么定位">
+<a class="header-anchor" href="#212-hardfault-%e5%87%ba%e7%8e%b0%e5%90%8e%e5%85%88%e6%80%8e%e4%b9%88%e5%ae%9a%e4%bd%8d"></a>
+2.12 HardFault 出现后先怎么定位？
+</h3><p><strong>答案</strong>：保留故障现场，读堆栈中的 PC/LR、故障状态寄存器与当前栈指针，对照 ELF/映射文件定位指令，再追查越界、空指针、栈溢出、未对齐访问等原因。</p>
+<p><strong>解析</strong>：不能只看最后进入的 <code>HardFault_Handler</code>，那只是异常入口。异常可能由更早的数据破坏引起；若重启后才读故障信息，现场往往已经丢失。故障寄存器的存在和含义取决于 Cortex-M 型号。<strong>面试加分点</strong>：说出“先判断 MSP/PSP 和异常返回值，再找故障指令与调用链”。</p>
+<h3 id="213-bootloader-和应用程序如何分工">
+<a class="header-anchor" href="#213-bootloader-%e5%92%8c%e5%ba%94%e7%94%a8%e7%a8%8b%e5%ba%8f%e5%a6%82%e4%bd%95%e5%88%86%e5%b7%a5"></a>
+2.13 Bootloader 和应用程序如何分工？
+</h3><p><strong>答案</strong>：Bootloader 负责启动决策、固件校验与升级回退；应用程序负责业务功能。跳转前要确认目标镜像有效、设置向量表与栈，整理中断和外设状态。</p>
+<p><strong>解析</strong>：不能只把 PC 指向应用的 <code>main</code>：应用需要自己的复位入口、向量表和初始化流程。可靠升级通常先写非当前运行区，验证完整性和版本，再切换启动标记；断电恢复策略需要提前设计。签名认证和完整性校验解决的问题不同。</p>
+<h3 id="interview-mcu-check">
+<a class="header-anchor" href="#interview-mcu-check"></a>
+2.14 模块自测：解释硬件现象
+</h3><p>先回答：① 72 MHz 输入、<code>PSC=71</code>、<code>ARR=999</code>，一秒更新几次？② DMA 正在写 RAM，关本核中断能否让它停止？③ 给 GPIO 写“1”后引脚仍低，至少查哪三项？</p>
+<p><strong>答案与推理</strong>：① 1000 次，因为两级除数分别为 72 和 1000。② 不能，DMA 是独立的总线访问者，应按外设流程停机或交接缓冲区。③ 查时钟、引脚复用/模式、实际寄存器与引脚对应关系；开漏还要查上拉和是否有其他器件拉低。能把“代码—总线—外设—引脚”串起来，比单说“检查硬件”更有用。</p>
+<p><a href="/post/%E5%B5%8C%E5%85%A5%E5%BC%8F%E7%AC%94%E8%AF%95%E9%9D%A2%E8%AF%95%E9%AB%98%E9%A2%91%E9%97%AE%E7%AD%94%E5%8D%95%E7%89%87%E6%9C%BAfreertos%E8%BD%AF%E4%BB%B6%E6%9E%B6%E6%9E%84%E4%B8%8Ec%E8%AF%AD%E8%A8%80/#interview-toc">返回目录</a></p>
+<h2 id="interview-c">
+<a class="header-anchor" href="#interview-c"></a>
+3. C 语言高频题：表达、内存和未定义行为
+</h2><p>以下按 <strong>C11</strong> 回答。遇到“输出是什么”题，先判断是否有未定义行为、实现定义行为或未指定顺序，再考虑具体数值。语言规则可核对 <a href="https://www.open-std.org/jtc1/sc22/wg14/www/docs/n1570.pdf">WG14 的 C11 委员会草案 N1570</a>；编译器扩展与目标 ABI 还要看工具链文档。</p>
+<h3 id="interview-c-model">
+<a class="header-anchor" href="#interview-c-model"></a>
+3.0 先建立模型：类型、对象、地址和生命周期
+</h3><h4 id="读一段-c-代码时先问四件事">
+<a class="header-anchor" href="#%e8%af%bb%e4%b8%80%e6%ae%b5-c-%e4%bb%a3%e7%a0%81%e6%97%b6%e5%85%88%e9%97%ae%e5%9b%9b%e4%bb%b6%e4%ba%8b"></a>
+读一段 C 代码时先问四件事
+</h4><ol>
+<li>这是哪个对象，实际占多少存储？</li>
+<li>表达式的类型是什么，会发生哪种隐式转换？</li>
+<li>对象从何时存在到何时，访问时还有效吗？</li>
+<li>同一时刻还有谁会修改它？</li>
+</ol>
+<p>下面是函数体内的教学片段，<code>int</code> 的大小暂不假设为 4。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="kt">int</span> <span class="n">a</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="mi">10</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">30</span><span class="p">};</span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="o">*</span><span class="n">p</span> <span class="o">=</span> <span class="n">a</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="p">(</span><span class="o">*</span><span class="n">whole</span><span class="p">)[</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">a</span><span class="p">;</span>
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">a 是数组对象：     [10] [20] [30]
+</span></span><span class="line"><span class="cl">p 是指针对象：      └── 指向 a[0]
+</span></span><span class="line"><span class="cl">whole 是指针对象：  └── 指向整个 a（类型为“指向含 3 个 int 的数组”）
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">p + 1     → 指向 a[1]
+</span></span><span class="line"><span class="cl">whole + 1 → 越过整个 a，成为该数组对象的尾后指针，不可解引用
+</span></span></code></pre></div><p><code>sizeof a == 3 * sizeof(int)</code>；<code>sizeof p</code> 由目标平台的指针类型决定。二者即使碰巧数值相等，也不表示数组与指针相同。把 <code>a</code> 传给声明为 <code>void f(int a[3])</code> 的函数时，形参调整为指针，长度不会自动随指针一起传递。</p>
+<h4 id="把生命周期和存储位置分开想">
+<a class="header-anchor" href="#%e6%8a%8a%e7%94%9f%e5%91%bd%e5%91%a8%e6%9c%9f%e5%92%8c%e5%ad%98%e5%82%a8%e4%bd%8d%e7%bd%ae%e5%88%86%e5%bc%80%e6%83%b3"></a>
+把生命周期和存储位置分开想
+</h4><table>
+	<thead>
+			<tr>
+					<th>对象</th>
+					<th>生命周期</th>
+					<th>常见风险</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td>块内普通非 VLA 自动对象</td>
+					<td>进入关联块到离开该块</td>
+					<td>返回其地址、交给异步使用者</td>
+			</tr>
+			<tr>
+					<td>静态存储期对象</td>
+					<td>整个程序执行期间</td>
+					<td>多调用者共享、并发覆盖</td>
+			</tr>
+			<tr>
+					<td>动态申请的对象</td>
+					<td>从成功分配到释放</td>
+					<td>泄漏、重复释放、释放后使用</td>
+			</tr>
+	</tbody>
+</table>
+<p>普通非 VLA 自动对象的生命周期从进入关联块开始，名字的作用域则从声明处开始，二者不是同一个概念；变长数组另有规则，见 C11 §6.2.4。编译器可能把变量放进寄存器甚至消除实体存储，但它仍要遵守有定义程序的可观察语义。</p>
+<h4 id="通信字节不能随便强转成指针">
+<a class="header-anchor" href="#%e9%80%9a%e4%bf%a1%e5%ad%97%e8%8a%82%e4%b8%8d%e8%83%bd%e9%9a%8f%e4%be%bf%e5%bc%ba%e8%bd%ac%e6%88%90%e6%8c%87%e9%92%88"></a>
+通信字节不能随便强转成指针
+</h4><p>假设协议给出两个小端字节，<code>buf[0]</code> 是低位。<code>*(uint16_t *)buf</code> 可能遇到未对齐、有效类型以及本机字节序问题。逐字节组装可以把协议写清楚。以下函数要求 <code>uint8_t</code>、<code>uint16_t</code> 可用，输入至少两个有效字节，输出指针指向可写对象。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;stdbool.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;stddef.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;stdint.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kt">bool</span> <span class="nf">read_u16_le</span><span class="p">(</span><span class="k">const</span> <span class="kt">uint8_t</span> <span class="o">*</span><span class="n">buf</span><span class="p">,</span> <span class="kt">size_t</span> <span class="n">len</span><span class="p">,</span> <span class="kt">uint16_t</span> <span class="o">*</span><span class="n">out</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">buf</span> <span class="o">==</span> <span class="nb">NULL</span> <span class="o">||</span> <span class="n">out</span> <span class="o">==</span> <span class="nb">NULL</span> <span class="o">||</span> <span class="n">len</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="nb">false</span><span class="p">;</span>              <span class="cm">/* 失败时不修改 *out */</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="o">*</span><span class="n">out</span> <span class="o">=</span> <span class="p">(</span><span class="kt">uint16_t</span><span class="p">)((</span><span class="kt">uint32_t</span><span class="p">)</span><span class="n">buf</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">|</span> <span class="p">((</span><span class="kt">uint32_t</span><span class="p">)</span><span class="n">buf</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;&lt;</span> <span class="mi">8</span><span class="p">));</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="nb">true</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>输入 <code>{0x34, 0x12}</code>，结果是 <code>0x1234</code>，即十进制 4660。指针参数传的是地址值，长度参数传的是可读范围，二者缺一不可。<code>NULL</code> 检查也不能证明一个非空指针真的指向有效存储，这仍是调用方的责任。</p>
+<h4 id="为什么-volatile-count-还是可能丢更新">
+<a class="header-anchor" href="#%e4%b8%ba%e4%bb%80%e4%b9%88-volatile-count-%e8%bf%98%e6%98%af%e5%8f%af%e8%83%bd%e4%b8%a2%e6%9b%b4%e6%96%b0"></a>
+为什么 <code>volatile count++</code> 还是可能丢更新
+</h4><p>设任务与 ISR 都修改同一个计数器，初值为 5。在目标编译器将自增实现为读、加、写，且允许中断介入的情形下：</p>
+<table>
+	<thead>
+			<tr>
+					<th>时刻</th>
+					<th>任务</th>
+					<th>ISR</th>
+					<th>内存中的值</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td>1</td>
+					<td>读到 5，尚未写回</td>
+					<td>—</td>
+					<td>5</td>
+			</tr>
+			<tr>
+					<td>2</td>
+					<td>被中断</td>
+					<td>读 5、加 1、写 6</td>
+					<td>6</td>
+			</tr>
+			<tr>
+					<td>3</td>
+					<td>用先前的 5 计算并写 6</td>
+					<td>已返回</td>
+					<td>6</td>
+			</tr>
+	</tbody>
+</table>
+<p>逻辑上加了两次，实际只增加一次。修复应选择适合共享者的临界区、消息传递或经端口验证可用的原子操作；不能靠再加一个 <code>volatile</code>。C11 <code>_Atomic</code> 也并非必然无锁，ISR 能否使用还需检查实现。</p>
+<p>下面的题用这套模型分析声明、指针、布局和表达式，不靠记住某次编译的结果。</p>
+<h3 id="31-static-在函数内和文件作用域分别做什么">
+<a class="header-anchor" href="#31-static-%e5%9c%a8%e5%87%bd%e6%95%b0%e5%86%85%e5%92%8c%e6%96%87%e4%bb%b6%e4%bd%9c%e7%94%a8%e5%9f%9f%e5%88%86%e5%88%ab%e5%81%9a%e4%bb%80%e4%b9%88"></a>
+3.1 <code>static</code> 在函数内和文件作用域分别做什么？
+</h3><p><strong>答案</strong>：函数内 <code>static</code> 对象具有静态存储期，但名字只在该块可见；文件作用域 <code>static</code> 变量或函数具有内部链接，只在当前翻译单元中用这个名字访问。</p>
+<p><strong>解析</strong>：局部静态变量不会每次调用都重新创建，若没有显式初始化则为零初始化。文件作用域 <code>static</code> 常用于隐藏模块内部细节。<code>static</code> 不等于常量，也不自动保证线程安全。</p>
+<h3 id="32-声明定义和-extern-有什么区别">
+<a class="header-anchor" href="#32-%e5%a3%b0%e6%98%8e%e5%ae%9a%e4%b9%89%e5%92%8c-extern-%e6%9c%89%e4%bb%80%e4%b9%88%e5%8c%ba%e5%88%ab"></a>
+3.2 声明、定义和 <code>extern</code> 有什么区别？
+</h3><p><strong>答案</strong>：声明告诉编译器名字与类型；定义提供对象存储或函数实体。<code>extern int count;</code> 通常只是引用别处的定义，<code>int count = 0;</code> 是定义。</p>
+<p><strong>解析</strong>：头文件里通常放声明，某一个 <code>.c</code> 文件里放唯一外部定义。把非 <code>static</code> 的变量定义直接放头文件，多个源文件包含后容易出现重复定义。头文件中的函数原型不创建函数体。</p>
+<h3 id="33-constvolatile-和-const-volatile-怎么读">
+<a class="header-anchor" href="#33-constvolatile-%e5%92%8c-const-volatile-%e6%80%8e%e4%b9%88%e8%af%bb"></a>
+3.3 <code>const</code>、<code>volatile</code> 和 <code>const volatile</code> 怎么读？
+</h3><p><strong>答案</strong>：<code>const</code> 限制通过该限定类型的左值修改；<code>volatile</code> 表示访问不能按普通对象那样省略或随意合并；<code>const volatile</code> 常表示“软件只读，但硬件可能改变”的寄存器。</p>
+<p><strong>解析</strong>：<code>const uint8_t *p</code> 是“指向只读数据的指针”，<code>uint8_t * const p</code> 是“指针本身不能改指向”。若对象本身定义为 <code>const</code>，强制转型后修改会导致未定义行为。C 中的 <code>const</code> 也不保证对象一定放在只读物理存储器。</p>
+<h3 id="34-数组和指针完全一样吗">
+<a class="header-anchor" href="#34-%e6%95%b0%e7%bb%84%e5%92%8c%e6%8c%87%e9%92%88%e5%ae%8c%e5%85%a8%e4%b8%80%e6%a0%b7%e5%90%97"></a>
+3.4 数组和指针完全一样吗？
+</h3><p><strong>答案</strong>：不一样。数组是包含连续元素的对象；指针是保存地址值的对象。多数表达式中数组名会转换为指向首元素的指针，但 <code>sizeof array</code> 和 <code>&amp;array</code> 等场景不会做这种转换。</p>
+<p><strong>解析</strong>：局部 <code>int a[10]</code> 的 <code>sizeof a</code> 是整个数组的字节数；函数参数写成 <code>int a[]</code> 实际调整为指针参数，在函数里 <code>sizeof a</code> 是指针大小。<code>a + 1</code> 跨一个元素，<code>&amp;a + 1</code> 跨整个数组。</p>
+<h3 id="35-sizeofstrlen-和缓冲区容量有什么区别">
+<a class="header-anchor" href="#35-sizeofstrlen-%e5%92%8c%e7%bc%93%e5%86%b2%e5%8c%ba%e5%ae%b9%e9%87%8f%e6%9c%89%e4%bb%80%e4%b9%88%e5%8c%ba%e5%88%ab"></a>
+3.5 <code>sizeof</code>、<code>strlen</code> 和缓冲区容量有什么区别？
+</h3><p><strong>答案</strong>：<code>sizeof</code> 给对象或类型的字节大小，<code>strlen</code> 扫描到首个 <code>\0</code> 前的字符数；缓冲区容量是可存储的总字节数，可能与当前字符串长度不同。</p>
+<p><strong>解析</strong>：<code>char s[8] = &quot;abc&quot;;</code> 中 <code>sizeof s</code> 为 8，<code>strlen(s)</code> 为 3；末尾的 <code>\0</code> 仍占 1 字节。<code>sizeof(char)</code> 按定义为 1，但一个字节的位数由 <code>CHAR_BIT</code> 给出，并非所有 C 实现都强制为 8。</p>
+<h3 id="36-指针参数为什么有时需要二级指针">
+<a class="header-anchor" href="#36-%e6%8c%87%e9%92%88%e5%8f%82%e6%95%b0%e4%b8%ba%e4%bb%80%e4%b9%88%e6%9c%89%e6%97%b6%e9%9c%80%e8%a6%81%e4%ba%8c%e7%ba%a7%e6%8c%87%e9%92%88"></a>
+3.6 指针参数为什么有时需要二级指针？
+</h3><p><strong>答案</strong>：C 语言参数按值传递。传入 <code>T *p</code> 可修改 <code>p</code> 指向的对象，却不能通过只修改局部 <code>p</code> 改变调用者的指针变量；要改调用者指针，传 <code>T **</code>，或返回新指针。</p>
+<p><strong>解析</strong>：<code>void reset(Node *p) { p = NULL; }</code> 不会让调用者的指针变空；<code>void reset(Node **p) { *p = NULL; }</code> 才会。使用二级指针前仍需检查传入地址有效，且不能把局部对象地址返回给调用者。</p>
+<h3 id="37-为什么返回局部变量地址是错的">
+<a class="header-anchor" href="#37-%e4%b8%ba%e4%bb%80%e4%b9%88%e8%bf%94%e5%9b%9e%e5%b1%80%e9%83%a8%e5%8f%98%e9%87%8f%e5%9c%b0%e5%9d%80%e6%98%af%e9%94%99%e7%9a%84"></a>
+3.7 为什么返回局部变量地址是错的？
+</h3><p><strong>答案</strong>：普通局部自动对象在离开作用域后生命周期结束，指向它的指针变为悬空；解引用会产生未定义行为。</p>
+<p><strong>解析</strong>：改为由调用者提供缓冲区、返回结构体值、使用明确所有权的动态分配，或在确实只需单实例且考虑并发时使用静态对象。静态对象虽不会悬空，但多次调用共享同一存储，可能产生覆盖和并发问题。</p>
+<h3 id="38-结构体大小为什么常大于成员大小之和">
+<a class="header-anchor" href="#38-%e7%bb%93%e6%9e%84%e4%bd%93%e5%a4%a7%e5%b0%8f%e4%b8%ba%e4%bb%80%e4%b9%88%e5%b8%b8%e5%a4%a7%e4%ba%8e%e6%88%90%e5%91%98%e5%a4%a7%e5%b0%8f%e4%b9%8b%e5%92%8c"></a>
+3.8 结构体大小为什么常大于成员大小之和？
+</h3><p><strong>答案</strong>：编译器可能在成员间和末尾插入填充，以满足对齐要求及数组元素布局。</p>
+<p><strong>解析</strong>：<code>struct { char c; int x; char d; }</code> 的大小不能脱离 ABI、成员对齐和打包选项直接断言。可用 <code>sizeof</code>、<code>offsetof</code> 和 <code>_Alignof</code> 在目标编译器上验证。不要把普通结构体内存原样当跨平台通信报文；布局、字节序、填充字节都可能不同。本站《结构体细节探究》有更完整的推导。</p>
+<h3 id="39-位域适合直接映射外设寄存器或协议帧吗">
+<a class="header-anchor" href="#39-%e4%bd%8d%e5%9f%9f%e9%80%82%e5%90%88%e7%9b%b4%e6%8e%a5%e6%98%a0%e5%b0%84%e5%a4%96%e8%ae%be%e5%af%84%e5%ad%98%e5%99%a8%e6%88%96%e5%8d%8f%e8%ae%ae%e5%b8%a7%e5%90%97"></a>
+3.9 位域适合直接映射外设寄存器或协议帧吗？
+</h3><p><strong>答案</strong>：一般不建议把位域布局作为跨编译器、跨平台协议或寄存器定义的唯一依据，因为位域分配顺序、对齐等存在实现相关部分。</p>
+<p><strong>解析</strong>：用明确宽度的整数掩码和移位可把位位置写清楚，例如 <code>(reg &amp; MASK) &gt;&gt; SHIFT</code>。但外设寄存器还要考虑“写 1 清零”、只读位及读改写副作用，不能机械地 <code>reg |= bit</code>。协议解析更适合逐字节组装。</p>
+<h3 id="310-有符号与无符号混算为什么危险">
+<a class="header-anchor" href="#310-%e6%9c%89%e7%ac%a6%e5%8f%b7%e4%b8%8e%e6%97%a0%e7%ac%a6%e5%8f%b7%e6%b7%b7%e7%ae%97%e4%b8%ba%e4%bb%80%e4%b9%88%e5%8d%b1%e9%99%a9"></a>
+3.10 有符号与无符号混算为什么危险？
+</h3><p><strong>答案</strong>：通常的算术转换可能把负的有符号值转换成较大的无符号值，导致比较和减法结果出乎直觉。</p>
+<p><strong>解析</strong>：例如 <code>int i = -1; unsigned int u = 1;</code>，表达式 <code>i &lt; u</code> 为假：<code>int</code> 与 <code>unsigned int</code> 的转换等级相同，<code>i</code> 会转换为 <code>UINT_MAX</code> 后比较。判断数组长度时也要避免 <code>len - 1</code> 在 <code>len == 0</code> 且为无符号时下溢。先检查范围，再做运算；位操作优先使用合适的无符号类型。</p>
+<h3 id="311-左移和右移有哪些边界">
+<a class="header-anchor" href="#311-%e5%b7%a6%e7%a7%bb%e5%92%8c%e5%8f%b3%e7%a7%bb%e6%9c%89%e5%93%aa%e4%ba%9b%e8%be%b9%e7%95%8c"></a>
+3.11 左移和右移有哪些边界？
+</h3><p><strong>答案</strong>：移位次数必须非负且小于左操作数提升后的位宽；对无符号类型的移位规则更适合表达位掩码。负有符号值左移，以及有符号左移结果不可表示等情况会导致未定义行为。</p>
+<p><strong>解析</strong>：优先写 <code>UINT32_C(1) &lt;&lt; bit</code> 并检查 <code>bit &lt; 32</code>，不要把 <code>1 &lt;&lt; 31</code> 默认当成可移植的 32 位最高位掩码。有符号负数右移的结果属于实现定义，应避免依赖它实现协议运算。</p>
+<h3 id="312-宏和-static-inline-有何区别">
+<a class="header-anchor" href="#312-%e5%ae%8f%e5%92%8c-static-inline-%e6%9c%89%e4%bd%95%e5%8c%ba%e5%88%ab"></a>
+3.12 宏和 <code>static inline</code> 有何区别？
+</h3><p><strong>答案</strong>：宏是预处理文本替换；<code>static inline</code> 是具有类型检查、参数求值规则和函数作用域的函数定义，是否真正内联由编译器决定。</p>
+<p><strong>解析</strong>：<code>#define SQR(x) ((x) * (x))</code> 调用 <code>SQR(i++)</code> 会多次求值，有副作用风险。简单常量可用宏或枚举；短函数优先考虑 <code>static inline</code>。多语句宏若必须使用，常包在 <code>do { ... } while (0)</code> 中，并给参数和整体表达式加括号。</p>
+<h3 id="313-大端小端和字节序如何判断">
+<a class="header-anchor" href="#313-%e5%a4%a7%e7%ab%af%e5%b0%8f%e7%ab%af%e5%92%8c%e5%ad%97%e8%8a%82%e5%ba%8f%e5%a6%82%e4%bd%95%e5%88%a4%e6%96%ad"></a>
+3.13 大端、小端和字节序如何判断？
+</h3><p><strong>答案</strong>：字节序描述多字节对象在内存中的字节排列；小端把最低有效字节放在较低地址，大端相反。</p>
+<p><strong>解析</strong>：它不改变数值本身，也不等于串口线上每个字节的位传输顺序。协议通常规定“网络字节序”或逐字段序列化，不能把 <code>uint32_t</code> 对象直接 <code>memcpy</code> 到线缆上就认为跨平台一致。组帧时显式写每个字节最清楚。</p>
+<h3 id="314-memcpystrcpystrncpy-使用时注意什么">
+<a class="header-anchor" href="#314-memcpystrcpystrncpy-%e4%bd%bf%e7%94%a8%e6%97%b6%e6%b3%a8%e6%84%8f%e4%bb%80%e4%b9%88"></a>
+3.14 <code>memcpy</code>、<code>strcpy</code>、<code>strncpy</code> 使用时注意什么？
+</h3><p><strong>答案</strong>：<code>memcpy</code> 按给定字节数复制，源与目标重叠时应使用 <code>memmove</code>；<code>strcpy</code> 不知道目标容量；<code>strncpy</code> 在源长度达到上限时可能不补 <code>\0</code>。</p>
+<p><strong>解析</strong>：处理串口数据要保存实际长度，不能假设它以零结尾。拷贝前检查目标容量，拼接字符串时预留结尾零字节。<code>memcpy</code> 适合复制对象表示，但解析协议字段时仍应考虑字节序、对齐和格式版本。</p>
+<h3 id="315-什么是未定义行为笔试题怎样判断">
+<a class="header-anchor" href="#315-%e4%bb%80%e4%b9%88%e6%98%af%e6%9c%aa%e5%ae%9a%e4%b9%89%e8%a1%8c%e4%b8%ba%e7%ac%94%e8%af%95%e9%a2%98%e6%80%8e%e6%a0%b7%e5%88%a4%e6%96%ad"></a>
+3.15 什么是未定义行为？笔试题怎样判断？
+</h3><p><strong>答案</strong>：未定义行为是 C 标准对该程序行为不作要求，不能给出一个可移植的“正确输出”。</p>
+<p><strong>解析</strong>：数组越界、解引用悬空指针、有符号整数溢出，以及 <code>i = i++ + 1</code> 这类对同一标量对象有未排序冲突访问的表达式，都是常见例子。不要根据某次编译运行结果反推语言规则。与之不同，实现定义行为要求实现作出并说明选择；未指定行为允许多种合法选择。可查 <a href="https://www.open-std.org/jtc1/sc22/wg14/www/docs/n1570.pdf">WG14 N1570 §3.4 与 §6.5</a>。</p>
+<h3 id="316-函数指针和回调常见用途是什么">
+<a class="header-anchor" href="#316-%e5%87%bd%e6%95%b0%e6%8c%87%e9%92%88%e5%92%8c%e5%9b%9e%e8%b0%83%e5%b8%b8%e8%a7%81%e7%94%a8%e9%80%94%e6%98%af%e4%bb%80%e4%b9%88"></a>
+3.16 函数指针和回调常见用途是什么？
+</h3><p><strong>答案</strong>：函数指针可把“行为”作为参数传给模块，用于中断回调、设备操作表、状态转换动作和测试替身。</p>
+<p><strong>解析</strong>：例如 <code>int (*read)(void *ctx, uint8_t *buf, size_t cap)</code> 表示一个接收上下文、缓冲区和容量的读取操作。回调需要明确调用上下文：从 ISR 调用的回调必须遵守 ISR 限制；从任务调用则可按任务规则运行。函数指针类型、上下文对象生命周期和空指针处理都要检查。</p>
+<h3 id="interview-c-check">
+<a class="header-anchor" href="#interview-c-check"></a>
+3.17 模块自测：先分类，再计算
+</h3><p><strong>题目</strong>：① <code>char s[8] = &quot;abc&quot;;</code> 的容量、字符串长度、终止符位置分别是什么？② 函数用局部数组组帧，把地址放入队列后返回，为什么不可靠？③ <code>int i=-1; unsigned int u=1;</code>，<code>i &lt; u</code> 是真是假？④ <code>int i=1; int x=i++ + i++;</code> 应答出什么？</p>
+<p><strong>答案与推理</strong>：① 8 字节、3、<code>s[3]</code>，其余元素也被零初始化。② 队列若只复制指针，数组生命周期结束后没有可用的那份对象；应复制内容或显式移交长期有效存储。③ 假，<code>int</code> 与 <code>unsigned int</code> 同级，<code>i</code> 转成 <code>UINT_MAX</code> 后比较；这不是只在某个常见 32 位平台上才成立。④ 在本文 C11 语境下是未定义行为，两个自增副作用未排序，不能给出标准规定的数值答案。</p>
+<p><a href="/post/%E5%B5%8C%E5%85%A5%E5%BC%8F%E7%AC%94%E8%AF%95%E9%9D%A2%E8%AF%95%E9%AB%98%E9%A2%91%E9%97%AE%E7%AD%94%E5%8D%95%E7%89%87%E6%9C%BAfreertos%E8%BD%AF%E4%BB%B6%E6%9E%B6%E6%9E%84%E4%B8%8Ec%E8%AF%AD%E8%A8%80/#interview-toc">返回目录</a></p>
+<h2 id="interview-architecture">
+<a class="header-anchor" href="#interview-architecture"></a>
+4. 单片机软件结构高频题：如何写得清楚又可靠
+</h2><h3 id="interview-architecture-model">
+<a class="header-anchor" href="#interview-architecture-model"></a>
+4.0 先建立模型：模块管职责，状态机管行为，接口管约定
+</h3><h4 id="从都写进-main到明确的依赖方向">
+<a class="header-anchor" href="#%e4%bb%8e%e9%83%bd%e5%86%99%e8%bf%9b-main%e5%88%b0%e6%98%8e%e7%a1%ae%e7%9a%84%e4%be%9d%e8%b5%96%e6%96%b9%e5%90%91"></a>
+从“都写进 main”到明确的依赖方向
+</h4><p>温度控制程序至少需要采样、换算、判断、驱动输出和通信。若它们都通过全局变量彼此读写，任何一个修改都可能影响整条链。可以按下面的依赖方向组织：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">应用协调层：何时采样、何时上传、如何进入安全状态
+</span></span><span class="line"><span class="cl">     ↓ 调用
+</span></span><span class="line"><span class="cl">领域逻辑：温度有效性、风扇状态机、协议含义
+</span></span><span class="line"><span class="cl">     ↓ 通过接口请求
+</span></span><span class="line"><span class="cl">设备驱动：ADC读取、风扇输出、UART传输
+</span></span><span class="line"><span class="cl">     ↓
+</span></span><span class="line"><span class="cl">板级配置与芯片外设接口
+</span></span></code></pre></div><p>图表示调用依赖，不表示所有数据只能向下流。数据可通过返回值、回调或消息向上传递。小项目也不必为每一层都建一个目录；重要的是谁依赖谁，以及是否能独立验证。</p>
+<h4 id="给每个接口写一份短契约">
+<a class="header-anchor" href="#%e7%bb%99%e6%af%8f%e4%b8%aa%e6%8e%a5%e5%8f%a3%e5%86%99%e4%b8%80%e4%bb%bd%e7%9f%ad%e5%a5%91%e7%ba%a6"></a>
+给每个接口写一份短契约
+</h4><p>一个“读温度”接口至少要回答：返回摄氏度还是毫摄氏度？失败是否修改输出？最多阻塞多久？能否在 ISR 调用？多个任务同时调用是否安全？数据属于谁？</p>
+<p>例如，约定 <code>bool sensor_read_milli_celsius(int32_t *out)</code> 只供任务调用、成功才写输出、内部超时有上限。业务模块可以根据 <code>false</code> 进入故障状态；不会误把“旧温度恰好仍在变量里”当作本次测量成功。</p>
+<h4 id="用有滞回的风扇例子理解状态">
+<a class="header-anchor" href="#%e7%94%a8%e6%9c%89%e6%bb%9e%e5%9b%9e%e7%9a%84%e9%a3%8e%e6%89%87%e4%be%8b%e5%ad%90%e7%90%86%e8%a7%a3%e7%8a%b6%e6%80%81"></a>
+用有滞回的风扇例子理解状态
+</h4><p>设定“温度达到 30 ℃开启，降至 28 ℃关闭”。28～30 ℃之间保留当前状态，这是滞回，可减少测量抖动导致的反复启停。</p>
+<table>
+	<thead>
+			<tr>
+					<th>当前状态</th>
+					<th>输入条件</th>
+					<th>下一状态</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td>关闭</td>
+					<td>有效温度 ≥ 30 ℃</td>
+					<td>开启</td>
+			</tr>
+			<tr>
+					<td>开启</td>
+					<td>有效温度 ≤ 28 ℃</td>
+					<td>关闭</td>
+			</tr>
+			<tr>
+					<td>开启或关闭</td>
+					<td>温度处于两阈值之间</td>
+					<td>保持</td>
+			</tr>
+			<tr>
+					<td>任意状态</td>
+					<td>数据无效</td>
+					<td>故障</td>
+			</tr>
+			<tr>
+					<td>故障</td>
+					<td>有效数据且明确确认恢复</td>
+					<td>从关闭状态重新判定阈值</td>
+			</tr>
+	</tbody>
+</table>
+<p>这里只是教学控制器。故障时输出是开启还是关闭，必须由具体产品的危险分析决定；<a href="/post/%E5%B5%8C%E5%85%A5%E5%BC%8F%E7%AC%94%E8%AF%95%E9%9D%A2%E8%AF%95%E9%AB%98%E9%A2%91%E9%97%AE%E7%AD%94%E5%8D%95%E7%89%87%E6%9C%BAfreertos%E8%BD%AF%E4%BB%B6%E6%9E%B6%E6%9E%84%E4%B8%8Ec%E8%AF%AD%E8%A8%80/#interview-project">完整案例</a>会为示例明确选定输出行为。</p>
+<p><strong>为什么状态机需要记忆？</strong> 同样输入 29 ℃，之前处于开启状态时保持开启，之前处于关闭状态时保持关闭。只写 <code>fan = temperature &gt; 30</code> 无法表达这种行为。</p>
+<h4 id="把谁拥有状态也设计进去">
+<a class="header-anchor" href="#%e6%8a%8a%e8%b0%81%e6%8b%a5%e6%9c%89%e7%8a%b6%e6%80%81%e4%b9%9f%e8%ae%be%e8%ae%a1%e8%bf%9b%e5%8e%bb"></a>
+把“谁拥有状态”也设计进去
+</h4><p>可以指定控制任务独占状态机对象，通信任务只发送“修改设定值”等消息。这样无需让多个任务直接修改同一个 <code>state</code>。一个消费者拥有数据，并不代表所有程序都要通过一个大队列运行；按模块和流量建立小而明确的边界即可。</p>
+<h3 id="41-裸机超级循环和-rtos-各适合什么项目">
+<a class="header-anchor" href="#41-%e8%a3%b8%e6%9c%ba%e8%b6%85%e7%ba%a7%e5%be%aa%e7%8e%af%e5%92%8c-rtos-%e5%90%84%e9%80%82%e5%90%88%e4%bb%80%e4%b9%88%e9%a1%b9%e7%9b%ae"></a>
+4.1 裸机超级循环和 RTOS 各适合什么项目？
+</h3><p><strong>答案</strong>：任务数量少、时序简单、资源紧张时，超级循环加中断往往足够；多个独立活动需要优先级、阻塞等待和清晰任务边界时，可考虑 RTOS。</p>
+<p><strong>解析</strong>：超级循环不等于“所有函数一直无条件跑”，可用事件标志、状态机和时间片组织。RTOS 也不自动使系统实时；任务优先级、最坏执行时间和共享资源仍需设计。选择依据是可验证的时序与复杂度，而非“项目越高级越要 RTOS”。</p>
+<h3 id="42-halbsp驱动服务和应用层怎么分">
+<a class="header-anchor" href="#42-halbsp%e9%a9%b1%e5%8a%a8%e6%9c%8d%e5%8a%a1%e5%92%8c%e5%ba%94%e7%94%a8%e5%b1%82%e6%80%8e%e4%b9%88%e5%88%86"></a>
+4.2 HAL、BSP、驱动、服务和应用层怎么分？
+</h3><p><strong>答案</strong>：HAL 封装芯片外设寄存器，BSP 绑定板级引脚和器件连接，设备驱动管理具体器件行为，服务层提供可复用能力，应用层处理产品规则。</p>
+<p><strong>解析</strong>：例如“读取温度”：HAL 提供 I²C 发送接收；BSP 知道传感器接在哪条总线和哪个电源脚；传感器驱动按芯片手册读取寄存器并换算；温度服务处理滤波与有效性；应用决定何时报警。命名可不同，但<strong>依赖方向和职责</strong>要清楚。上层不应到处直接改外设寄存器。</p>
+<h3 id="43-为什么不要把所有逻辑都塞进中断或一个任务">
+<a class="header-anchor" href="#43-%e4%b8%ba%e4%bb%80%e4%b9%88%e4%b8%8d%e8%a6%81%e6%8a%8a%e6%89%80%e6%9c%89%e9%80%bb%e8%be%91%e9%83%bd%e5%a1%9e%e8%bf%9b%e4%b8%ad%e6%96%ad%e6%88%96%e4%b8%80%e4%b8%aa%e4%bb%bb%e5%8a%a1"></a>
+4.3 为什么不要把所有逻辑都塞进中断或一个任务？
+</h3><p><strong>答案</strong>：这样会耦合硬件时序、协议解析和业务决策，使最坏执行时间难估、模块难测、故障难定位。</p>
+<p><strong>解析</strong>：中断负责取得事件与最小数据；任务或主循环处理缓冲区、协议和业务。过度拆任务也会增加栈占用和同步成本。划分任务时先问：是否有不同优先级、不同等待事件或独立截止期；若没有，一个任务内的状态机可能更合适。</p>
+<h3 id="44-状态机解决什么问题">
+<a class="header-anchor" href="#44-%e7%8a%b6%e6%80%81%e6%9c%ba%e8%a7%a3%e5%86%b3%e4%bb%80%e4%b9%88%e9%97%ae%e9%a2%98"></a>
+4.4 状态机解决什么问题？
+</h3><p><strong>答案</strong>：状态机把“系统现在处于什么阶段、收到事件后去哪里、进入或离开时做什么”显式表达出来，适合通信协议、升级流程、设备控制。</p>
+<p><strong>解析</strong>：例如电机可有 <code>STOPPED → STARTING → RUNNING → FAULT</code>。每个转换需写清条件和动作；故障状态要定义恢复路径。状态机不应靠多个互相矛盾的布尔标志隐式拼出来。<strong>面试追问</strong>：若突然收到停机命令，所有状态是否都有确定处理？</p>
+<h3 id="45-驱动接口为什么要区分初始化启动和读写">
+<a class="header-anchor" href="#45-%e9%a9%b1%e5%8a%a8%e6%8e%a5%e5%8f%a3%e4%b8%ba%e4%bb%80%e4%b9%88%e8%a6%81%e5%8c%ba%e5%88%86%e5%88%9d%e5%a7%8b%e5%8c%96%e5%90%af%e5%8a%a8%e5%92%8c%e8%af%bb%e5%86%99"></a>
+4.5 驱动接口为什么要区分初始化、启动和读写？
+</h3><p><strong>答案</strong>：初始化建立资源和默认配置；启动允许设备实际工作；读写执行运行时操作。分开有利于处理依赖顺序、失败回滚和重复启动。</p>
+<p><strong>解析</strong>：一个好的驱动接口会明确参数单位、超时、返回码、调用上下文和线程安全约束。例如 <code>sensor_read_milli_celsius()</code> 比 <code>sensor_get()</code> 更清楚，调用者知道返回单位。若函数可能阻塞，应在接口注释中写明，避免 ISR 误用。</p>
+<h3 id="46-如何设计模块间数据所有权">
+<a class="header-anchor" href="#46-%e5%a6%82%e4%bd%95%e8%ae%be%e8%ae%a1%e6%a8%a1%e5%9d%97%e9%97%b4%e6%95%b0%e6%8d%ae%e6%89%80%e6%9c%89%e6%9d%83"></a>
+4.6 如何设计模块间数据所有权？
+</h3><p><strong>答案</strong>：每一块缓冲区都要约定谁写、谁读、何时交接、何时可以复用。传递结构体值适合小数据；传递指针适合大数据，但必须管理生命周期。</p>
+<p><strong>解析</strong>：把局部数组地址放进队列，函数返回后消费者再读取，就是典型悬空指针。DMA 缓冲区也不能在尚未处理完时被下一轮 DMA 覆盖。可采用双缓冲、固定内存池或“空闲队列/就绪队列”明确所有权转换。</p>
+<h3 id="47-环形缓冲区要解决哪些边界">
+<a class="header-anchor" href="#47-%e7%8e%af%e5%bd%a2%e7%bc%93%e5%86%b2%e5%8c%ba%e8%a6%81%e8%a7%a3%e5%86%b3%e5%93%aa%e4%ba%9b%e8%be%b9%e7%95%8c"></a>
+4.7 环形缓冲区要解决哪些边界？
+</h3><p><strong>答案</strong>：要定义读写索引、满和空的判定、溢出策略以及并发读写规则。</p>
+<p><strong>解析</strong>：常见做法是保留一个空槽：<code>next(write) == read</code> 表示满，<code>write == read</code> 表示空；这样容量为数组长度减一。也可以维护计数，但并发时计数更新需保护。单生产者单消费者与多生产者多消费者的同步难度不同。溢出时是丢新数据、丢旧数据还是报错，必须按协议要求决定。</p>
+<h3 id="48-初始化顺序如何安排">
+<a class="header-anchor" href="#48-%e5%88%9d%e5%a7%8b%e5%8c%96%e9%a1%ba%e5%ba%8f%e5%a6%82%e4%bd%95%e5%ae%89%e6%8e%92"></a>
+4.8 初始化顺序如何安排？
+</h3><p><strong>答案</strong>：先建立时钟和内存等基础环境，再配置引脚/总线/外设，创建同步对象和任务，最后使能会产生事件的中断或启动采集。</p>
+<p><strong>解析</strong>：若中断先开而队列/任务句柄尚未建立，ISR 可能在系统未准备好时访问空句柄。不同 RTOS 和芯片的启动限制需核对。初始化函数应返回状态；失败时进入安全状态，而非带着一半配置继续运行。</p>
+<h3 id="49-错误码日志和断言如何分工">
+<a class="header-anchor" href="#49-%e9%94%99%e8%af%af%e7%a0%81%e6%97%a5%e5%bf%97%e5%92%8c%e6%96%ad%e8%a8%80%e5%a6%82%e4%bd%95%e5%88%86%e5%b7%a5"></a>
+4.9 错误码、日志和断言如何分工？
+</h3><p><strong>答案</strong>：可预期的运行错误用返回码或状态处理；诊断信息用日志；违反内部不变量的编程错误用断言在开发期尽早暴露。</p>
+<p><strong>解析</strong>：I²C NACK 是可能发生的外部错误，不适合无条件断言停机；“队列句柄不可能为 NULL”若发生，说明初始化或代码逻辑有缺陷。日志在实时路径要限频、避免阻塞，并保留时间戳和错误上下文。量产设备还需定义断言后如何安全降级或复位。</p>
+<h3 id="410-如何验证软件实时性">
+<a class="header-anchor" href="#410-%e5%a6%82%e4%bd%95%e9%aa%8c%e8%af%81%e8%bd%af%e4%bb%b6%e5%ae%9e%e6%97%b6%e6%80%a7"></a>
+4.10 如何验证软件“实时性”？
+</h3><p><strong>答案</strong>：列出各关键事件的截止期，测量最坏或足够保守的响应路径：中断延迟、ISR 执行、排队等待、任务切换、锁等待和业务处理。</p>
+<p><strong>解析</strong>：平均耗时很低仍可能偶发超时。用 GPIO 翻转配示波器/逻辑分析仪、硬件计数器或追踪工具测量关键路径；同时施加最不利的并发负载。看门狗、日志和动态分配也可能造成额外抖动。</p>
+<h3 id="411-什么是可测试的软件结构">
+<a class="header-anchor" href="#411-%e4%bb%80%e4%b9%88%e6%98%af%e5%8f%af%e6%b5%8b%e8%af%95%e7%9a%84%e8%bd%af%e4%bb%b6%e7%bb%93%e6%9e%84"></a>
+4.11 什么是可测试的软件结构？
+</h3><p><strong>答案</strong>：把纯逻辑与硬件访问分开，使协议解析、状态转换、校验和滤波能在电脑上以确定输入测试；硬件接口则用真实板卡做集成验证。</p>
+<p><strong>解析</strong>：例如解析函数接收 <code>const uint8_t *data</code> 和长度，返回解析状态，不在内部直接调用 UART 寄存器。这样可以喂入正常帧、截断帧、错误校验和随机字节流。硬件测试仍要覆盖中断竞争、电源异常和真实时序。</p>
+<h3 id="interview-architecture-check">
+<a class="header-anchor" href="#interview-architecture-check"></a>
+4.12 模块自测：把口头需求变成规则
+</h3><p><strong>题目</strong>：① 当前风扇开启，温度从 31 ℃降至 29 ℃，该不该关闭？② 传感器读取失败，但温度变量仍是上次的 27 ℃，可以继续据此关风扇吗？③ 串口接到新阈值，应直接修改控制任务内部变量吗？</p>
+<p><strong>答案与推理</strong>：① 保持开启，关闭阈值是 28 ℃。② 不能把旧值当成有效新样本，应携带有效性与时间信息并进入规定故障路径。③ 优先发送命令，由状态的拥有者验证范围并在明确时机应用；如果必须共享对象，则定义同步与一致性规则。</p>
+<p><a href="/post/%E5%B5%8C%E5%85%A5%E5%BC%8F%E7%AC%94%E8%AF%95%E9%9D%A2%E8%AF%95%E9%AB%98%E9%A2%91%E9%97%AE%E7%AD%94%E5%8D%95%E7%89%87%E6%9C%BAfreertos%E8%BD%AF%E4%BB%B6%E6%9E%B6%E6%9E%84%E4%B8%8Ec%E8%AF%AD%E8%A8%80/#interview-toc">返回目录</a></p>
+<h2 id="interview-rtos">
+<a class="header-anchor" href="#interview-rtos"></a>
+5. FreeRTOS 高频题：任务如何并发与协作
+</h2><p>以下 API 名称和行为以官方 FreeRTOS Kernel 文档为依据。具体调度选项、任务通知数组、静态分配开关和移植端中断限制须看工程的 <code>FreeRTOSConfig.h</code>。参考 <a href="https://www.freertos.org/Documentation/02-Kernel/02-Kernel-features/01-Tasks-and-co-routines/04-Task-scheduling">FreeRTOS 调度</a>、<a href="https://www.freertos.org/Documentation/02-Kernel/02-Kernel-features/01-Tasks-and-co-routines/02-Task-states">任务状态</a>及 <a href="https://www.freertos.org/Documentation/02-Kernel/02-Kernel-features/02-Queues-mutexes-and-semaphores/01-Queues">队列文档</a>。</p>
+<h3 id="interview-rtos-model">
+<a class="header-anchor" href="#interview-rtos-model"></a>
+5.0 先建立模型：一颗 CPU 怎样表现得像同时做多件事
+</h3><h4 id="看一次抢占不要把-tick-当成唯一切换机会">
+<a class="header-anchor" href="#%e7%9c%8b%e4%b8%80%e6%ac%a1%e6%8a%a2%e5%8d%a0%e4%b8%8d%e8%a6%81%e6%8a%8a-tick-%e5%bd%93%e6%88%90%e5%94%af%e4%b8%80%e5%88%87%e6%8d%a2%e6%9c%ba%e4%bc%9a"></a>
+看一次抢占，不要把 tick 当成唯一切换机会
+</h4><p>设系统为单核抢占式配置，处理任务优先级为 3、通信任务为 2、日志任务为 1；都不是中断优先级。忽略中断嵌套和额外运行开销，仅观察调度关系：</p>
+<table>
+	<thead>
+			<tr>
+					<th>时刻</th>
+					<th>发生的事</th>
+					<th>CPU 接下来做什么</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td>t0</td>
+					<td>处理任务等队列；通信任务就绪</td>
+					<td>运行通信任务</td>
+			</tr>
+			<tr>
+					<td>t1</td>
+					<td>DMA 中断到来，投递样本并唤醒处理任务</td>
+					<td>先执行 ISR</td>
+			</tr>
+			<tr>
+					<td>t2</td>
+					<td>ISR 请求切换并退出</td>
+					<td>运行优先级 3 的处理任务</td>
+			</tr>
+			<tr>
+					<td>t3</td>
+					<td>处理完成，处理任务再次等空队列</td>
+					<td>恢复运行通信任务</td>
+			</tr>
+			<tr>
+					<td>t4</td>
+					<td>通信任务也阻塞</td>
+					<td>日志任务才有机会运行</td>
+			</tr>
+	</tbody>
+</table>
+<p>处理任务在 t1 前没有资格竞争 CPU，因为它在阻塞态。<code>portYIELD_FROM_ISR()</code> 请求切换后，在端口允许调度的时机执行，常见 Cortex-M 端口用 PendSV 完成上下文切换；不必机械地等到下一个 tick。</p>
+<p><strong>一个重要反例</strong>：高优先级任务无限调用 <code>taskYIELD()</code>，仍可能饿死低优先级任务。让出 CPU 不会把自己从就绪集合里移除，调度器仍然优先选择最高优先级就绪任务。需要等待事件时应进入阻塞态。</p>
+<h4 id="区分醒了和运行了">
+<a class="header-anchor" href="#%e5%8c%ba%e5%88%86%e9%86%92%e4%ba%86%e5%92%8c%e8%bf%90%e8%a1%8c%e4%ba%86"></a>
+区分“醒了”和“运行了”
+</h4><p>到达超时时间只说明任务有机会回到就绪态；如果更高优先级任务占着 CPU，它不会立即运行。常规 tick 正常递增时，<code>vTaskDelay(1)</code> 的阻塞时间可能接近 0，也可能接近一个 tick 周期，取决于调用相位；到实际继续执行还可能更久。</p>
+<p>因此 <code>vTaskDelay(1)</code> 不是“精确延时 1 ms”，<code>vTaskDelay(0)</code> 也不是阻塞等待。参考 <a href="https://www.freertos.org/Documentation/02-Kernel/04-API-references/02-Task-control/01-vTaskDelay">FreeRTOS vTaskDelay 说明</a>。</p>
+<h4 id="中断优先级要同时看数值分组和表示方式">
+<a class="header-anchor" href="#%e4%b8%ad%e6%96%ad%e4%bc%98%e5%85%88%e7%ba%a7%e8%a6%81%e5%90%8c%e6%97%b6%e7%9c%8b%e6%95%b0%e5%80%bc%e5%88%86%e7%bb%84%e5%92%8c%e8%a1%a8%e7%a4%ba%e6%96%b9%e5%bc%8f"></a>
+中断优先级要同时看数值、分组和表示方式
+</h4><p>仅在一个具体的 Cortex-M3/M4 示例中，假设实现 4 位优先级、全部用于抢占，CMSIS 的未移位逻辑优先级范围是 0～15，FreeRTOS 可调用内核 API 的门槛配置为逻辑值 5：</p>
+<table>
+	<thead>
+			<tr>
+					<th>中断逻辑值</th>
+					<th>能否调用适用的 FromISR API</th>
+					<th>原因</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td>0～4</td>
+					<td>不能</td>
+					<td>紧急程度高于内核允许门槛</td>
+			</tr>
+			<tr>
+					<td>5～15</td>
+					<td>可以，仍须遵守各 API 条件</td>
+					<td>落在受内核保护的范围</td>
+			</tr>
+	</tbody>
+</table>
+<p>若配置采用常见命名，<code>configMAX_SYSCALL_INTERRUPT_PRIORITY = 5 &lt;&lt; (8 - 4) = 0x50</code>；传给 <code>NVIC_SetPriority()</code> 的仍是未移位的 5，不能把 <code>0x50</code> 再当未移位值传进去。换内核、位数或分组时必须重新核对，尤其不能把此例直接套到没有 BASEPRI 的端口。依据见 <a href="https://arm-software.github.io/CMSIS_6/latest/Core/group__NVIC__gr.html">CMSIS NVIC 接口</a>与 <a href="https://www.freertos.org/Documentation/02-Kernel/03-Supported-devices/04-Demos/ARM-Cortex/RTOS-Cortex-M3-M4">FreeRTOS Cortex-M 说明</a>。</p>
+<h4 id="先问要传什么再选机制">
+<a class="header-anchor" href="#%e5%85%88%e9%97%ae%e8%a6%81%e4%bc%a0%e4%bb%80%e4%b9%88%e5%86%8d%e9%80%89%e6%9c%ba%e5%88%b6"></a>
+先问要传什么，再选机制
+</h4><table>
+	<thead>
+			<tr>
+					<th>真正的需求</th>
+					<th>常用机制</th>
+					<th>必须处理的边界</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td>每份样本都要处理</td>
+					<td>队列 / 有所有权的缓冲池</td>
+					<td>队列满、处理速度、生命周期</td>
+			</tr>
+			<tr>
+					<td>告诉指定任务去查缓冲区</td>
+					<td>任务通知</td>
+					<td>多次事件是否合并、缓冲区是否覆写</td>
+			</tr>
+			<tr>
+					<td>多任务轮流占用一个设备</td>
+					<td>互斥量</td>
+					<td>持锁时间、锁顺序、超时</td>
+			</tr>
+			<tr>
+					<td>等网络和存储都准备好</td>
+					<td>事件组</td>
+					<td>位表示状态，不代表无限个事件</td>
+			</tr>
+	</tbody>
+</table>
+<p>队列中的一个元素通常只交给一个成功接收者；多个消费者等待同一队列并不等于广播。二值信号量满了以后不能继续累积更多次数，事件位反复置 1 也不会保存次数。需要逐条保留事件时，要选择能表达数量和载荷的机制。</p>
+<h3 id="51-任务有哪些常见状态">
+<a class="header-anchor" href="#51-%e4%bb%bb%e5%8a%a1%e6%9c%89%e5%93%aa%e4%ba%9b%e5%b8%b8%e8%a7%81%e7%8a%b6%e6%80%81"></a>
+5.1 任务有哪些常见状态？
+</h3><p><strong>答案</strong>：运行态 Running、就绪态 Ready、阻塞态 Blocked、挂起态 Suspended；删除中的任务还涉及终止和资源回收过程。</p>
+<p><strong>解析</strong>：就绪表示“可以运行但暂未获得 CPU”；阻塞表示等待时间或事件，不占用 CPU。<code>vTaskDelay()</code> 后任务进入阻塞而非挂起；<code>vTaskSuspend()</code> 才是显式挂起。单核系统同一时刻通常只有一个任务运行，但中断可打断它。</p>
+<h3 id="52-freertos-是怎么决定下一个任务的">
+<a class="header-anchor" href="#52-freertos-%e6%98%af%e6%80%8e%e4%b9%88%e5%86%b3%e5%ae%9a%e4%b8%8b%e4%b8%80%e4%b8%aa%e4%bb%bb%e5%8a%a1%e7%9a%84"></a>
+5.2 FreeRTOS 是怎么决定下一个任务的？
+</h3><p><strong>答案</strong>：在常见单核、抢占式配置下，调度器选择最高优先级的就绪任务；更高优先级任务就绪时可抢占当前任务。同优先级任务是否按时间片轮转取决于配置。</p>
+<p><strong>解析</strong>：“优先级高”不代表一直运行：如果它在等队列、通知或延时，就不处于就绪态。也不能笼统说“每个 tick 都切换任务”，因为配置、任务状态和主动让出都会影响切换。任务优先级数字的方向与 Cortex-M 中断优先级相反：FreeRTOS 中通常数字越大越高。</p>
+<h3 id="53-vtaskdelay-和-vtaskdelayuntil-有什么区别">
+<a class="header-anchor" href="#53-vtaskdelay-%e5%92%8c-vtaskdelayuntil-%e6%9c%89%e4%bb%80%e4%b9%88%e5%8c%ba%e5%88%ab"></a>
+5.3 <code>vTaskDelay()</code> 和 <code>vTaskDelayUntil()</code> 有什么区别？
+</h3><p><strong>答案</strong>：<code>vTaskDelay(n)</code>（<code>n &gt; 0</code>）按调用时的 tick 计数安排相对唤醒时刻；实际阻塞时长取决于调用相位，不能理解成至少经过 n 个完整 tick 周期；<code>vTaskDelayUntil()</code> 以参考唤醒时间安排固定节拍，更适合周期任务。</p>
+<p><strong>解析</strong>：任务执行时间若每轮都不同，<code>vTaskDelay()</code> 会把执行时间叠加到周期；固定节拍 API 能减少这种累计漂移。不过超期任务无法靠延时“补回”已经错过的截止期。<code>pdMS_TO_TICKS()</code> 存在 tick 粒度和整数舍入，不能保证精确到 1 ms。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="cm">/* 任务函数片段：period 的单位是 tick；需确认转换结果非 0。 */</span>
+</span></span><span class="line"><span class="cl"><span class="n">TickType_t</span> <span class="n">last</span> <span class="o">=</span> <span class="nf">xTaskGetTickCount</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl"><span class="k">const</span> <span class="n">TickType_t</span> <span class="n">period</span> <span class="o">=</span> <span class="nf">pdMS_TO_TICKS</span><span class="p">(</span><span class="mi">10</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="nf">configASSERT</span><span class="p">(</span><span class="n">period</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="k">for</span> <span class="p">(;;)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">sample_and_process</span><span class="p">();</span>       <span class="cm">/* 最坏执行时间应小于可用周期预算 */</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">vTaskDelayUntil</span><span class="p">(</span><span class="o">&amp;</span><span class="n">last</span><span class="p">,</span> <span class="n">period</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><h3 id="54-xtaskcreate-创建了什么栈大小单位是什么">
+<a class="header-anchor" href="#54-xtaskcreate-%e5%88%9b%e5%bb%ba%e4%ba%86%e4%bb%80%e4%b9%88%e6%a0%88%e5%a4%a7%e5%b0%8f%e5%8d%95%e4%bd%8d%e6%98%af%e4%bb%80%e4%b9%88"></a>
+5.4 <code>xTaskCreate()</code> 创建了什么？栈大小单位是什么？
+</h3><p><strong>答案</strong>：创建任务通常需要任务控制块和任务栈。<code>xTaskCreate()</code> 的栈深度参数以 <code>StackType_t</code> 元素数计，不应直接当成字节数。</p>
+<p><strong>解析</strong>：在 32 位端口，100 个栈元素通常对应约 400 字节，但仍须看端口定义、对齐和额外开销。任务栈用于该任务的调用链、局部对象及上下文；高水位可以帮助估计余量，但测试必须覆盖最深路径。静态创建则由应用提供控制块和栈存储。参考 <a href="https://www.freertos.org/Documentation/02-Kernel/02-Kernel-features/09-Memory-management/03-Static-vs-Dynamic-memory-allocation">FreeRTOS 静态与动态分配</a>。</p>
+<h3 id="55-vtaskdelay-与忙等有什么差别">
+<a class="header-anchor" href="#55-vtaskdelay-%e4%b8%8e%e5%bf%99%e7%ad%89%e6%9c%89%e4%bb%80%e4%b9%88%e5%b7%ae%e5%88%ab"></a>
+5.5 <code>vTaskDelay()</code> 与忙等有什么差别？
+</h3><p><strong>答案</strong>：任务延时会让任务阻塞，其他任务可运行；忙等持续占用 CPU 执行循环。需要等待某事件时，优先采用队列、通知、信号量等事件驱动机制。</p>
+<p><strong>解析</strong>：<code>while (!flag) {}</code> 即使变量是 <code>volatile</code>，也仍然消耗 CPU。特别是高优先级任务忙等低优先级任务产生的条件，可能使后者根本得不到运行机会。</p>
+<h3 id="56-队列和任务通知怎么选">
+<a class="header-anchor" href="#56-%e9%98%9f%e5%88%97%e5%92%8c%e4%bb%bb%e5%8a%a1%e9%80%9a%e7%9f%a5%e6%80%8e%e4%b9%88%e9%80%89"></a>
+5.6 队列和任务通知怎么选？
+</h3><p><strong>答案</strong>：要传递多个独立数据项、支持多个发送方/接收方时，队列更自然；只唤醒<strong>指定任务</strong>或传递轻量状态/计数时，任务通知通常更轻。</p>
+<p><strong>解析</strong>：队列默认按创建时的项目大小复制数据；若发送指针，只复制指针值，必须约定缓冲区生命周期。任务通知属于接收任务本身，不能直接代替通用的多接收方消息队列。中断中使用对应 <code>...FromISR()</code> 接口。参考 <a href="https://www.freertos.org/Documentation/02-Kernel/02-Kernel-features/03-Direct-to-task-notifications/04-As-event-group">FreeRTOS 任务通知</a>。</p>
+<h3 id="57-二值信号量计数信号量和互斥量区别是什么">
+<a class="header-anchor" href="#57-%e4%ba%8c%e5%80%bc%e4%bf%a1%e5%8f%b7%e9%87%8f%e8%ae%a1%e6%95%b0%e4%bf%a1%e5%8f%b7%e9%87%8f%e5%92%8c%e4%ba%92%e6%96%a5%e9%87%8f%e5%8c%ba%e5%88%ab%e6%98%af%e4%bb%80%e4%b9%88"></a>
+5.7 二值信号量、计数信号量和互斥量区别是什么？
+</h3><p><strong>答案</strong>：二值信号量常用于“发生过一次事件”；计数信号量可累计有限数量的事件或资源；互斥量表示共享资源的所有权，带优先级继承机制。</p>
+<p><strong>解析</strong>：ISR 可给信号量通知任务；ISR 不能像任务那样持有并归还互斥量。保护 I²C 总线由多个任务轮流使用时考虑互斥量；通知采集任务“DMA 完成”考虑任务通知或信号量。互斥量的优先级继承只缓解某些优先级反转，不消除死锁。</p>
+<h3 id="58-什么是优先级反转">
+<a class="header-anchor" href="#58-%e4%bb%80%e4%b9%88%e6%98%af%e4%bc%98%e5%85%88%e7%ba%a7%e5%8f%8d%e8%bd%ac"></a>
+5.8 什么是优先级反转？
+</h3><p><strong>答案</strong>：低优先级任务持有高优先级任务所需的锁，高优先级任务等待；此时中优先级任务不断运行，使低优先级持锁者迟迟不能释放锁，造成高优先级任务被间接拖延。</p>
+<p><strong>解析</strong>：互斥量的优先级继承会临时提高持锁者优先级，使它尽快完成并释放资源。解决设计问题还要缩短持锁时间、减少共享资源和明确锁顺序。<strong>易错点</strong>：把二值信号量当互斥量使用，通常得不到互斥量的所有权与继承语义。</p>
+<h3 id="59-事件组和任务通知位图有什么不同">
+<a class="header-anchor" href="#59-%e4%ba%8b%e4%bb%b6%e7%bb%84%e5%92%8c%e4%bb%bb%e5%8a%a1%e9%80%9a%e7%9f%a5%e4%bd%8d%e5%9b%be%e6%9c%89%e4%bb%80%e4%b9%88%e4%b8%8d%e5%90%8c"></a>
+5.9 事件组和任务通知位图有什么不同？
+</h3><p><strong>答案</strong>：事件组适合多个任务等一个或多个条件位，也能选择等待所有位或任一位；任务通知位图属于一个接收任务，通常更轻量。</p>
+<p><strong>解析</strong>：设置事件位不传输大块数据；它表达“条件发生或成立”。若要可靠处理每一份数据，仍需队列或缓冲区。任务通知的位图等待与事件组的“等所有位”并非完全等价，见 <a href="https://www.freertos.org/Documentation/02-Kernel/02-Kernel-features/03-Direct-to-task-notifications/04-As-event-group">FreeRTOS 任务通知说明</a>。</p>
+<h3 id="510-为什么-isr-要用-fromisr末尾还要请求切换">
+<a class="header-anchor" href="#510-%e4%b8%ba%e4%bb%80%e4%b9%88-isr-%e8%a6%81%e7%94%a8-fromisr%e6%9c%ab%e5%b0%be%e8%bf%98%e8%a6%81%e8%af%b7%e6%b1%82%e5%88%87%e6%8d%a2"></a>
+5.10 为什么 ISR 要用 <code>...FromISR()</code>，末尾还要请求切换？
+</h3><p><strong>答案</strong>：中断上下文不能调用可能阻塞的普通任务 API；<code>...FromISR()</code> 是专门为 ISR 设计的接口。若它唤醒更高优先级任务，通常通过移植端提供的 <code>portYIELD_FROM_ISR()</code> 等宏请求退出中断后尽快切换。</p>
+<p><strong>解析</strong>：<code>xHigherPriorityTaskWoken</code> 初值设为 <code>pdFALSE</code>，交给 API 更新；并核对中断优先级是否落在允许调用内核 API 的范围。实际宏名称和可用范围随移植端变化。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="cm">/* 工程片段：worker_task 必须在启用 DMA IRQ 前保存已创建任务的句柄。
+</span></span></span><span class="line"><span class="cl"><span class="cm"> * clear_dma_interrupt_flag 由驱动提供；仅在确认相应完成事件后通知。 */</span>
+</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">DMA_IRQHandler</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">BaseType_t</span> <span class="n">higher_woken</span> <span class="o">=</span> <span class="n">pdFALSE</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">clear_dma_interrupt_flag</span><span class="p">();</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">vTaskNotifyGiveFromISR</span><span class="p">(</span><span class="n">worker_task</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">higher_woken</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">portYIELD_FROM_ISR</span><span class="p">(</span><span class="n">higher_woken</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><h3 id="511-临界区暂停调度器和互斥量能互相替代吗">
+<a class="header-anchor" href="#511-%e4%b8%b4%e7%95%8c%e5%8c%ba%e6%9a%82%e5%81%9c%e8%b0%83%e5%ba%a6%e5%99%a8%e5%92%8c%e4%ba%92%e6%96%a5%e9%87%8f%e8%83%bd%e4%ba%92%e7%9b%b8%e6%9b%bf%e4%bb%a3%e5%90%97"></a>
+5.11 临界区、暂停调度器和互斥量能互相替代吗？
+</h3><p><strong>答案</strong>：不能。临界区用于极短的共享访问保护，但其屏蔽范围取决于端口，不保证屏蔽所有中断；暂停调度器只阻止任务切换，通常不等于屏蔽中断；互斥量用于任务间可能持续较久的资源独占。</p>
+<p><strong>解析</strong>：持有互斥量的任务可能因其他操作而阻塞，但会延长资源占用，应尽量避免持锁等待不相关事件；临界区内不应调用可能阻塞的 API。共享对象若同时被 ISR 和任务访问，单纯任务互斥量无法阻止 ISR 进入。使用哪一种取决于共享者是谁、持续时间和最坏延迟。</p>
+<h3 id="512-heap_1-到-heap_5-的常考区别">
+<a class="header-anchor" href="#512-heap_1-%e5%88%b0-heap_5-%e7%9a%84%e5%b8%b8%e8%80%83%e5%8c%ba%e5%88%ab"></a>
+5.12 <code>heap_1</code> 到 <code>heap_5</code> 的常考区别？
+</h3><p><strong>答案</strong>：<code>heap_1</code> 只分配不释放；<code>heap_2</code> 可释放但不合并相邻空闲块；<code>heap_3</code> 包装标准库 <code>malloc/free</code>；<code>heap_4</code> 可合并相邻空闲块；<code>heap_5</code> 类似 <code>heap_4</code>，还可管理多个不连续内存区域。</p>
+<p><strong>解析</strong>：选择时看是否动态创建/删除、内存布局和碎片风险。<code>heap_3</code> 的堆大小不由 <code>configTOTAL_HEAP_SIZE</code> 控制。<code>xPortGetFreeHeapSize()</code> 只告诉剩余总量，不直接证明不存在碎片。官方已将 <code>heap_2</code> 视为旧方案，见 <a href="https://www.freertos.org/Documentation/02-Kernel/02-Kernel-features/09-Memory-management/01-Memory-management">FreeRTOS 内存管理</a>。</p>
+<h3 id="513-软件定时器回调是不是硬件中断">
+<a class="header-anchor" href="#513-%e8%bd%af%e4%bb%b6%e5%ae%9a%e6%97%b6%e5%99%a8%e5%9b%9e%e8%b0%83%e6%98%af%e4%b8%8d%e6%98%af%e7%a1%ac%e4%bb%b6%e4%b8%ad%e6%96%ad"></a>
+5.13 软件定时器回调是不是硬件中断？
+</h3><p><strong>答案</strong>：不是。FreeRTOS 软件定时器回调通常在定时器服务任务上下文执行，不是 ISR。</p>
+<p><strong>解析</strong>：它受定时器服务任务优先级、命令队列和其他回调执行时间影响，不能把它当精确硬件定时器 ISR。回调应短，不要长时间阻塞，否则同一服务任务中的其他定时器事件也会被拖延。精密采样或 PWM 边沿仍应依赖硬件定时器。</p>
+<h3 id="514-空闲任务能删吗任务删除后内存立即全回收吗">
+<a class="header-anchor" href="#514-%e7%a9%ba%e9%97%b2%e4%bb%bb%e5%8a%a1%e8%83%bd%e5%88%a0%e5%90%97%e4%bb%bb%e5%8a%a1%e5%88%a0%e9%99%a4%e5%90%8e%e5%86%85%e5%ad%98%e7%ab%8b%e5%8d%b3%e5%85%a8%e5%9b%9e%e6%94%b6%e5%90%97"></a>
+5.14 空闲任务能删吗？任务删除后内存立即全回收吗？
+</h3><p><strong>答案</strong>：空闲任务是内核运行的一部分，不能随意删除。动态创建任务被删除后的资源回收可能由空闲任务执行，因此空闲任务需要运行机会。</p>
+<p><strong>解析</strong>：高优先级任务无限忙循环会使空闲任务饥饿。观察到“任务删了但堆未立刻回升”时，先检查空闲任务是否获得 CPU，以及端口/配置和堆实现。任务自己申请的其他资源通常还需要应用自行归还。</p>
+<h3 id="515-tickless-idle-是否意味着任务延时变准">
+<a class="header-anchor" href="#515-tickless-idle-%e6%98%af%e5%90%a6%e6%84%8f%e5%91%b3%e7%9d%80%e4%bb%bb%e5%8a%a1%e5%bb%b6%e6%97%b6%e5%8f%98%e5%87%86"></a>
+5.15 Tickless idle 是否意味着任务延时变准？
+</h3><p><strong>答案</strong>：不意味着。Tickless idle 是在可空闲一段时间时抑制周期 tick 以降低功耗；时间精度受低功耗计时源、补偿和唤醒延迟影响。</p>
+<p><strong>解析</strong>：它适合低功耗场景。若需求是微秒级精确动作，优先用硬件定时器或专用外设，而不是把 FreeRTOS tick 调得很快。进入低功耗前还要确认 DMA、外设时钟和唤醒源。</p>
+<h3 id="516-任务无响应时按什么顺序排查">
+<a class="header-anchor" href="#516-%e4%bb%bb%e5%8a%a1%e6%97%a0%e5%93%8d%e5%ba%94%e6%97%b6%e6%8c%89%e4%bb%80%e4%b9%88%e9%a1%ba%e5%ba%8f%e6%8e%92%e6%9f%a5"></a>
+5.16 任务无响应时按什么顺序排查？
+</h3><p><strong>答案</strong>：先确认任务状态和优先级，再查它等待的对象、超时时间和生产者；之后看栈高水位、断言、堆、ISR 优先级和中断是否触发。</p>
+<p><strong>解析</strong>：“任务没运行”可能是它正正常阻塞，也可能是高优先级任务忙等、锁未释放、通知送错任务、队列满/空或栈被破坏。排查要用任务状态、时间戳和事件计数证据，而不是随意提高优先级。优先级升高可能掩盖真正的同步错误。</p>
+<h3 id="interview-rtos-check">
+<a class="header-anchor" href="#interview-rtos-check"></a>
+5.17 模块自测：在纸上推演调度
+</h3><p><strong>题目</strong>：① 优先级 4 的任务忙等优先级 2 的任务设置标志，会怎样？② tick 为 100 Hz，<code>pdMS_TO_TICKS(1)</code> 一定大于零吗？③ 上述四位、门槛 5 的例子中，逻辑优先级 3 的 ISR 能否调用 <code>xQueueSendFromISR()</code>？④ 队列里放结构体指针是否已经复制了结构体？</p>
+<p><strong>答案与推理</strong>：① 若低优先级任务无法从其他执行机会产生标志，会一直等不到；改成让高优先级任务阻塞等待事件。② 不一定，常见整数转换得到 0，需检查配置与转换定义。③ 不能，它比门槛更紧急，不受内核对应临界区保护。④ 没有，只复制了指针值，必须另外保证对象有效与独占规则。</p>
+<p><a href="/post/%E5%B5%8C%E5%85%A5%E5%BC%8F%E7%AC%94%E8%AF%95%E9%9D%A2%E8%AF%95%E9%AB%98%E9%A2%91%E9%97%AE%E7%AD%94%E5%8D%95%E7%89%87%E6%9C%BAfreertos%E8%BD%AF%E4%BB%B6%E6%9E%B6%E6%9E%84%E4%B8%8Ec%E8%AF%AD%E8%A8%80/#interview-toc">返回目录</a></p>
+<h2 id="interview-project">
+<a class="header-anchor" href="#interview-project"></a>
+6. 贯穿案例：每 1 ms 采样，每 10 ms 处理一次
+</h2><h3 id="61-先写需求和假设再画任务图">
+<a class="header-anchor" href="#61-%e5%85%88%e5%86%99%e9%9c%80%e6%b1%82%e5%92%8c%e5%81%87%e8%ae%be%e5%86%8d%e7%94%bb%e4%bb%bb%e5%8a%a1%e5%9b%be"></a>
+6.1 先写需求和假设，再画任务图
+</h3><p>这是一个教学采集控制器，使用单核 MCU，ADC 单通道由硬件定时器每 1 ms 触发，DMA 每收满 10 个样本交给处理任务。处理任务做换算、有效性检查和风扇控制；串口每 10 ms 上报一帧 20 字节状态。</p>
+<p><strong>约定</strong>：ADC 数据用 16 位无符号数存储；温度换算和有效范围由实际传感器决定；本文不假造传感器标定公式。控制从完整数据块到输出的截止期暂定为 10 ms。若真正需求是“输入变化后 1 ms 内响应”，这种攒 10 个样本的设计就不满足要求。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">1 kHz 定时器 → ADC → DMA：半区 A / 半区 B
+</span></span><span class="line"><span class="cl">                          ↓ 半区完成 ISR：复制小块，投递队列
+</span></span><span class="line"><span class="cl">                     处理任务（优先级 3）
+</span></span><span class="line"><span class="cl">                          ↓ 有效温度、状态、时间戳
+</span></span><span class="line"><span class="cl">                     通信任务（优先级 2）
+</span></span><span class="line"><span class="cl">                          ↓ UART 发送，完成前保留发送缓冲区
+</span></span><span class="line"><span class="cl">                     健康监控（按自己的期限安排）
+</span></span></code></pre></div><p>这些是任务优先级；任何 ISR 的紧急程度由 NVIC 独立配置。处理任务等队列、通信任务等消息或传输完成，均采用阻塞等待。</p>
+<h3 id="62-先算三个数量级">
+<a class="header-anchor" href="#62-%e5%85%88%e7%ae%97%e4%b8%89%e4%b8%aa%e6%95%b0%e9%87%8f%e7%ba%a7"></a>
+6.2 先算三个数量级
+</h3><p><strong>DMA 缓冲区</strong>：每半区 <code>10 × 2 = 20</code> 字节，两个半区共 40 字节。每 10 ms 完成一个半区；在稳定连续采样、无额外停顿的这个例子里，完成的半区约 10 ms 后就开始被下一轮覆盖。中断服务延迟和复制时间必须落在这个窗口内，缓存维护另按芯片要求处理。</p>
+<p><strong>处理预算</strong>：假设测得并保守估计，ISR/交接开销不超过 0.1 ms，处理本身不超过 1.2 ms，等待 CPU、锁及处理中被抢占的累计延迟不超过 0.8 ms，三者没有重复计数，则总计 <code>0.1 + 1.2 + 0.8 = 2.1 ms</code>，比 10 ms 截止期有 7.9 ms 余量。这是带假设的预算；必须在目标板最不利负载下确认这些上界，不能用平均值代替。</p>
+<p><strong>串口吞吐</strong>：假设 UART 为 115200 bit/s、8N1，每字节含 1 起始位、8 数据位、1 停止位。每秒 100 帧、每帧 20 字节，总需求 <code>100 × 20 × 10 = 20000 bit/s</code>，约占带宽 17.36%；一帧在线传输约 1.736 ms。帧头和校验必须已包含在 20 字节内，否则应重新计入。</p>
+<p>反向接收若连续满速，而解析任务可能停顿 50 ms，会积压 <code>115200 ÷ 10 × 0.05 = 576</code> 字节。再预留一帧 64 字节，至少要容纳 640 字节；采用保留一空槽的 1024 字节环形缓冲区，可用容量为 1023 字节。这个估算假设停顿开始时没有其他积压，长期平均消费能力仍必须大于输入速率。</p>
+<h3 id="63-用按值入队说明数据生命周期">
+<a class="header-anchor" href="#63-%e7%94%a8%e6%8c%89%e5%80%bc%e5%85%a5%e9%98%9f%e8%af%b4%e6%98%8e%e6%95%b0%e6%8d%ae%e7%94%9f%e5%91%bd%e5%91%a8%e6%9c%9f"></a>
+6.3 用“按值入队”说明数据生命周期
+</h3><p>下面是 FreeRTOS 工程片段。<code>sample_queue</code> 必须先创建为 <code>xQueueCreate(4, sizeof(SampleBlock))</code>，检查创建结果，建立接收任务，再允许 DMA 产生中断。SDK 负责判断完成的是哪个半区、按规定清标志，并调用下面的回调；该 ISR 的优先级必须允许调用内核 API。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;stdint.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;string.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&#34;FreeRTOS.h&#34;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&#34;queue.h&#34;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">enum</span> <span class="p">{</span> <span class="n">SAMPLES_PER_BLOCK</span> <span class="o">=</span> <span class="mi">10</span> <span class="p">};</span>
+</span></span><span class="line"><span class="cl"><span class="k">typedef</span> <span class="k">struct</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">uint16_t</span> <span class="n">raw</span><span class="p">[</span><span class="n">SAMPLES_PER_BLOCK</span><span class="p">];</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span> <span class="n">SampleBlock</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">static</span> <span class="n">QueueHandle_t</span> <span class="n">sample_queue</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="cm">/* 仅由这一接收 ISR 更新；供调试器观察。任务读取需另定同步规则。 */</span>
+</span></span><span class="line"><span class="cl"><span class="k">static</span> <span class="k">volatile</span> <span class="kt">uint32_t</span> <span class="n">dropped_blocks</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="cm">/* completed 指向的半区在整个复制期间必须稳定，缓存状态也需已处理。 */</span>
+</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">on_dma_half_complete</span><span class="p">(</span><span class="k">const</span> <span class="kt">uint16_t</span> <span class="o">*</span><span class="n">completed</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">SampleBlock</span> <span class="n">msg</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">BaseType_t</span> <span class="n">higher_woken</span> <span class="o">=</span> <span class="n">pdFALSE</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">memcpy</span><span class="p">(</span><span class="n">msg</span><span class="p">.</span><span class="n">raw</span><span class="p">,</span> <span class="n">completed</span><span class="p">,</span> <span class="k">sizeof</span> <span class="n">msg</span><span class="p">.</span><span class="n">raw</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="nf">xQueueSendFromISR</span><span class="p">(</span><span class="n">sample_queue</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">msg</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">higher_woken</span><span class="p">)</span> <span class="o">!=</span> <span class="n">pdPASS</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="o">++</span><span class="n">dropped_blocks</span><span class="p">;</span>       <span class="cm">/* 本例丢弃新块，必须由健康逻辑检测处理 */</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">portYIELD_FROM_ISR</span><span class="p">(</span><span class="n">higher_woken</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="cm">/* 平台无关处理由应用提供：换算、有效性检查、控制、生成遥测。 */</span>
+</span></span><span class="line"><span class="cl"><span class="k">extern</span> <span class="kt">void</span> <span class="nf">process_block</span><span class="p">(</span><span class="k">const</span> <span class="n">SampleBlock</span> <span class="o">*</span><span class="n">block</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">sample_task</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">argument</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="n">argument</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">SampleBlock</span> <span class="n">msg</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">for</span> <span class="p">(;;)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="p">(</span><span class="nf">xQueueReceive</span><span class="p">(</span><span class="n">sample_queue</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">msg</span><span class="p">,</span> <span class="n">portMAX_DELAY</span><span class="p">)</span> <span class="o">==</span> <span class="n">pdPASS</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="nf">process_block</span><span class="p">(</span><span class="o">&amp;</span><span class="n">msg</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>队列项目大小是 <code>sizeof(SampleBlock)</code>，因此成功发送时复制的是整个块，ISR 中的 <code>msg</code> 在返回后失效也不影响队列副本。接收任务又得到自己的副本；<code>process_block</code> 若要异步保留数据，仍需复制或另外交接，不能无限期保存 <code>&amp;msg</code>。</p>
+<p>这里只复制 20 字节，设计上可以评估 ISR 开销。大数据块更适合固定缓冲池和指针交接，但要增加“空闲 → DMA 占用 → 待处理 → 空闲”的所有权状态。队列容量 4 只能吸收有限抖动，不能修复长期处理不过来的问题。真实控制器还应检测样本超时、丢块和数据连续性，而非只累计一个计数器。</p>
+<h3 id="interview-control-lab">
+<a class="header-anchor" href="#interview-control-lab"></a>
+6.4 把风扇逻辑写成可在电脑上验证的 C 程序
+</h3><p>以下为完整 C11 教学程序，可保存为 <code>control_demo.c</code>。温度单位是毫摄氏度，<code>30000</code> 即 30 ℃。假设本例故障时输出关闭，恢复需要有效数据与确认动作；这是为示例选择的行为，不能直接替代真实产品的安全策略。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;assert.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;stdbool.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;stdint.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">typedef</span> <span class="k">enum</span> <span class="p">{</span> <span class="n">FAN_OFF</span><span class="p">,</span> <span class="n">FAN_ON</span><span class="p">,</span> <span class="n">FAN_FAULT</span> <span class="p">}</span> <span class="n">FanState</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">static</span> <span class="n">FanState</span> <span class="nf">control_step</span><span class="p">(</span><span class="n">FanState</span> <span class="n">previous</span><span class="p">,</span> <span class="kt">bool</span> <span class="n">valid</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">                             <span class="kt">int32_t</span> <span class="n">milli_celsius</span><span class="p">,</span> <span class="kt">bool</span> <span class="n">acknowledge</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">valid</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="n">FAN_FAULT</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">previous</span> <span class="o">==</span> <span class="n">FAN_FAULT</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">acknowledge</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="k">return</span> <span class="n">FAN_FAULT</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="n">previous</span> <span class="o">=</span> <span class="n">FAN_OFF</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">previous</span> <span class="o">==</span> <span class="n">FAN_OFF</span> <span class="o">&amp;&amp;</span> <span class="n">milli_celsius</span> <span class="o">&gt;=</span> <span class="mi">30000</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="n">FAN_ON</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="p">(</span><span class="n">previous</span> <span class="o">==</span> <span class="n">FAN_ON</span> <span class="o">&amp;&amp;</span> <span class="n">milli_celsius</span> <span class="o">&lt;=</span> <span class="mi">28000</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="n">FAN_OFF</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">previous</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">FanState</span> <span class="n">state</span> <span class="o">=</span> <span class="n">FAN_OFF</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">state</span> <span class="o">=</span> <span class="nf">control_step</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="nb">true</span><span class="p">,</span> <span class="mi">30000</span><span class="p">,</span> <span class="nb">false</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">assert</span><span class="p">(</span><span class="n">state</span> <span class="o">==</span> <span class="n">FAN_ON</span><span class="p">);</span>             <span class="cm">/* 上阈值边界 */</span>
+</span></span><span class="line"><span class="cl">    <span class="n">state</span> <span class="o">=</span> <span class="nf">control_step</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="nb">true</span><span class="p">,</span> <span class="mi">29000</span><span class="p">,</span> <span class="nb">false</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">assert</span><span class="p">(</span><span class="n">state</span> <span class="o">==</span> <span class="n">FAN_ON</span><span class="p">);</span>             <span class="cm">/* 滞回区域保留记忆 */</span>
+</span></span><span class="line"><span class="cl">    <span class="n">state</span> <span class="o">=</span> <span class="nf">control_step</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="nb">true</span><span class="p">,</span> <span class="mi">28000</span><span class="p">,</span> <span class="nb">false</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">assert</span><span class="p">(</span><span class="n">state</span> <span class="o">==</span> <span class="n">FAN_OFF</span><span class="p">);</span>            <span class="cm">/* 下阈值边界 */</span>
+</span></span><span class="line"><span class="cl">    <span class="n">state</span> <span class="o">=</span> <span class="nf">control_step</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="nb">false</span><span class="p">,</span> <span class="mi">27000</span><span class="p">,</span> <span class="nb">false</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">assert</span><span class="p">(</span><span class="n">state</span> <span class="o">==</span> <span class="n">FAN_FAULT</span><span class="p">);</span>          <span class="cm">/* 无效值不能当低温使用 */</span>
+</span></span><span class="line"><span class="cl">    <span class="n">state</span> <span class="o">=</span> <span class="nf">control_step</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="nb">true</span><span class="p">,</span> <span class="mi">29000</span><span class="p">,</span> <span class="nb">false</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">assert</span><span class="p">(</span><span class="n">state</span> <span class="o">==</span> <span class="n">FAN_FAULT</span><span class="p">);</span>          <span class="cm">/* 好转不等于自动恢复 */</span>
+</span></span><span class="line"><span class="cl">    <span class="n">state</span> <span class="o">=</span> <span class="nf">control_step</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="nb">true</span><span class="p">,</span> <span class="mi">31000</span><span class="p">,</span> <span class="nb">true</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">assert</span><span class="p">(</span><span class="n">state</span> <span class="o">==</span> <span class="n">FAN_ON</span><span class="p">);</span>             <span class="cm">/* 确认后重新判断阈值 */</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">assert</span><span class="p">(</span><span class="nf">control_step</span><span class="p">(</span><span class="n">FAN_OFF</span><span class="p">,</span> <span class="nb">true</span><span class="p">,</span> <span class="mi">29000</span><span class="p">,</span> <span class="nb">false</span><span class="p">)</span> <span class="o">==</span> <span class="n">FAN_OFF</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">assert</span><span class="p">(</span><span class="nf">control_step</span><span class="p">(</span><span class="n">FAN_ON</span><span class="p">,</span> <span class="nb">false</span><span class="p">,</span> <span class="mi">31000</span><span class="p">,</span> <span class="nb">true</span><span class="p">)</span> <span class="o">==</span> <span class="n">FAN_FAULT</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="nf">puts</span><span class="p">(</span><span class="s">&#34;control tests passed&#34;</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>例如用 GCC：<code>gcc -std=c11 -Wall -Wextra -Werror control_demo.c -o control_demo</code>，运行成功会输出 <code>control tests passed</code>；验证时不要启用 <code>NDEBUG</code>，否则 <code>assert</code> 会被移除。调用方传入合法枚举值，换算层保证有效温度的范围。</p>
+<p>业务函数没有读取 GPIO、调用队列或进行延时；应用拿到返回状态后调用驱动设置输出，例如在本例中只有 <code>FAN_ON</code> 输出开启。这个划分让你能单独验证“30 ℃和28 ℃边界正确”“故障不会被旧数值掩盖”，然后再用板卡验证真实引脚和时序。</p>
+<h3 id="65-把验证结果写成可观察的证据">
+<a class="header-anchor" href="#65-%e6%8a%8a%e9%aa%8c%e8%af%81%e7%bb%93%e6%9e%9c%e5%86%99%e6%88%90%e5%8f%af%e8%a7%82%e5%af%9f%e7%9a%84%e8%af%81%e6%8d%ae"></a>
+6.5 把验证结果写成可观察的证据
+</h3><table>
+	<thead>
+			<tr>
+					<th>检查问题</th>
+					<th>具体动作</th>
+					<th>应得到的证据</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td>采样是否固定为 1 kHz</td>
+					<td>观察定时器相关触发输出或时间戳</td>
+					<td>正常负载下周期符合时钟配置</td>
+			</tr>
+			<tr>
+					<td>处理是否超期</td>
+					<td>对交接和处理边界记录时间</td>
+					<td>最不利负载下延迟在预算内</td>
+			</tr>
+			<tr>
+					<td>消费者停顿后会怎样</td>
+					<td>人为延缓处理任务</td>
+					<td>队列满计数、超时策略按预期触发</td>
+			</tr>
+			<tr>
+					<td>传感器失效如何表现</td>
+					<td>注入无效样本</td>
+					<td>状态进入故障，输出符合约定</td>
+			</tr>
+			<tr>
+					<td>重启能否定位原因</td>
+					<td>保存并读取复位来源</td>
+					<td>能区分看门狗、欠压等来源</td>
+			</tr>
+	</tbody>
+</table>
+<p>完成这一步后，再回答“任务怎么分、为什么用队列、<code>volatile</code> 能不能保护共享数据”，就能拿同一个项目把四个领域串起来。</p>
+<p><a href="/post/%E5%B5%8C%E5%85%A5%E5%BC%8F%E7%AC%94%E8%AF%95%E9%9D%A2%E8%AF%95%E9%AB%98%E9%A2%91%E9%97%AE%E7%AD%94%E5%8D%95%E7%89%87%E6%9C%BAfreertos%E8%BD%AF%E4%BB%B6%E6%9E%B6%E6%9E%84%E4%B8%8Ec%E8%AF%AD%E8%A8%80/#interview-toc">返回目录</a></p>
+<h2 id="interview-scenarios">
+<a class="header-anchor" href="#interview-scenarios"></a>
+7. 综合场景题：把知识连起来
+</h2><p>先遮住答案，在纸上写出“现象 → 可能机制 → 验证证据 → 修复办法”，再对照解析。</p>
+<h3 id="场景-1串口-115200-bits-连续收包偶尔丢字节怎么办">
+<a class="header-anchor" href="#%e5%9c%ba%e6%99%af-1%e4%b8%b2%e5%8f%a3-115200-bits-%e8%bf%9e%e7%bb%ad%e6%94%b6%e5%8c%85%e5%81%b6%e5%b0%94%e4%b8%a2%e5%ad%97%e8%8a%82%e6%80%8e%e4%b9%88%e5%8a%9e"></a>
+场景 1：串口 115200 bit/s 连续收包，偶尔丢字节，怎么办？
+</h3><p><strong>答案</strong>：先测丢失发生在硬件接收、DMA/中断缓冲、任务队列还是协议解析层。检查 UART 溢出标志、中断最长关断时间、DMA 缓冲覆盖、队列满次数、解析任务最坏执行时间。</p>
+<p><strong>解析</strong>：仅按 10 位一帧估算，115200 bit/s 下约每 86.8 μs 到来 1 字节。若 ISR 偶尔被长时间屏蔽，单字节接收中断可能来不及搬走数据。可采用 DMA + 环形/双缓冲、缩短临界区、提高解析吞吐，并记录溢出计数。不要直接把任务优先级调高就当修复；硬件层丢字节时，任务再快也取不回来。</p>
+<h3 id="场景-2高优先级任务在等-ic-数据但系统卡住怎么解释">
+<a class="header-anchor" href="#%e5%9c%ba%e6%99%af-2%e9%ab%98%e4%bc%98%e5%85%88%e7%ba%a7%e4%bb%bb%e5%8a%a1%e5%9c%a8%e7%ad%89-ic-%e6%95%b0%e6%8d%ae%e4%bd%86%e7%b3%bb%e7%bb%9f%e5%8d%a1%e4%bd%8f%e6%80%8e%e4%b9%88%e8%a7%a3%e9%87%8a"></a>
+场景 2：高优先级任务在等 I²C 数据，但系统卡住，怎么解释？
+</h3><p><strong>答案</strong>：先查它是在阻塞等待，还是忙等；查持有 I²C 互斥量的任务是否获得运行机会，是否在持锁期间等待另一个也依赖 I²C 的事件。</p>
+<p><strong>解析</strong>：若是优先级反转，使用互斥量并缩短持锁时间；若是循环等待，则统一锁顺序、消除锁内阻塞依赖。再查 I²C 总线本身是否被外设拉低，以及超时/恢复路径是否存在。定位时应同时记录任务状态和总线波形。</p>
+<h3 id="场景-3dma-完成中断触发了任务读到旧数据为什么">
+<a class="header-anchor" href="#%e5%9c%ba%e6%99%af-3dma-%e5%ae%8c%e6%88%90%e4%b8%ad%e6%96%ad%e8%a7%a6%e5%8f%91%e4%ba%86%e4%bb%bb%e5%8a%a1%e8%af%bb%e5%88%b0%e6%97%a7%e6%95%b0%e6%8d%ae%e4%b8%ba%e4%bb%80%e4%b9%88"></a>
+场景 3：DMA 完成中断触发了，任务读到旧数据，为什么？
+</h3><p><strong>答案</strong>：可能读错缓冲区、DMA 尚未真正完成有效载荷、CPU 数据缓存未失效、缓冲区被下一轮传输覆盖，或任务与 ISR 的交接缺乏明确同步。</p>
+<p><strong>解析</strong>：先确认 DMA 状态位与长度，再核对缓冲区地址、对齐和缓存属性；必要时按芯片手册做缓存维护。设计双缓冲或所有权交接，让 DMA 不写任务正在读的区域。<code>volatile</code> 不能代替缓存一致性处理。</p>
+<h3 id="场景-4任务栈偶发溢出平时高水位却看起来足够怎么查">
+<a class="header-anchor" href="#%e5%9c%ba%e6%99%af-4%e4%bb%bb%e5%8a%a1%e6%a0%88%e5%81%b6%e5%8f%91%e6%ba%a2%e5%87%ba%e5%b9%b3%e6%97%b6%e9%ab%98%e6%b0%b4%e4%bd%8d%e5%8d%b4%e7%9c%8b%e8%b5%b7%e6%9d%a5%e8%b6%b3%e5%a4%9f%e6%80%8e%e4%b9%88%e6%9f%a5"></a>
+场景 4：任务栈偶发溢出，平时高水位却看起来足够，怎么查？
+</h3><p><strong>答案</strong>：高水位只反映被检测期间栈的使用痕迹；偶发路径、递归、大局部数组、格式化打印和中断嵌套可能未被覆盖。先开启栈溢出检查与断言，再在压力和错误路径下测量。</p>
+<p><strong>解析</strong>：检查栈大小单位是否误当字节、任务栈与中断栈是否分离、局部数组是否能改为静态缓冲或固定池。别只靠增大栈掩盖无限递归或越界写导致的破坏。</p>
+<h3 id="场景-5按键每按一次却触发很多次如何设计">
+<a class="header-anchor" href="#%e5%9c%ba%e6%99%af-5%e6%8c%89%e9%94%ae%e6%af%8f%e6%8c%89%e4%b8%80%e6%ac%a1%e5%8d%b4%e8%a7%a6%e5%8f%91%e5%be%88%e5%a4%9a%e6%ac%a1%e5%a6%82%e4%bd%95%e8%ae%be%e8%ae%a1"></a>
+场景 5：按键每按一次，却触发很多次，如何设计？
+</h3><p><strong>答案</strong>：机械触点会抖动；ISR 可只记录边沿和时间，后续用定时采样或状态机确认稳定按下与释放，再产生一次业务事件。</p>
+<p><strong>解析</strong>：延时 20 ms 只是常见经验值，需根据器件和需求确定。若在 ISR 内忙等消抖，会拖慢其他中断。状态机还可明确长按、连按和重复触发规则。</p>
+<h3 id="场景-6面试官让你设计一个采样控制通信升级的系统怎么答">
+<a class="header-anchor" href="#%e5%9c%ba%e6%99%af-6%e9%9d%a2%e8%af%95%e5%ae%98%e8%ae%a9%e4%bd%a0%e8%ae%be%e8%ae%a1%e4%b8%80%e4%b8%aa%e9%87%87%e6%a0%b7%e6%8e%a7%e5%88%b6%e9%80%9a%e4%bf%a1%e5%8d%87%e7%ba%a7%e7%9a%84%e7%b3%bb%e7%bb%9f%e6%80%8e%e4%b9%88%e7%ad%94"></a>
+场景 6：面试官让你设计一个“采样、控制、通信、升级”的系统，怎么答？
+</h3><p><strong>答案</strong>：先列每部分频率、截止期和数据量；用硬件定时器触发采样，DMA/ISR 完成数据搬运，控制任务按固定节拍计算，通信任务处理收发，升级服务进入专门状态并保证写 Flash 的安全条件。</p>
+<p><strong>解析</strong>：模块边界可划为 ADC/通信驱动、采样与控制服务、协议解析、升级管理、业务状态机。任务间通过队列/通知传事件，缓冲区明确定义所有权；共享总线用互斥量；故障管理统一记录超时、复位原因与看门狗健康状态。最后说明将用示波器或追踪工具验证控制路径的最坏响应，而不是只给一张任务列表。</p>
+<p><a href="/post/%E5%B5%8C%E5%85%A5%E5%BC%8F%E7%AC%94%E8%AF%95%E9%9D%A2%E8%AF%95%E9%AB%98%E9%A2%91%E9%97%AE%E7%AD%94%E5%8D%95%E7%89%87%E6%9C%BAfreertos%E8%BD%AF%E4%BB%B6%E6%9E%B6%E6%9E%84%E4%B8%8Ec%E8%AF%AD%E8%A8%80/#interview-toc">返回目录</a></p>
+<h2 id="interview-review">
+<a class="header-anchor" href="#interview-review"></a>
+8. 一页速记与原始资料
+</h2><table>
+	<thead>
+			<tr>
+					<th>题型</th>
+					<th>先说的关键句</th>
+					<th>追问时补充</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td>中断与任务</td>
+					<td>ISR 处理紧急事实，任务处理较长工作</td>
+					<td>中断优先级和任务优先级分开看</td>
+			</tr>
+			<tr>
+					<td><code>volatile</code></td>
+					<td>保留必要访问</td>
+					<td>不保证原子、互斥或缓存一致性</td>
+			</tr>
+			<tr>
+					<td>队列与通知</td>
+					<td>队列传项目，通知唤醒指定任务</td>
+					<td>指针入队要约定生命周期</td>
+			</tr>
+			<tr>
+					<td>信号量与互斥量</td>
+					<td>事件同步和资源所有权不同</td>
+					<td>互斥量有优先级继承，ISR 不持有</td>
+			</tr>
+			<tr>
+					<td>延时与周期</td>
+					<td>延时按调用时刻，固定节拍按参考时刻</td>
+					<td>tick 粒度和超期要算进去</td>
+			</tr>
+			<tr>
+					<td>栈与堆</td>
+					<td>栈承载调用上下文，堆供动态分配</td>
+					<td>FreeRTOS 每任务栈、堆方案各异</td>
+			</tr>
+			<tr>
+					<td>状态机</td>
+					<td>状态、事件、转移、动作要明确</td>
+					<td>异常和恢复路径也要定义</td>
+			</tr>
+			<tr>
+					<td>C 语言输出题</td>
+					<td>先判断行为是否有定义</td>
+					<td>再看整数转换、求值顺序与 ABI</td>
+			</tr>
+	</tbody>
+</table>
+<p><strong>复习方法</strong>：第一次阅读完成各模块的原理部分与自测，第二次遮住答案口述高频题，第三次自己画采集控制案例。每题按下表判定掌握程度，再决定回看哪里。</p>
+<table>
+	<thead>
+			<tr>
+					<th>等级</th>
+					<th>你能做到什么</th>
+					<th>下一步</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td>记住</td>
+					<td>复述名词和一句结论</td>
+					<td>画出执行或内存过程</td>
+			</tr>
+			<tr>
+					<td>理解</td>
+					<td>解释机制并举一个反例</td>
+					<td>手算时间/容量，推演边界</td>
+			</tr>
+			<tr>
+					<td>应用</td>
+					<td>为具体场景选机制、定边界</td>
+					<td>用代码、日志或波形验证</td>
+			</tr>
+	</tbody>
+</table>
+<p>可以按四次学习安排：第一次完成单片机与时间预算；第二次完成 C 的对象、指针和表达式；第三次画状态机并运行控制示例；第四次推演 FreeRTOS 调度并做综合场景题。时间长短由基础决定，完成条件应是能独立解释和验证，而不是只翻到末页。</p>
+<p>进一步核对的原始资料：</p>
+<ul>
+<li><a href="https://www.freertos.org/Documentation/02-Kernel/02-Kernel-features/00-Developer-docs">FreeRTOS Kernel 开发者文档</a>：任务、队列、同步和定时器的官方入口。</li>
+<li><a href="https://www.freertos.org/Documentation/02-Kernel/03-Supported-devices/04-Demos/ARM-Cortex/RTOS-Cortex-M3-M4">FreeRTOS Cortex-M 移植说明</a>：中断优先级与 <code>FromISR</code> 限制。</li>
+<li><a href="https://developer.arm.com/community/arm-community-blogs/b/embedded-and-microcontrollers-blog/posts/cutting-through-the-confusion-with-arm-cortex-m-interrupt-priorities">Arm Cortex-M 中断优先级说明</a>：NVIC 数值和抢占关系。</li>
+<li><a href="https://www.open-std.org/jtc1/sc22/wg14/www/docs/n1570.pdf">WG14 N1570：C11 委员会草案</a>：存储期、指针、限定符、整数转换及未定义行为。</li>
+</ul>
+<p><a href="/post/%E5%B5%8C%E5%85%A5%E5%BC%8F%E7%AC%94%E8%AF%95%E9%9D%A2%E8%AF%95%E9%AB%98%E9%A2%91%E9%97%AE%E7%AD%94%E5%8D%95%E7%89%87%E6%9C%BAfreertos%E8%BD%AF%E4%BB%B6%E6%9E%B6%E6%9E%84%E4%B8%8Ec%E8%AF%AD%E8%A8%80/#interview-toc">返回目录</a></p>
+</div>
+    <footer class="article-footer"><ul class="article-category-list"><li class="article-tag-list-item" data-aos="zoom-in">
+    <a
+      class="article-category-link"
+      href="/categories/%e5%b5%8c%e5%85%a5%e5%bc%8f"
+      data-aos="zoom-in"
+      >嵌入式</a
+    >
+    </li></ul>
+<ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item" data-aos="zoom-in">
+      <a
+        class="article-tag-list-link"
+        href="/tags/%e5%8d%95%e7%89%87%e6%9c%ba"
+        rel="tag"
+        >单片机</a
+      >
+    </li><li class="article-tag-list-item" data-aos="zoom-in">
+      <a
+        class="article-tag-list-link"
+        href="/tags/freertos"
+        rel="tag"
+        >FreeRTOS</a
+      >
+    </li><li class="article-tag-list-item" data-aos="zoom-in">
+      <a
+        class="article-tag-list-link"
+        href="/tags/%e8%bd%af%e4%bb%b6%e6%9e%b6%e6%9e%84"
+        rel="tag"
+        >软件架构</a
+      >
+    </li><li class="article-tag-list-item" data-aos="zoom-in">
+      <a
+        class="article-tag-list-link"
+        href="/tags/c%e8%af%ad%e8%a8%80"
+        rel="tag"
+        >C语言</a
+      >
+    </li><li class="article-tag-list-item" data-aos="zoom-in">
+      <a
+        class="article-tag-list-link"
+        href="/tags/%e9%9d%a2%e8%af%95"
+        rel="tag"
+        >面试</a
+      >
+    </li></ul>
+</footer>
+  </div><nav
+    id="article-nav"
+    aria-label="Article navigation"
+    data-aos="fade-up"
+  ><div class="article-nav-link-wrap left"><img
+            data-src="/images/cover/%e9%9f%a9%e7%ab%8b%e7%bd%91%e5%9b%be%e5%a3%81%e7%ba%b8.jpg"
+            data-sizes="auto"
+            alt="【结构体】探究"
+            class="lazyload"
+          /><a
+          href="/post/%E7%BB%93%E6%9E%84%E4%BD%93%E7%BB%86%E8%8A%82%E6%8E%A2%E7%A9%B6/"
+          aria-label="前一篇:【结构体】探究"
+          title="前一篇:【结构体】探究"
+        ></a>
+        <div class="article-nav-caption">前一篇</div>
+        <h3 class="article-nav-title">【结构体】探究</h3>
+      </div></nav></article></section>
+        </div><footer id="footer" aria-label="Site footer">
+  <div style="width: 100%; overflow: hidden">
+    <div class="footer-line"></div>
+  </div>
+  <div id="footer-info"><div>
+      <span class="icon-copyright"></span>2020-2026<span class="footer-info-sep rotate"></span>云想衣裳花想荣
+    </div><div>
+        <span class="icon-brush"
+          >&nbsp;74.9k</span
+        >
+        &nbsp;|&nbsp;
+        <span class="icon-coffee">&nbsp;02:33</span>
+      </div></div>
+</footer>
+<div id="mask" class="hide"></div>
+      </div><nav id="mobile-nav" aria-label="Mobile navigation">
+  <div class="sidebar-wrap"><div class="sidebar-toc-sidebar"><h3 class="toc-title">文章目录</h3>
+<div class="sidebar-toc-wrapper toc-div-class">
+  <nav id="TableOfContents">
+  <ul>
+    <li><a href="#interview-toc">阅读导航</a></li>
+    <li><a href="#interview-map">1. 从一个样本建立四个知识模块的联系</a>
+      <ul>
+        <li><a href="#11-先把常见术语翻译成具体对象">1.1 先把常见术语翻译成具体对象</a></li>
+        <li><a href="#12-怎样知道自己已经掌握">1.2 怎样知道自己已经掌握</a></li>
+      </ul>
+    </li>
+    <li><a href="#interview-mcu">2. 单片机高频题：程序如何与硬件配合</a>
+      <ul>
+        <li><a href="#interview-mcu-model">2.0 先建立模型：CPU 执行指令，外设按自己的状态机工作</a></li>
+        <li><a href="#21-上电后为什么不是立刻执行-main">2.1 上电后为什么不是立刻执行 <code>main</code>？</a></li>
+        <li><a href="#22-flashram栈和堆分别装什么">2.2 Flash、RAM、栈和堆分别装什么？</a></li>
+        <li><a href="#23-中断轮询和-dma-怎么选">2.3 中断、轮询和 DMA 怎么选？</a></li>
+        <li><a href="#24-为什么中断服务函数要短">2.4 为什么中断服务函数要短？</a></li>
+        <li><a href="#25-中断优先级数字越大优先级越高吗">2.5 中断优先级数字越大，优先级越高吗？</a></li>
+        <li><a href="#26-volatile-为什么常用于外设寄存器和中断共享标志">2.6 <code>volatile</code> 为什么常用于外设寄存器和中断共享标志？</a></li>
+        <li><a href="#27-什么是原子操作关中断就一定安全吗">2.7 什么是原子操作？关中断就一定安全吗？</a></li>
+        <li><a href="#28-定时器如何算更新周期为什么实际频率不对">2.8 定时器如何算更新周期？为什么实际频率不对？</a></li>
+        <li><a href="#29-uartspiic-最核心的区别是什么">2.9 UART、SPI、I²C 最核心的区别是什么？</a></li>
+        <li><a href="#210-adc-采样值不稳先查什么">2.10 ADC 采样值不稳，先查什么？</a></li>
+        <li><a href="#211-看门狗如何正确使用">2.11 看门狗如何正确使用？</a></li>
+        <li><a href="#212-hardfault-出现后先怎么定位">2.12 HardFault 出现后先怎么定位？</a></li>
+        <li><a href="#213-bootloader-和应用程序如何分工">2.13 Bootloader 和应用程序如何分工？</a></li>
+        <li><a href="#interview-mcu-check">2.14 模块自测：解释硬件现象</a></li>
+      </ul>
+    </li>
+    <li><a href="#interview-c">3. C 语言高频题：表达、内存和未定义行为</a>
+      <ul>
+        <li><a href="#interview-c-model">3.0 先建立模型：类型、对象、地址和生命周期</a></li>
+        <li><a href="#31-static-在函数内和文件作用域分别做什么">3.1 <code>static</code> 在函数内和文件作用域分别做什么？</a></li>
+        <li><a href="#32-声明定义和-extern-有什么区别">3.2 声明、定义和 <code>extern</code> 有什么区别？</a></li>
+        <li><a href="#33-constvolatile-和-const-volatile-怎么读">3.3 <code>const</code>、<code>volatile</code> 和 <code>const volatile</code> 怎么读？</a></li>
+        <li><a href="#34-数组和指针完全一样吗">3.4 数组和指针完全一样吗？</a></li>
+        <li><a href="#35-sizeofstrlen-和缓冲区容量有什么区别">3.5 <code>sizeof</code>、<code>strlen</code> 和缓冲区容量有什么区别？</a></li>
+        <li><a href="#36-指针参数为什么有时需要二级指针">3.6 指针参数为什么有时需要二级指针？</a></li>
+        <li><a href="#37-为什么返回局部变量地址是错的">3.7 为什么返回局部变量地址是错的？</a></li>
+        <li><a href="#38-结构体大小为什么常大于成员大小之和">3.8 结构体大小为什么常大于成员大小之和？</a></li>
+        <li><a href="#39-位域适合直接映射外设寄存器或协议帧吗">3.9 位域适合直接映射外设寄存器或协议帧吗？</a></li>
+        <li><a href="#310-有符号与无符号混算为什么危险">3.10 有符号与无符号混算为什么危险？</a></li>
+        <li><a href="#311-左移和右移有哪些边界">3.11 左移和右移有哪些边界？</a></li>
+        <li><a href="#312-宏和-static-inline-有何区别">3.12 宏和 <code>static inline</code> 有何区别？</a></li>
+        <li><a href="#313-大端小端和字节序如何判断">3.13 大端、小端和字节序如何判断？</a></li>
+        <li><a href="#314-memcpystrcpystrncpy-使用时注意什么">3.14 <code>memcpy</code>、<code>strcpy</code>、<code>strncpy</code> 使用时注意什么？</a></li>
+        <li><a href="#315-什么是未定义行为笔试题怎样判断">3.15 什么是未定义行为？笔试题怎样判断？</a></li>
+        <li><a href="#316-函数指针和回调常见用途是什么">3.16 函数指针和回调常见用途是什么？</a></li>
+        <li><a href="#interview-c-check">3.17 模块自测：先分类，再计算</a></li>
+      </ul>
+    </li>
+    <li><a href="#interview-architecture">4. 单片机软件结构高频题：如何写得清楚又可靠</a>
+      <ul>
+        <li><a href="#interview-architecture-model">4.0 先建立模型：模块管职责，状态机管行为，接口管约定</a></li>
+        <li><a href="#41-裸机超级循环和-rtos-各适合什么项目">4.1 裸机超级循环和 RTOS 各适合什么项目？</a></li>
+        <li><a href="#42-halbsp驱动服务和应用层怎么分">4.2 HAL、BSP、驱动、服务和应用层怎么分？</a></li>
+        <li><a href="#43-为什么不要把所有逻辑都塞进中断或一个任务">4.3 为什么不要把所有逻辑都塞进中断或一个任务？</a></li>
+        <li><a href="#44-状态机解决什么问题">4.4 状态机解决什么问题？</a></li>
+        <li><a href="#45-驱动接口为什么要区分初始化启动和读写">4.5 驱动接口为什么要区分初始化、启动和读写？</a></li>
+        <li><a href="#46-如何设计模块间数据所有权">4.6 如何设计模块间数据所有权？</a></li>
+        <li><a href="#47-环形缓冲区要解决哪些边界">4.7 环形缓冲区要解决哪些边界？</a></li>
+        <li><a href="#48-初始化顺序如何安排">4.8 初始化顺序如何安排？</a></li>
+        <li><a href="#49-错误码日志和断言如何分工">4.9 错误码、日志和断言如何分工？</a></li>
+        <li><a href="#410-如何验证软件实时性">4.10 如何验证软件“实时性”？</a></li>
+        <li><a href="#411-什么是可测试的软件结构">4.11 什么是可测试的软件结构？</a></li>
+        <li><a href="#interview-architecture-check">4.12 模块自测：把口头需求变成规则</a></li>
+      </ul>
+    </li>
+    <li><a href="#interview-rtos">5. FreeRTOS 高频题：任务如何并发与协作</a>
+      <ul>
+        <li><a href="#interview-rtos-model">5.0 先建立模型：一颗 CPU 怎样表现得像同时做多件事</a></li>
+        <li><a href="#51-任务有哪些常见状态">5.1 任务有哪些常见状态？</a></li>
+        <li><a href="#52-freertos-是怎么决定下一个任务的">5.2 FreeRTOS 是怎么决定下一个任务的？</a></li>
+        <li><a href="#53-vtaskdelay-和-vtaskdelayuntil-有什么区别">5.3 <code>vTaskDelay()</code> 和 <code>vTaskDelayUntil()</code> 有什么区别？</a></li>
+        <li><a href="#54-xtaskcreate-创建了什么栈大小单位是什么">5.4 <code>xTaskCreate()</code> 创建了什么？栈大小单位是什么？</a></li>
+        <li><a href="#55-vtaskdelay-与忙等有什么差别">5.5 <code>vTaskDelay()</code> 与忙等有什么差别？</a></li>
+        <li><a href="#56-队列和任务通知怎么选">5.6 队列和任务通知怎么选？</a></li>
+        <li><a href="#57-二值信号量计数信号量和互斥量区别是什么">5.7 二值信号量、计数信号量和互斥量区别是什么？</a></li>
+        <li><a href="#58-什么是优先级反转">5.8 什么是优先级反转？</a></li>
+        <li><a href="#59-事件组和任务通知位图有什么不同">5.9 事件组和任务通知位图有什么不同？</a></li>
+        <li><a href="#510-为什么-isr-要用-fromisr末尾还要请求切换">5.10 为什么 ISR 要用 <code>...FromISR()</code>，末尾还要请求切换？</a></li>
+        <li><a href="#511-临界区暂停调度器和互斥量能互相替代吗">5.11 临界区、暂停调度器和互斥量能互相替代吗？</a></li>
+        <li><a href="#512-heap_1-到-heap_5-的常考区别">5.12 <code>heap_1</code> 到 <code>heap_5</code> 的常考区别？</a></li>
+        <li><a href="#513-软件定时器回调是不是硬件中断">5.13 软件定时器回调是不是硬件中断？</a></li>
+        <li><a href="#514-空闲任务能删吗任务删除后内存立即全回收吗">5.14 空闲任务能删吗？任务删除后内存立即全回收吗？</a></li>
+        <li><a href="#515-tickless-idle-是否意味着任务延时变准">5.15 Tickless idle 是否意味着任务延时变准？</a></li>
+        <li><a href="#516-任务无响应时按什么顺序排查">5.16 任务无响应时按什么顺序排查？</a></li>
+        <li><a href="#interview-rtos-check">5.17 模块自测：在纸上推演调度</a></li>
+      </ul>
+    </li>
+    <li><a href="#interview-project">6. 贯穿案例：每 1 ms 采样，每 10 ms 处理一次</a>
+      <ul>
+        <li><a href="#61-先写需求和假设再画任务图">6.1 先写需求和假设，再画任务图</a></li>
+        <li><a href="#62-先算三个数量级">6.2 先算三个数量级</a></li>
+        <li><a href="#63-用按值入队说明数据生命周期">6.3 用“按值入队”说明数据生命周期</a></li>
+        <li><a href="#interview-control-lab">6.4 把风扇逻辑写成可在电脑上验证的 C 程序</a></li>
+        <li><a href="#65-把验证结果写成可观察的证据">6.5 把验证结果写成可观察的证据</a></li>
+      </ul>
+    </li>
+    <li><a href="#interview-scenarios">7. 综合场景题：把知识连起来</a>
+      <ul>
+        <li><a href="#场景-1串口-115200-bits-连续收包偶尔丢字节怎么办">场景 1：串口 115200 bit/s 连续收包，偶尔丢字节，怎么办？</a></li>
+        <li><a href="#场景-2高优先级任务在等-ic-数据但系统卡住怎么解释">场景 2：高优先级任务在等 I²C 数据，但系统卡住，怎么解释？</a></li>
+        <li><a href="#场景-3dma-完成中断触发了任务读到旧数据为什么">场景 3：DMA 完成中断触发了，任务读到旧数据，为什么？</a></li>
+        <li><a href="#场景-4任务栈偶发溢出平时高水位却看起来足够怎么查">场景 4：任务栈偶发溢出，平时高水位却看起来足够，怎么查？</a></li>
+        <li><a href="#场景-5按键每按一次却触发很多次如何设计">场景 5：按键每按一次，却触发很多次，如何设计？</a></li>
+        <li><a href="#场景-6面试官让你设计一个采样控制通信升级的系统怎么答">场景 6：面试官让你设计一个“采样、控制、通信、升级”的系统，怎么答？</a></li>
+      </ul>
+    </li>
+    <li><a href="#interview-review">8. 一页速记与原始资料</a></li>
+  </ul>
+</nav>
+</div></div>
+        <div class="sidebar-common-sidebar hidden"><div class="sidebar-author">
+  <img
+    data-src="/avatar/avatar.webp"
+    data-sizes="auto"
+    alt="云想衣裳花想荣"
+    class="lazyload"
+  />
+  <div class="sidebar-author-name">云想衣裳花想荣</div>
+  <div class="sidebar-description">嵌入式开发学习笔记，技术分享</div>
+</div>
+<div class="sidebar-state">
+  <div class="sidebar-state-article">
+    <div>文章</div><div class="sidebar-state-number">7</div>
+  </div>
+  <a class="sidebar-state-category" href="/categories/" aria-label="sidebar-state-category-link">
+    <div>分类</div>
+    <div class="sidebar-state-number">
+      7
+    </div>
+  </a>
+  <a class="sidebar-state-tag" href="/tags/" aria-label="sidebar-state-tag-link">
+    <div>标签</div>
+    <div class="sidebar-state-number">19</div>
+  </a>
+</div>
+<div class="sidebar-social" ></div><div class="sidebar-menu"><div class="sidebar-menu-link-wrap">
+      <a
+        class="sidebar-menu-link-dummy"
+        href="/"
+        aria-label="首页"
+      ></a><div class="sidebar-menu-link">首页</div>
+    </div><div class="sidebar-menu-link-wrap">
+      <a
+        class="sidebar-menu-link-dummy"
+        href="/archives"
+        aria-label="归档"
+      ></a><div class="sidebar-menu-link">归档</div>
+    </div><div class="sidebar-menu-link-wrap">
+      <a
+        class="sidebar-menu-link-dummy"
+        href="/about"
+        aria-label="关于"
+      ></a><div class="sidebar-menu-link">关于</div>
+    </div><div class="sidebar-menu-link-wrap">
+      <a
+        class="sidebar-menu-link-dummy"
+        href="/friend"
+        aria-label="友链"
+      ></a><div class="sidebar-menu-link">友链</div>
+    </div></div></div></div><div class="sidebar-btn-wrapper">
+        <div class="sidebar-toc-btn current"></div>
+        <div class="sidebar-common-btn"></div>
+      </div></nav>
+</div><script
+    src="https://npm.webcache.cn/lazysizes@5.3.2/lazysizes.min.js"
+    
+    
+    
+    
+    integrity="sha384-3gT/vsepWkfz/ff7PpWNUeMzeWoH3cDhm/A8jM7ouoAK0/fP/9bcHHR5kHq2nf&#43;e" crossorigin="anonymous"></script><script
+    src="https://npm.webcache.cn/clipboard@2.0.11/dist/clipboard.min.js"
+    
+    
+    
+    
+    integrity="sha384-J08i8An/QeARD9ExYpvphB8BsyOj3Gh2TSh1aLINKO3L0cMSH2dN3E22zFoXEi0Q" crossorigin="anonymous"></script><script
+    src="https://npm.webcache.cn/material-theme@1.0.0/dist/material-theme.umd.js"
+    
+    
+    
+    
+    integrity="sha384-vLev0II0HKFaxkcm&#43;/7kX5IGwVFBASkGchU311wmU/veIj2bB0UcBkQbW6yw2asK" crossorigin="anonymous"></script><script src="/js/main.js"  ></script><script src="/js/aos.js"  ></script><script>
+    var aosInit = () => {
+      AOS.init({
+        duration: 1000,
+        easing: "ease",
+        once: true,
+        offset: 50,
+      });
+    };
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", aosInit);
+    } else {
+      aosInit();
+    }
+  </script><script src="/js/pjax_main.js" data-pjax ></script>
+
+<div id="lazy-script">
+  <div><script data-pjax>
+        window.REIMU_POST = {
+          author: "云想衣裳花想荣",
+          title: "嵌入式笔试面试高频问答：单片机、FreeRTOS、软件架构与 C 语言",
+          url: "http:\/\/localhost:1313\/post\/%E5%B5%8C%E5%85%A5%E5%BC%8F%E7%AC%94%E8%AF%95%E9%9D%A2%E8%AF%95%E9%AB%98%E9%A2%91%E9%97%AE%E7%AD%94%E5%8D%95%E7%89%87%E6%9C%BAfreertos%E8%BD%AF%E4%BB%B6%E6%9E%B6%E6%9E%84%E4%B8%8Ec%E8%AF%AD%E8%A8%80\/",
+          description: "从硬件执行、C语言内存模型、模块职责到FreeRTOS并发，通过62道高频题、推演、自测和采集控制案例建立完整的嵌入式知识体系。",
+          cover: "http:\/\/localhost:1313\/images\/cover\/%E5%88%9D%E8%A7%81%E7%B4%AB%E7%81%B5.jpg",
+        };
+      </script><script src="/js/insert_highlight.js" data-pjax ></script><script src="/js/tabs.js" data-pjax defer></script><script type="module" data-pjax>const PhotoSwipeLightbox = (await safeImport("https:\/\/npm.webcache.cn\/photoswipe@5.4.4\/dist\/photoswipe-lightbox.esm.min.js", "sha384-DiL6M\/gG\u002bwmTxmCRZyD1zee6lIhawn5TGvED0FOh7fXcN9B0aZ9dexSF\/N6lrZi\/")).default;const initPswp = (gallery, children) => {
+          if (_$$(`${gallery} ${children}`).length > 0) {
+            new PhotoSwipeLightbox({
+              gallery,
+              children,pswpModule: () => safeImport("https:\/\/npm.webcache.cn\/photoswipe@5.4.4\/dist\/photoswipe.esm.min.js", "sha384-WkkO3GCmgkC3VQWpaV8DqhKJqpzpF9JoByxDmnV8\u002boTJ7m3DfYEWX1fu1scuS4\u002bs")}).init();
+          }
+        }
+        const pswp = () => {
+          initPswp('.article-entry', 'a.article-gallery-item');
+          initPswp('.article-gallery', 'a.article-gallery-item');
+        }
+        pswp()
+      </script></div>
+</div><script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.getRegistrations().then((registrations) => {
+        for (let registration of registrations) {
+          registration.unregister();
+        }
+      });
+    }
+  </script><script>
+  const reimuCopyright = String.raw`
+   ______     ______     __     __    __     __  __    
+  /\  == \   /\  ___\   /\ \   /\ "-./  \   /\ \/\ \   
+  \ \  __<   \ \  __\   \ \ \  \ \ \-./\ \  \ \ \_\ \  
+   \ \_\ \_\  \ \_____\  \ \_\  \ \_\ \ \_\  \ \_____\ 
+    \/_/ /_/   \/_____/   \/_/   \/_/  \/_/   \/_____/ 
+                                                    
+  `;
+  console.log(String.raw`%c ${reimuCopyright}`, "color: #ff5252;");
+  console.log(
+    "%c Theme.Reimu" + " %c https://github.com/D-Sketon/hugo-theme-reimu ",
+    "color: white; background: #ff5252; padding:5px 0;",
+    "padding:4px;border:1px solid #ff5252;",
+  );
+</script><script
+    src="https://npm.webcache.cn/pangu@4.0.7/dist/browser/pangu.min.js"
+    
+    
+    
+    
+    integrity="sha384-HeUHqi0nVsPUm/E0ss7OfnIV/yD96JWB8ehZvUuoVax9DpNHL17jj9pdfXHzqDxm" crossorigin="anonymous"></script><script data-pjax>
+    if (document.readyState === "loading") {
+      document.addEventListener('DOMContentLoaded', () => {
+        pangu?.spacingPage();
+      });
+    } else {
+      pangu?.spacingPage();
+    }
+  </script></body>
+</html>

@@ -45,7 +45,7 @@
   <meta property="og:image" content="http://localhost:1313/images/cover/%E4%BC%A0%E9%80%81%E4%B9%B1%E6%98%9F%E6%B5%B7.jpg" />
   <meta property="article:author" content="云想衣裳花想荣" />
   <meta property="article:published_time" content="2026-01-17T16:00:00&#43;08:00" />
-  <meta property="article:modified_time" content="2026-01-17T00:00:00&#43;08:00" /><meta property="article:tag" content="Markdown, KaTeX, Hugo, 文章排版" /><meta name="twitter:card" content="summary" /><meta name="twitter:image" content="http://localhost:1313/images/cover/%E4%BC%A0%E9%80%81%E4%B9%B1%E6%98%9F%E6%B5%B7.jpg" />
+  <meta property="article:modified_time" content="2026-10-27T00:00:00&#43;08:00" /><meta property="article:tag" content="Markdown, KaTeX, Hugo, 文章排版" /><meta name="twitter:card" content="summary" /><meta name="twitter:image" content="http://localhost:1313/images/cover/%E4%BC%A0%E9%80%81%E4%B9%B1%E6%98%9F%E6%B5%B7.jpg" />
 <link rel="shortcut icon" href="/favicon.ico"><link rel="stylesheet" href="/css/main.css" /><link
     rel="preload"
     as="style"
@@ -179,6 +179,8 @@
         <li><a href="#72-表格用于对照不承载长篇推导">7.2 表格用于对照，不承载长篇推导</a></li>
         <li><a href="#73-代码交代运行边界">7.3 代码交代运行边界</a></li>
         <li><a href="#74-用练习检查理解">7.4 用练习检查理解</a></li>
+        <li><a href="#layout-bold-labels">7.5 中文标签加粗：把冒号放在加粗范围外</a></li>
+        <li><a href="#layout-learning-design">7.6 知识型长文：原理模型、问答、推演和自测形成闭环</a></li>
       </ul>
     </li>
     <li><a href="#layout-validation">8. 构建与验收：三层检查缺一不可</a>
@@ -207,17 +209,17 @@
 </div>
 <div class="sidebar-state">
   <div class="sidebar-state-article">
-    <div>文章</div><div class="sidebar-state-number">6</div>
+    <div>文章</div><div class="sidebar-state-number">7</div>
   </div>
   <a class="sidebar-state-category" href="/categories/" aria-label="sidebar-state-category-link">
     <div>分类</div>
     <div class="sidebar-state-number">
-      6
+      7
     </div>
   </a>
   <a class="sidebar-state-tag" href="/tags/" aria-label="sidebar-state-tag-link">
     <div>标签</div>
-    <div class="sidebar-state-number">15</div>
+    <div class="sidebar-state-number">19</div>
   </a>
 </div>
 <div class="sidebar-social" ></div><div class="sidebar-menu"><div class="sidebar-menu-link-wrap">
@@ -267,7 +269,7 @@
       >2026-01-17</time
     >
     <time style="display: none;" id="post-update-time"
-      >2026-01-17</time
+      >2026-10-27</time
     >
   </span></div>
 </div><div class="hr-line"></div><div class="e-content article-entry" itemprop="articleBody"><p>这是一份给<strong>以后写文章的自己和协作助手</strong>使用的工作手册。它整理了《PID参数整定方法》的实际制作经验，目标是：不必重新浏览整个博客工程，也能写出结构清楚、公式正确、目录可定位、配图可验证的技术教程。</p>
@@ -451,7 +453,7 @@
 </span></span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl">用一两段交代读者会遇到的问题，以及本文解决到什么程度。
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="gs">**先记住：**</span> 写下最重要的结论或阅读线索。
+</span></span><span class="line"><span class="cl"><span class="gs">**先记住**</span>： 写下最重要的结论或阅读线索。
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl">本文适用于……；符号、模型和实验采用……约定。
 </span></span><span class="line"><span class="cl">
@@ -488,7 +490,7 @@
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl">解释每个符号，逐步展示变形；代入数值后进行单位和边界检查。
 </span></span><span class="line"><span class="cl">
-</span></span><span class="line"><span class="cl"><span class="gs">**结果的含义：**</span> 说明这个结果能指导什么，不能证明什么。
+</span></span><span class="line"><span class="cl"><span class="gs">**结果的含义**</span>： 说明这个结果能指导什么，不能证明什么。
 </span></span><span class="line"><span class="cl">
 </span></span><span class="line"><span class="cl">[<span class="nt">返回目录</span>](<span class="na">#topic-toc</span>)
 </span></span><span class="line"><span class="cl">
@@ -769,6 +771,62 @@ $$<p>符号第一次出现时就解释，特别说明“交流相量还是时域
 7.4 用练习检查理解
 </h3><p>长教程末尾放少量练习，覆盖关键概念区分、数量级计算或数据判断，并给出答案或验证步骤。</p>
 <p>工程流程的每步应有具体输出。例如“保存复数幅相与限幅标志”比“认真测量”可执行。把学习目标写成能够解释、计算、实现和验证的能力，不承诺一篇文章解决所有工程问题。</p>
+<h3 id="layout-bold-labels">
+<a class="header-anchor" href="#layout-bold-labels"></a>
+7.5 中文标签加粗：把冒号放在加粗范围外
+</h3><p>本博客的实际生成结果确认：下面第一种写法在冒号后紧接中文正文时，会保留星号文本，无法生成 <code>strong</code> 元素。这属于 Markdown 强调分隔符与标点相邻时的解析问题；冒号本身并非不能加粗。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-markdown" data-lang="markdown"><span class="line"><span class="cl">不推荐：**答案：**在常见 Cortex-M NVIC 中……
+</span></span><span class="line"><span class="cl">推荐：**答案**：在常见 Cortex-M NVIC 中……
+</span></span><span class="line"><span class="cl">也可：**答案：** 在常见 Cortex-M NVIC 中……
+</span></span></code></pre></div><p>统一采用第二种：标签文字加粗，冒号放在外面。答案、解析、易错点、例子、适用范围等标签都遵循同一规则。不要为单个标签新增 CSS 或开启原始 HTML 来掩盖解析问题。</p>
+<p>验收时检查正文是否生成 <code>&lt;strong&gt;答案&lt;/strong&gt;：</code>，并搜索可见正文中是否残留 <code>**答案</code> 等标记。检查必须排除代码示例；代码框中展示 Markdown 源码是正常现象。</p>
+<h3 id="layout-learning-design">
+<a class="header-anchor" href="#layout-learning-design"></a>
+7.6 知识型长文：原理模型、问答、推演和自测形成闭环
+</h3><p>仅有“答案 + 解析”容易变成结论清单。需要让读者深入掌握知识时，每个模块按以下层次组织：</p>
+<table>
+	<thead>
+			<tr>
+					<th>内容层</th>
+					<th>应写什么</th>
+					<th>如何检查效果</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td>学习目标</td>
+					<td>能解释、计算或实现什么</td>
+					<td>目标能否用一道题验证</td>
+			</tr>
+			<tr>
+					<td>原理模型</td>
+					<td>对象关系、执行过程、数据或时间流向</td>
+					<td>能否画图并逐步复述</td>
+			</tr>
+			<tr>
+					<td>高频问答</td>
+					<td>简明结论、适用条件、误区</td>
+					<td>是否能回答“为什么”</td>
+			</tr>
+			<tr>
+					<td>推演案例</td>
+					<td>已知条件、代码/时序、结果与反例</td>
+					<td>数值和行为能否复算</td>
+			</tr>
+			<tr>
+					<td>模块自测</td>
+					<td>先提出问题，再给答案与推理</td>
+					<td>是否覆盖边界和常见误解</td>
+			</tr>
+			<tr>
+					<td>综合应用</td>
+					<td>用一个具体案例连接各模块</td>
+					<td>能否解释取舍并设计验证</td>
+			</tr>
+	</tbody>
+</table>
+<p>篇幅增加应来自必要解释、反例和可验证细节。图表要紧邻解释，长代码说明运行环境与未实现接口；单独可运行的程序与需要接入工程的片段要明确区分。问答小节保持短段落，原理模型与综合案例承担深入讲解，避免在每题里重复同一大段背景。</p>
+<p>调整章节顺序时保留原有稳定锚点，同步修改显示编号与阅读导航。引用技术资料时，注明语言版本、内核/平台和配置假设，避免将一个具体例子当成所有平台的通用规则。</p>
 <p><a href="/post/%E6%96%87%E7%AB%A0%E6%8E%92%E7%89%88%E6%96%B9%E6%B3%95/#layout-toc">返回目录</a></p>
 <h2 id="layout-validation">
 <a class="header-anchor" href="#layout-validation"></a>
@@ -814,7 +872,7 @@ $$<p>符号第一次出现时就解释，特别说明“交流相量还是时域
 </span></span><span class="line"><span class="cl"><span class="p">}</span>
 </span></span></code></pre></div><p>命令将网页和本次资源缓存放到临时目录。不要添加清理整个目标目录的参数，也不要把预览构建当作正式发布。</p>
 <p>检查草稿或未来日期文章时，可按需增加 <code>--buildDrafts</code> 或 <code>--buildFuture</code>。普通构建中找不到文章，先查发布日期和 draft 状态。</p>
-<p>当前工程已有一些主题或配置弃用提示。<strong>警告与失败要区分</strong>：无关的历史提示通常不需要扩大范围修改；影响页面功能的问题则需要定位。</p>
+<p>2026-10-27 已修正语言字段与重复数据警告，站点样式编译已切换到 Dart Sass；主题旧 Sass 语法的两类弃用提示暂由兼容选项抑制。构建环境需要能找到 Sass 编译器。<strong>警告与失败要区分</strong>：影响页面功能的问题需要定位；不要通过忽略实际构建错误宣称验收成功。</p>
 <h3 id="83-katex-语法检查只是第一关">
 <a class="header-anchor" href="#83-katex-%e8%af%ad%e6%b3%95%e6%a3%80%e6%9f%a5%e5%8f%aa%e6%98%af%e7%ac%ac%e4%b8%80%e5%85%b3"></a>
 8.3 KaTeX 语法检查只是第一关
@@ -1030,10 +1088,10 @@ $$<p>符号第一次出现时就解释，特别说明“交流相量还是时域
       <span class="icon-copyright"></span>2020-2026<span class="footer-info-sep rotate"></span>云想衣裳花想荣
     </div><div>
         <span class="icon-brush"
-          >&nbsp;53.2k</span
+          >&nbsp;74.9k</span
         >
         &nbsp;|&nbsp;
-        <span class="icon-coffee">&nbsp;01:49</span>
+        <span class="icon-coffee">&nbsp;02:33</span>
       </div></div>
 </footer>
 <div id="mask" class="hide"></div>
@@ -1082,6 +1140,8 @@ $$<p>符号第一次出现时就解释，特别说明“交流相量还是时域
         <li><a href="#72-表格用于对照不承载长篇推导">7.2 表格用于对照，不承载长篇推导</a></li>
         <li><a href="#73-代码交代运行边界">7.3 代码交代运行边界</a></li>
         <li><a href="#74-用练习检查理解">7.4 用练习检查理解</a></li>
+        <li><a href="#layout-bold-labels">7.5 中文标签加粗：把冒号放在加粗范围外</a></li>
+        <li><a href="#layout-learning-design">7.6 知识型长文：原理模型、问答、推演和自测形成闭环</a></li>
       </ul>
     </li>
     <li><a href="#layout-validation">8. 构建与验收：三层检查缺一不可</a>
@@ -1110,17 +1170,17 @@ $$<p>符号第一次出现时就解释，特别说明“交流相量还是时域
 </div>
 <div class="sidebar-state">
   <div class="sidebar-state-article">
-    <div>文章</div><div class="sidebar-state-number">6</div>
+    <div>文章</div><div class="sidebar-state-number">7</div>
   </div>
   <a class="sidebar-state-category" href="/categories/" aria-label="sidebar-state-category-link">
     <div>分类</div>
     <div class="sidebar-state-number">
-      6
+      7
     </div>
   </a>
   <a class="sidebar-state-tag" href="/tags/" aria-label="sidebar-state-tag-link">
     <div>标签</div>
-    <div class="sidebar-state-number">15</div>
+    <div class="sidebar-state-number">19</div>
   </a>
 </div>
 <div class="sidebar-social" ></div><div class="sidebar-menu"><div class="sidebar-menu-link-wrap">

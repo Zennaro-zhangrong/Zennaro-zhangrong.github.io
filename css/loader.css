@@ -1,8 +1,7 @@
-[data-theme="dark"] #loader .loading-bg {
+[data-theme=dark] #loader .loading-bg {
   background-color: rgba(37, 37, 37, 0.9);
 }
-
-[data-theme="dark"] #loader .spinner-box .loading-word {
+[data-theme=dark] #loader .spinner-box .loading-word {
   color: var(--red-1, #ff5252);
 }
 
@@ -14,11 +13,9 @@
   background-color: rgba(255, 255, 255, 0.9);
   transition: 0.8s;
 }
-
 #loader .loading-right-bg {
   right: 0;
 }
-
 #loader .spinner-box {
   position: fixed;
   z-index: 1001;
@@ -30,15 +27,12 @@
   opacity: 1;
   transition: 0.5s;
 }
-
 #loader .spinner-box .loading-taichi {
   opacity: 0.8;
 }
-
 #loader .spinner-box .rotate {
   animation: rotate-all 2s linear infinite;
 }
-
 #loader .spinner-box .loading-word {
   position: absolute;
   color: var(--red-1, #ff5252);
@@ -51,11 +45,9 @@
 #loader.loading .loading-left-bg {
   transform: translateX(-100%);
 }
-
 #loader.loading .loading-right-bg {
   transform: translateX(100%);
 }
-
 #loader.loading .spinner-box {
   opacity: 0;
   visibility: hidden;
