@@ -12,12 +12,95 @@
     
     <copyright>本博客所有文章除特别声明外，均采用 BY-NC-SA 许可协议。转载请注明出处！</copyright>
     
-    <lastBuildDate>Tue, 27 Oct 2026 00:00:00 +0800</lastBuildDate>
+    <lastBuildDate>Fri, 30 Oct 2026 00:00:00 +0800</lastBuildDate>
     
     
     <atom:link href="http://localhost:1313/index.xml" rel="self" type="application/rss&#43;xml" />
     
 
+    
+    
+
+    <item>
+      <title>数字滤波器从零设计：FIR、IIR 与常用方法</title>
+      <link>http://localhost:1313/post/%E6%95%B0%E5%AD%97%E6%BB%A4%E6%B3%A2%E5%99%A8%E4%BB%8E%E9%9B%B6%E8%AE%BE%E8%AE%A1firiir%E4%B8%8E%E5%B8%B8%E7%94%A8%E6%96%B9%E6%B3%95/</link>
+      <pubDate>Sun, 24 May 2026 00:00:00 &#43;0800</pubDate>
+      <author>zennaro.zhang@outlook.com (云想衣裳花想荣)</author>
+      <guid>http://localhost:1313/post/%E6%95%B0%E5%AD%97%E6%BB%A4%E6%B3%A2%E5%99%A8%E4%BB%8E%E9%9B%B6%E8%AE%BE%E8%AE%A1firiir%E4%B8%8E%E5%B8%B8%E7%94%A8%E6%96%B9%E6%B3%95/</guid>
+      <description>
+        <![CDATA[<h1>数字滤波器从零设计：FIR、IIR 与常用方法</h1><p>作者：云想衣裳花想荣（zennaro.zhang@outlook.com）</p>
+        
+          <p>传感器数值一跳一跳，直接送进控制器会让输出抖动。把它“变平滑”很容易，但怎样保证真正要看的变化没有被抹掉？这就是数字滤波器设计要解决的问题。</p>
+<p>本文从零开始，不要求读者先学完信号处理课程。读完应能把“保留 50 Hz 以下变化、压低 100 Hz 以上噪声”写成指标，设计 FIR 与 IIR 两种方案，用程序检查频响、延迟和边界，并知道什么时候换用移动平均、中值或陷波器。</p>
+        
+        <hr><p>本文2026-05-24首发于<a href='http://localhost:1313/'>博客首页</a>，最后修改于2026-10-30</p>]]>
+      </description>
+      
+        <category>算法</category>
+      
+    </item>
+    
+    
+
+    <item>
+      <title>无感 FOC 入门（三）：软件 PLL、转速估算与系统落地</title>
+      <link>http://localhost:1313/post/%E6%97%A0%E6%84%9Ffoc%E5%85%A5%E9%97%A8%E4%B8%89%E8%BD%AF%E4%BB%B6pll%E4%B8%8E%E7%B3%BB%E7%BB%9F%E8%90%BD%E5%9C%B0/</link>
+      <pubDate>Thu, 29 Oct 2026 15:00:00 &#43;0800</pubDate>
+      <author>zennaro.zhang@outlook.com (云想衣裳花想荣)</author>
+      <guid>http://localhost:1313/post/%E6%97%A0%E6%84%9Ffoc%E5%85%A5%E9%97%A8%E4%B8%89%E8%BD%AF%E4%BB%B6pll%E4%B8%8E%E7%B3%BB%E7%BB%9F%E8%90%BD%E5%9C%B0/</guid>
+      <description>
+        <![CDATA[<h1>无感 FOC 入门（三）：软件 PLL、转速估算与系统落地</h1><p>作者：云想衣裳花想荣（zennaro.zhang@outlook.com）</p>
+        
+          <p><a href="http://localhost:1313/post/%E6%97%A0%E6%84%9Ffoc%E5%85%A5%E9%97%A8%E4%B8%80%E7%94%B5%E6%9C%BA%E6%A8%A1%E5%9E%8B%E7%A3%81%E9%93%BE%E4%B8%8E%E7%A3%81%E9%93%BE%E8%A7%82%E6%B5%8B/">第一篇</a>得到转子磁链和反电动势的方向关系；<a href="http://localhost:1313/post/%E6%97%A0%E6%84%9Ffoc%E5%85%A5%E9%97%A8%E4%BA%8C%E6%BB%91%E6%A8%A1%E4%B8%8E%E9%BE%99%E4%BC%AF%E6%A0%BC%E8%A7%82%E6%B5%8B%E5%99%A8/">第二篇</a>用电流误差估计反电动势。本篇解决最后一段：把带噪、可能滞后的二维向量变成连续的电角度 $\hat\theta_e$ 和电角速度 $\hat\omega_e$，再交给 FOC。</p>
+<p><strong>软件 PLL（phase-locked loop，相位锁定环）不是另一种反电动势来源。</strong> 它接收前面观测器给出的“方向证据”，运行一个内部旋转角，把内部角与证据之间的相位差压向零。其两个输出正好是 FOC 需要的角度与速度。</p>
+        
+        <hr><p>本文2026-10-29首发于<a href='http://localhost:1313/'>博客首页</a>，最后修改于2026-10-29</p>]]>
+      </description>
+      
+        <category>电机控制</category>
+      
+    </item>
+    
+    
+
+    <item>
+      <title>无感 FOC 入门（一）：从电机模型推导磁链观测</title>
+      <link>http://localhost:1313/post/%E6%97%A0%E6%84%9Ffoc%E5%85%A5%E9%97%A8%E4%B8%80%E7%94%B5%E6%9C%BA%E6%A8%A1%E5%9E%8B%E7%A3%81%E9%93%BE%E4%B8%8E%E7%A3%81%E9%93%BE%E8%A7%82%E6%B5%8B/</link>
+      <pubDate>Thu, 29 Oct 2026 00:00:00 &#43;0800</pubDate>
+      <author>zennaro.zhang@outlook.com (云想衣裳花想荣)</author>
+      <guid>http://localhost:1313/post/%E6%97%A0%E6%84%9Ffoc%E5%85%A5%E9%97%A8%E4%B8%80%E7%94%B5%E6%9C%BA%E6%A8%A1%E5%9E%8B%E7%A3%81%E9%93%BE%E4%B8%8E%E7%A3%81%E9%93%BE%E8%A7%82%E6%B5%8B/</guid>
+      <description>
+        <![CDATA[<h1>无感 FOC 入门（一）：从电机模型推导磁链观测</h1><p>作者：云想衣裳花想荣（zennaro.zhang@outlook.com）</p>
+        
+          <p>无位置传感器 FOC 的核心问题是：控制器没有编码器，却仍要知道转子磁场指向哪里。这组教程从最简单的<strong>表贴式永磁同步电机</strong>（SPMSM）出发。第一篇先建立共同的电机模型，再推导磁链观测；<a href="http://localhost:1313/post/%E6%97%A0%E6%84%9Ffoc%E5%85%A5%E9%97%A8%E4%BA%8C%E6%BB%91%E6%A8%A1%E4%B8%8E%E9%BE%99%E4%BC%AF%E6%A0%BC%E8%A7%82%E6%B5%8B%E5%99%A8/">第二篇讲滑模与龙伯格观测器</a>，<a href="http://localhost:1313/post/%E6%97%A0%E6%84%9Ffoc%E5%85%A5%E9%97%A8%E4%B8%89%E8%BD%AF%E4%BB%B6pll%E4%B8%8E%E7%B3%BB%E7%BB%9F%E8%90%BD%E5%9C%B0/">第三篇讲软件 PLL 和完整估算链</a>。</p>
+        
+        <hr><p>本文2026-10-29首发于<a href='http://localhost:1313/'>博客首页</a>，最后修改于2026-10-29</p>]]>
+      </description>
+      
+        <category>电机控制</category>
+      
+    </item>
+    
+    
+
+    <item>
+      <title>无感 FOC 入门（二）：滑模与龙伯格观测器</title>
+      <link>http://localhost:1313/post/%E6%97%A0%E6%84%9Ffoc%E5%85%A5%E9%97%A8%E4%BA%8C%E6%BB%91%E6%A8%A1%E4%B8%8E%E9%BE%99%E4%BC%AF%E6%A0%BC%E8%A7%82%E6%B5%8B%E5%99%A8/</link>
+      <pubDate>Thu, 29 Oct 2026 00:00:00 &#43;0800</pubDate>
+      <author>zennaro.zhang@outlook.com (云想衣裳花想荣)</author>
+      <guid>http://localhost:1313/post/%E6%97%A0%E6%84%9Ffoc%E5%85%A5%E9%97%A8%E4%BA%8C%E6%BB%91%E6%A8%A1%E4%B8%8E%E9%BE%99%E4%BC%AF%E6%A0%BC%E8%A7%82%E6%B5%8B%E5%99%A8/</guid>
+      <description>
+        <![CDATA[<h1>无感 FOC 入门（二）：滑模与龙伯格观测器</h1><p>作者：云想衣裳花想荣（zennaro.zhang@outlook.com）</p>
+        
+          <p><a href="http://localhost:1313/post/%E6%97%A0%E6%84%9Ffoc%E5%85%A5%E9%97%A8%E4%B8%80%E7%94%B5%E6%9C%BA%E6%A8%A1%E5%9E%8B%E7%A3%81%E9%93%BE%E4%B8%8E%E7%A3%81%E9%93%BE%E8%A7%82%E6%B5%8B/">上一篇</a>已经得到电机方程 $\boldsymbol v=R_s\boldsymbol i+L_s\dot{\boldsymbol i}+\boldsymbol e$，其中 $\boldsymbol e$ 是转子运动产生的反电动势。本文要回答：<strong>如果不直接积分磁链，能否让“预测电流”和“实测电流”的差自动逼出反电动势？</strong></p>
+<p>会依次构造两种观测器。滑模观测器（SMO）用有界、非线性的校正电压把电流误差压向零；龙伯格观测器（Luenberger observer，也常译作“龙伯格观察器”）用线性误差反馈估计电流和反电动势。两者都依赖电机模型和采样质量，不能在零速凭空获得反电动势方向。最后的角度与速度解算放在<a href="http://localhost:1313/post/%E6%97%A0%E6%84%9Ffoc%E5%85%A5%E9%97%A8%E4%B8%89%E8%BD%AF%E4%BB%B6pll%E4%B8%8E%E7%B3%BB%E7%BB%9F%E8%90%BD%E5%9C%B0/">第三篇</a>。</p>
+        
+        <hr><p>本文2026-10-29首发于<a href='http://localhost:1313/'>博客首页</a>，最后修改于2026-10-29</p>]]>
+      </description>
+      
+        <category>电机控制</category>
+      
+    </item>
     
     
 
@@ -147,29 +230,6 @@ IIC的发展历史
       </description>
       
         <category>通信总线</category>
-      
-    </item>
-    
-    
-
-    <item>
-      <title>开发者工具速查</title>
-      <link>http://localhost:1313/post/%E5%BC%80%E5%8F%91%E8%80%85%E5%B7%A5%E5%85%B7%E9%80%9F%E6%9F%A5/</link>
-      <pubDate>Fri, 16 Jan 2026 16:00:00 &#43;0800</pubDate>
-      <author>zennaro.zhang@outlook.com (云想衣裳花想荣)</author>
-      <guid>http://localhost:1313/post/%E5%BC%80%E5%8F%91%E8%80%85%E5%B7%A5%E5%85%B7%E9%80%9F%E6%9F%A5/</guid>
-      <description>
-        <![CDATA[<h1>开发者工具速查</h1><p>作者：云想衣裳花想荣（zennaro.zhang@outlook.com）</p>
-        
-          <h1 id="markdown语法教程">
-<a class="header-anchor" href="#markdown%e8%af%ad%e6%b3%95%e6%95%99%e7%a8%8b"></a>
-Markdown语法教程
-</h1><p>点击<a href="https://markdown.com.cn/">Markdown官网链接</a>查看相关语法</p>
-        
-        <hr><p>本文2026-01-16首发于<a href='http://localhost:1313/'>博客首页</a>，最后修改于2026-01-16</p>]]>
-      </description>
-      
-        <category>语言语法</category>
       
     </item>
     

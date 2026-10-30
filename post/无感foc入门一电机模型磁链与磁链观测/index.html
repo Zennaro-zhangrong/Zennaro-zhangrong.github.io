@@ -1,0 +1,765 @@
+<!doctype html>
+<html
+  lang="zh-CN"data-theme-mode="auto"
+>
+  <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8" />
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1, shrink-to-fit=no"
+/><title>
+  无感 FOC 入门（一）：从电机模型推导磁链观测 | 云想衣裳花想荣
+</title>
+<meta name="description" content="从零建立表贴式永磁同步电机的坐标、磁链和电压模型，逐步推导电压模型磁链观测器及其误差。"/><script>
+  window.siteConfig = JSON.parse("{\"anchor\":{\"auto\":{\"enable\":false,\"length\":60},\"explicit\":{\"enable\":false,\"marker\":\"{#anchor-\",\"prefix\":\"anchor-\"}},\"anchor_icon\":null,\"base\":\"http://localhost:1313/\",\"clipboard\":{\"copyright\":{\"count\":50,\"enable\":false,\"license_type\":\"by-nc-sa\"},\"fail\":{\"en\":\"Copy failed (ﾟ⊿ﾟ)ﾂ\",\"ja\":\"コピー失敗 (ﾟ⊿ﾟ)ﾂ\",\"pt-br\":\"Falha ao copiar (ﾟ⊿ﾟ)ﾂ\",\"zh-cn\":\"复制失败 (ﾟ⊿ﾟ)ﾂ\",\"zh-tw\":\"複製失敗 (ﾟ⊿ﾟ)ﾂ\"},\"success\":{\"en\":\"Copy successfully (*^▽^*)\",\"ja\":\"コピー成功 (*^▽^*)\",\"pt-br\":\"Copiado com sucesso (*^▽^*)\",\"zh-cn\":\"复制成功 (*^▽^*)\",\"zh-tw\":\"複製成功 (*^▽^*)\"}},\"code_block\":{\"expand\":30},\"dark_mode\":{\"button\":true,\"mode\":\"auto\"},\"icon_font\":\"4552607_ex15nbittbh\",\"outdate\":{\"daysago\":180,\"enable\":false,\"message\":{\"en\":\"This article was last updated on {time}. Please note that the content may no longer be applicable.\",\"ja\":\"この記事は最終更新日：{time}。記載内容が現在有効でない可能性がありますのでご注意ください。\",\"pt-br\":\"Este artigo foi atualizado pela última vez em {time}. Observe que o conteúdo pode não ser mais aplicável.\",\"zh-cn\":\"本文最后更新于 {time}，请注意文中内容可能已不适用。\",\"zh-tw\":\"本文最後更新於 {time}，請注意文中內容可能已不適用。\"}}}");
+  
+</script>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+  rel="preload"
+  as="style"
+  href="https://fonts.googleapis.com/css?family=Mulish:400,400italic,700,700italic%7cNoto%20Serif%20SC:400,400italic,700,700italic%7c&amp;display=swap"
+/>
+<link
+  rel="stylesheet"
+  href="https://fonts.googleapis.com/css?family=Mulish:400,400italic,700,700italic%7cNoto%20Serif%20SC:400,400italic,700,700italic%7c&amp;display=swap"
+  media="print"
+  onload="this.media='all'"
+/>
+<link
+    rel="preload"
+    href="//at.alicdn.com/t/c/font_4552607_ex15nbittbh.woff2"
+    as="font"
+    type="font/woff2"
+    crossorigin="anonymous"
+  /><link rel="stylesheet" href="/css/loader.css" /><meta property="og:type" content="website" />
+  <meta property="og:title" content="无感 FOC 入门（一）：从电机模型推导磁链观测 | 云想衣裳花想荣" />
+  <meta
+    property="og:description"
+    content="从零建立表贴式永磁同步电机的坐标、磁链和电压模型，逐步推导电压模型磁链观测器及其误差。"
+  />
+  <meta property="og:url" content="http://localhost:1313/post/%E6%97%A0%E6%84%9Ffoc%E5%85%A5%E9%97%A8%E4%B8%80%E7%94%B5%E6%9C%BA%E6%A8%A1%E5%9E%8B%E7%A3%81%E9%93%BE%E4%B8%8E%E7%A3%81%E9%93%BE%E8%A7%82%E6%B5%8B/" />
+  <meta
+    property="og:site_name"
+    content="博客首页"
+  />
+  <meta property="og:image" content="http://localhost:1313/images/cover/%E5%88%9D%E8%A7%81%E7%B4%AB%E7%81%B5.jpg" />
+  <meta property="article:author" content="云想衣裳花想荣" />
+  <meta property="article:published_time" content="2026-10-29T00:00:00&#43;08:00" />
+  <meta property="article:modified_time" content="2026-10-29T00:00:00&#43;08:00" /><meta property="article:tag" content="FOC, PMSM, 磁链, 无感控制" /><meta name="twitter:card" content="summary" /><meta name="twitter:image" content="http://localhost:1313/images/cover/%E5%88%9D%E8%A7%81%E7%B4%AB%E7%81%B5.jpg" />
+<link rel="shortcut icon" href="/favicon.ico"><link rel="stylesheet" href="/css/main.css" /><link
+    rel="preload"
+    as="style"
+    href="https://npm.webcache.cn/photoswipe@5.4.4/dist/photoswipe.css"
+    integrity="sha384-IfxC36XL/toUyJ939C73PcgMuRzAZuIzZxE38drsmO5p6jD7ei&#43;Zx/1oA/0l8ysE" crossorigin="anonymous"
+    onload="this.onload=null;this.rel='stylesheet'"
+  /><link
+    rel="preload"
+    as="style"
+    href="https://npm.webcache.cn/katex@0.16.47/dist/katex.min.css"
+    integrity="sha384-nH0MfJ44wi1dd7w6jinlyBgljjS8EJAh2JBoRad8a3VDw2K69vfaaqm4WnR&#43;gXtA" crossorigin="anonymous"
+    onload="this.onload=null;this.rel='stylesheet'"
+  /><script
+    src="https://npm.webcache.cn/pace-js@1.2.4/pace.min.js"
+    
+    
+    
+    
+    integrity="sha384-k6YtvFUEIuEFBdrLKJ3YAUbBki333tj1CSUisai5Cswsg9wcLNaPzsTHDswp4Az8" crossorigin="anonymous"></script><link
+    rel="stylesheet"
+    href="https://npm.webcache.cn/@reimujs/aos@0.1.3/dist/aos.css"
+    integrity="sha384-GMRP93c6Hkz9JVKGAuRR3nTS7M07RwPgTFenXiosjq2VbVgvdDNcz1g6Mkj8AONa" crossorigin="anonymous"/></head>
+  <body><div id='loader'>
+    <div class="loading-left-bg loading-bg"></div>
+    <div class="loading-right-bg loading-bg"></div>
+    <div class="spinner-box">
+      <div class="loading-taichi rotate"><svg width="150" height="150" viewBox="0 0 1024 1024" class="icon" version="1.1" xmlns="https://www.w3.org/2000/svg" shape-rendering="geometricPrecision">
+            <path d="M303.5 432A80 80 0 0 1 291.5 592A80 80 0 0 1 303.5 432z" fill="var(--red-1, #ff5252)" />
+            <path d="M512 65A447 447 0 0 1 512 959L512 929A417 417 0 0 0 512 95A417 417 0 0 0 512 929L512 959A447 447 0 0 1 512 65z 
+          M512 95A417 417 0 0 1 929 512A208.5 208.5 0 0 1 720.5 720.5L720.5 592A80 80 0 0 0 720.5 432A80 80 0 0 0 720.5 592L720.5 720.5A208.5 208.5 0 0 1 512 512A208.5 208.5 0 0 0 303.5 303.5A208.5 208.5 0 0 0 95 512A417 417 0 0 1 512 95z" fill="var(--red-1, #ff5252)" />
+          </svg></div><div class="loading-word">左风右雷，可随心意而动...</div>
+    </div>
+  </div>
+  </div>
+  <script>
+    var time = null;
+    var loaderEl = document.getElementById('loader');
+    var startLoading = () => {
+      time = Date.now();
+      loaderEl.classList.remove("loading");
+    }
+    var hideLoader = () => {
+      document.body.style.overflow = 'auto';
+      loader.classList.add('loading');
+    };
+
+    var endLoading = () => {
+      if (!time) {
+        hideLoader();
+      } else {
+        if (Date.now() - time > 500) {
+          time = null;
+          hideLoader();
+        } else {
+          setTimeout(endLoading, 500 - (Date.now() - time));
+          time = null;
+        }
+      }
+    }
+    window.addEventListener('DOMContentLoaded', endLoading);
+    loaderEl.addEventListener('click', endLoading);
+  </script><div id="copy-tooltip"></div>
+<div id="lang-tooltip">
+本文章没有找到对应的语言版本
+</div>
+<div id="heatmap-tooltip"></div><div id="container">
+      <div id="wrap"><div id="header-nav">
+  <nav id="main-nav" aria-label="Primary navigation"><a class="main-nav-link-wrap" href="/"><span class="main-nav-link">首页</span>
+      </a><a class="main-nav-link-wrap" href="/archives"><span class="main-nav-link">归档</span>
+      </a><a class="main-nav-link-wrap" href="/about"><span class="main-nav-link">关于</span>
+      </a><a class="main-nav-link-wrap" href="/friend"><span class="main-nav-link">友链</span>
+      </a><a id="main-nav-toggle" class="nav-icon" aria-label="Toggle navigation" role="button"></a>
+  </nav>
+  <nav id="sub-nav" aria-label="Secondary navigation"></nav><a href="https://github.com/Zennaro-zhangrong" class="triangle-badge" title="github" target="_blank" rel="noopener nofollow noreferrer">
+      <div class="icon icon-github triangle-badge-icon"></div>
+    </a></div>
+<header id="header" aria-label="Site header"><picture></picture>
+    <img crossorigin="anonymous" fetchpriority="high" src="/images/cover/%e5%88%9d%e8%a7%81%e7%b4%ab%e7%81%b5.jpg" alt="无感 FOC 入门（一）：从电机模型推导磁链观测"><div id="header-outer">
+    <div id="header-title"><span id="logo">
+            <h1 data-aos="slide-up">无感 FOC 入门（一）：从电机模型推导磁链观测</h1>
+          </span><h2 id="subtitle-wrap" data-aos="slide-down"></h2></div>
+  </div>
+</header><div id="content"
+          aria-label="Page content"
+          class="sidebar-left"
+            ><aside id="sidebar" aria-label="Sidebar"><div class="sidebar-wrapper-container sticky"><div class="sidebar-wrapper">
+    <div
+      class="sidebar-wrap"
+      data-aos="fade-up"
+    ><div class="sidebar-toc-sidebar"><h3 class="toc-title">文章目录</h3>
+<div class="sidebar-toc-wrapper toc-div-class">
+  <nav id="TableOfContents">
+  <ul>
+    <li><a href="#sfoc1-toc">阅读导航</a></li>
+    <li><a href="#sfoc1-purpose">1. FOC 为什么一定要知道转子角</a></li>
+    <li><a href="#sfoc1-coordinates">2. 从三相到二维：先统一坐标和单位</a>
+      <ul>
+        <li><a href="#21-机械角与电角">2.1 机械角与电角</a></li>
+        <li><a href="#22-为什么可以用--两个数表示三相">2.2 为什么可以用 $\alpha\beta$ 两个数表示三相</a></li>
+      </ul>
+    </li>
+    <li><a href="#sfoc1-model">3. 什么是磁链，电机电压方程从哪里来</a>
+      <ul>
+        <li><a href="#31-磁通与磁链不是同一个词">3.1 磁通与磁链不是同一个词</a></li>
+        <li><a href="#32-从法拉第定律到电压模型">3.2 从法拉第定律到电压模型</a></li>
+      </ul>
+    </li>
+    <li><a href="#sfoc1-emf">4. 反电动势、转矩和零速信息边界</a></li>
+    <li><a href="#sfoc1-observer">5. 电压模型磁链观测器：积分后减去电流磁链</a></li>
+    <li><a href="#sfoc1-errors">6. 理想积分器为什么会漂移，替代方案又损失什么</a>
+      <ul>
+        <li><a href="#61-常值误差会被积分成斜坡">6.1 常值误差会被积分成斜坡</a></li>
+        <li><a href="#62-漏积分器能止住漂移但会改相位">6.2 漏积分器能止住漂移，但会改相位</a></li>
+        <li><a href="#63-电阻误差为何在低速更危险">6.3 电阻误差为何在低速更危险</a></li>
+      </ul>
+    </li>
+    <li><a href="#sfoc1-example">7. 一组可复算的数值与自测</a></li>
+    <li><a href="#sfoc1-references">8. 资料与适用范围</a></li>
+  </ul>
+</nav>
+</div></div>
+          <div class="sidebar-common-sidebar hidden"><div class="sidebar-author">
+  <img
+    data-src="/avatar/avatar.webp"
+    data-sizes="auto"
+    alt="云想衣裳花想荣"
+    class="lazyload"
+  />
+  <div class="sidebar-author-name">云想衣裳花想荣</div>
+  <div class="sidebar-description">嵌入式开发学习笔记，技术分享</div>
+</div>
+<div class="sidebar-state">
+  <div class="sidebar-state-article">
+    <div>文章</div><div class="sidebar-state-number">11</div>
+  </div>
+  <a class="sidebar-state-category" href="/categories/" aria-label="sidebar-state-category-link">
+    <div>分类</div>
+    <div class="sidebar-state-number">
+      8
+    </div>
+  </a>
+  <a class="sidebar-state-tag" href="/tags/" aria-label="sidebar-state-tag-link">
+    <div>标签</div>
+    <div class="sidebar-state-number">34</div>
+  </a>
+</div>
+<div class="sidebar-social" ></div><div class="sidebar-menu"><div class="sidebar-menu-link-wrap">
+      <a
+        class="sidebar-menu-link-dummy"
+        href="/"
+        aria-label="首页"
+      ></a><div class="sidebar-menu-link">首页</div>
+    </div><div class="sidebar-menu-link-wrap">
+      <a
+        class="sidebar-menu-link-dummy"
+        href="/archives"
+        aria-label="归档"
+      ></a><div class="sidebar-menu-link">归档</div>
+    </div><div class="sidebar-menu-link-wrap">
+      <a
+        class="sidebar-menu-link-dummy"
+        href="/about"
+        aria-label="关于"
+      ></a><div class="sidebar-menu-link">关于</div>
+    </div><div class="sidebar-menu-link-wrap">
+      <a
+        class="sidebar-menu-link-dummy"
+        href="/friend"
+        aria-label="友链"
+      ></a><div class="sidebar-menu-link">友链</div>
+    </div></div></div><div class="sidebar-btn-wrapper" style="position:static">
+            <div class="sidebar-toc-btn current"></div>
+            <div class="sidebar-common-btn"></div>
+          </div></div>
+  </div><div class="sidebar-widget"></div></div></aside>
+<section id="main" aria-label="Main content"><article
+  class="h-entry article"
+  itemscope
+  itemtype="https://schema.org/BlogPosting"
+>
+  <div
+    class="article-inner"
+    data-aos="fade-up"
+  >
+    <div class="article-meta"><div class="article-date">
+  <span
+    class="article-date-link icon-calendar"
+    data-aos="zoom-in"
+  >
+    <time datetime="2026-10-29 00:00:00 &#43;0800 CST" itemprop="datePublished"
+      >2026-10-29</time
+    >
+    <time style="display: none;" id="post-update-time"
+      >2026-10-29</time
+    >
+  </span></div>
+</div><div class="hr-line"></div><div class="e-content article-entry" itemprop="articleBody"><p>无位置传感器 FOC 的核心问题是：控制器没有编码器，却仍要知道转子磁场指向哪里。这组教程从最简单的<strong>表贴式永磁同步电机</strong>（SPMSM）出发。第一篇先建立共同的电机模型，再推导磁链观测；<a href="http://localhost:1313/post/%E6%97%A0%E6%84%9Ffoc%E5%85%A5%E9%97%A8%E4%BA%8C%E6%BB%91%E6%A8%A1%E4%B8%8E%E9%BE%99%E4%BC%AF%E6%A0%BC%E8%A7%82%E6%B5%8B%E5%99%A8/">第二篇讲滑模与龙伯格观测器</a>，<a href="http://localhost:1313/post/%E6%97%A0%E6%84%9Ffoc%E5%85%A5%E9%97%A8%E4%B8%89%E8%BD%AF%E4%BB%B6pll%E4%B8%8E%E7%B3%BB%E7%BB%9F%E8%90%BD%E5%9C%B0/">第三篇讲软件 PLL 和完整估算链</a>。</p>
+<p><strong>先抓住一条主线：</strong> 测得电压和电流 → 用电机方程恢复不可直接测的磁链或反电动势 → 从二维向量的方向求电角度。观测器不是凭空产生位置信息；它利用的是电机运动在电压、电流中留下的痕迹。</p>
+<p>本文采用线性磁路、三相对称、正弦反电动势、忽略铁耗和磁饱和的模型。定子电阻、电感取工作点附近的值。全文的 $i_\alpha,i_\beta,v_\alpha,v_\beta$ 是<strong>静止坐标中的瞬时分量</strong>，不是交流稳态分析中的复数相量；电压由相对电机中性点的相电压变换而来，不能把线电压、母线电压或 ADC 原始码值直接代入。</p>
+<p><strong>建议这样学</strong>：先用纸画出 $d/q$ 轴并完成第 2 节的坐标变换；再不看答案推导第 3 节的电压方程；最后用第 7 节的数值回代。第一次阅读只需抓住“总磁链减去电流磁链才是永磁磁链”，第二次阅读再处理积分漂移。读完应能解释零速为何失去反电动势位置信息，并独立复算第 7 节。</p>
+<h2 id="sfoc1-toc">
+<a class="header-anchor" href="#sfoc1-toc"></a>
+阅读导航
+</h2><table>
+	<thead>
+			<tr>
+					<th>阶段</th>
+					<th>阅读位置</th>
+					<th>学完能做什么</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td>认清对象</td>
+					<td><a href="/post/%E6%97%A0%E6%84%9Ffoc%E5%85%A5%E9%97%A8%E4%B8%80%E7%94%B5%E6%9C%BA%E6%A8%A1%E5%9E%8B%E7%A3%81%E9%93%BE%E4%B8%8E%E7%A3%81%E9%93%BE%E8%A7%82%E6%B5%8B/#sfoc1-purpose">1. FOC 要什么</a>、<a href="/post/%E6%97%A0%E6%84%9Ffoc%E5%85%A5%E9%97%A8%E4%B8%80%E7%94%B5%E6%9C%BA%E6%A8%A1%E5%9E%8B%E7%A3%81%E9%93%BE%E4%B8%8E%E7%A3%81%E9%93%BE%E8%A7%82%E6%B5%8B/#sfoc1-coordinates">2. 角度与坐标</a></td>
+					<td>区分机械角、电角和坐标轴</td>
+			</tr>
+			<tr>
+					<td>建模</td>
+					<td><a href="/post/%E6%97%A0%E6%84%9Ffoc%E5%85%A5%E9%97%A8%E4%B8%80%E7%94%B5%E6%9C%BA%E6%A8%A1%E5%9E%8B%E7%A3%81%E9%93%BE%E4%B8%8E%E7%A3%81%E9%93%BE%E8%A7%82%E6%B5%8B/#sfoc1-model">3. 磁链与电压</a>、<a href="/post/%E6%97%A0%E6%84%9Ffoc%E5%85%A5%E9%97%A8%E4%B8%80%E7%94%B5%E6%9C%BA%E6%A8%A1%E5%9E%8B%E7%A3%81%E9%93%BE%E4%B8%8E%E7%A3%81%E9%93%BE%E8%A7%82%E6%B5%8B/#sfoc1-emf">4. 反电动势与转矩</a></td>
+					<td>从磁链推到反电动势</td>
+			</tr>
+			<tr>
+					<td>观测</td>
+					<td><a href="/post/%E6%97%A0%E6%84%9Ffoc%E5%85%A5%E9%97%A8%E4%B8%80%E7%94%B5%E6%9C%BA%E6%A8%A1%E5%9E%8B%E7%A3%81%E9%93%BE%E4%B8%8E%E7%A3%81%E9%93%BE%E8%A7%82%E6%B5%8B/#sfoc1-observer">5. 电压模型磁链观测</a>、<a href="/post/%E6%97%A0%E6%84%9Ffoc%E5%85%A5%E9%97%A8%E4%B8%80%E7%94%B5%E6%9C%BA%E6%A8%A1%E5%9E%8B%E7%A3%81%E9%93%BE%E4%B8%8E%E7%A3%81%E9%93%BE%E8%A7%82%E6%B5%8B/#sfoc1-errors">6. 误差与修正</a></td>
+					<td>判断估算角何时可信</td>
+			</tr>
+			<tr>
+					<td>检查</td>
+					<td><a href="/post/%E6%97%A0%E6%84%9Ffoc%E5%85%A5%E9%97%A8%E4%B8%80%E7%94%B5%E6%9C%BA%E6%A8%A1%E5%9E%8B%E7%A3%81%E9%93%BE%E4%B8%8E%E7%A3%81%E9%93%BE%E8%A7%82%E6%B5%8B/#sfoc1-example">7. 算例与练习</a>、<a href="/post/%E6%97%A0%E6%84%9Ffoc%E5%85%A5%E9%97%A8%E4%B8%80%E7%94%B5%E6%9C%BA%E6%A8%A1%E5%9E%8B%E7%A3%81%E9%93%BE%E4%B8%8E%E7%A3%81%E9%93%BE%E8%A7%82%E6%B5%8B/#sfoc1-references">8. 资料</a></td>
+					<td>复算数量级</td>
+			</tr>
+	</tbody>
+</table>
+<h2 id="sfoc1-purpose">
+<a class="header-anchor" href="#sfoc1-purpose"></a>
+1. FOC 为什么一定要知道转子角
+</h2><p>FOC 希望把定子电流分解为沿转子磁场的 $d$ 轴分量和与之垂直的 $q$ 轴分量。对表贴式 PMSM，在常见的 $i_d=0$ 控制中，$i_q$ 主要决定转矩。要完成这个分解，Park 变换必须知道转子<strong>电角度</strong> $\theta_e$。角度错了，控制器以为给的是纯 $q$ 轴电流，实际却会混入 $d$ 轴。</p>
+<p>“无感”在这里指<strong>没有机械位置传感器</strong>；电流采样、母线电压测量和逆变器 PWM 信息仍是必要输入。典型链路是：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">两相电流采样 + 逆变器实际输出电压估计
+</span></span><span class="line"><span class="cl">            ↓ Clarke 变换
+</span></span><span class="line"><span class="cl">       iαβ、vαβ
+</span></span><span class="line"><span class="cl">            ↓ 磁链/反电动势观测器
+</span></span><span class="line"><span class="cl">       二维旋转向量
+</span></span><span class="line"><span class="cl">            ↓ atan2 或软件 PLL
+</span></span><span class="line"><span class="cl">       电角度 θe、角速度 ωe
+</span></span><span class="line"><span class="cl">            ↓ Park 变换与电流环
+</span></span></code></pre></div><p>这里的“观测”是控制理论术语：把已测输入和输出送入模型，重建没有传感器直接测到的内部状态。</p>
+<p><a href="/post/%E6%97%A0%E6%84%9Ffoc%E5%85%A5%E9%97%A8%E4%B8%80%E7%94%B5%E6%9C%BA%E6%A8%A1%E5%9E%8B%E7%A3%81%E9%93%BE%E4%B8%8E%E7%A3%81%E9%93%BE%E8%A7%82%E6%B5%8B/#sfoc1-toc">返回目录</a></p>
+<h2 id="sfoc1-coordinates">
+<a class="header-anchor" href="#sfoc1-coordinates"></a>
+2. 从三相到二维：先统一坐标和单位
+</h2><h3 id="21-机械角与电角">
+<a class="header-anchor" href="#21-%e6%9c%ba%e6%a2%b0%e8%a7%92%e4%b8%8e%e7%94%b5%e8%a7%92"></a>
+2.1 机械角与电角
+</h3><p>设电机有 $p$ 对极，转子机械角为 $\theta_m$（rad），选好零位后：</p>
+$$
+\theta_e=p\theta_m,\qquad
+\omega_e=\dot\theta_e=p\omega_m,\qquad
+\omega_m=\frac{2\pi n_m}{60}.
+$$<p>$n_m$ 单位是机械转每分钟（r/min），$\omega_m$ 和 $\omega_e$ 的单位都是 rad/s。机械转一圈，电角走 $p$ 圈。求速度时还要保留正负号，不能只用转速绝对值。</p>
+<h3 id="22-为什么可以用--两个数表示三相">
+<a class="header-anchor" href="#22-%e4%b8%ba%e4%bb%80%e4%b9%88%e5%8f%af%e4%bb%a5%e7%94%a8--%e4%b8%a4%e4%b8%aa%e6%95%b0%e8%a1%a8%e7%a4%ba%e4%b8%89%e7%9b%b8"></a>
+2.2 为什么可以用 $\alpha\beta$ 两个数表示三相
+</h3><p>三相对称且无零序电流时 $i_a+i_b+i_c=0$，所以第三相并非独立。本文采用<strong>幅值不变</strong> Clarke 变换：</p>
+$$
+\begin{aligned}
+i_\alpha&=\frac23\left(i_a-\frac12 i_b-\frac12 i_c\right)=i_a,\\
+i_\beta&=\frac23\frac{\sqrt3}{2}(i_b-i_c)
+=\frac{i_a+2i_b}{\sqrt3}.
+\end{aligned}
+$$<p>电压也用<strong>同一变换和同一标度</strong>得到 $v_\alpha,v_\beta$。由逆变器占空比估计电压时，还要结合实测母线电压、死区与器件压降；把电压指令直接当作实际端电压会带来系统误差。</p>
+<p>Park 变换把静止坐标旋转到转子磁场坐标：</p>
+$$
+\begin{bmatrix}x_d\\x_q\end{bmatrix}
+=\begin{bmatrix}\cos\theta_e&\sin\theta_e\\-\sin\theta_e&\cos\theta_e\end{bmatrix}
+\begin{bmatrix}x_\alpha\\x_\beta\end{bmatrix}.
+$$<p>$x$ 可以是电流、电压或磁链。若向量正好指向转子磁场，变换后就是 $(x_d,x_q)=(\lVert x\rVert,0)$。这也明确了本文的方向约定：$q$ 轴比 $d$ 轴沿正转方向超前 $90^\circ$。</p>
+<p><a href="/post/%E6%97%A0%E6%84%9Ffoc%E5%85%A5%E9%97%A8%E4%B8%80%E7%94%B5%E6%9C%BA%E6%A8%A1%E5%9E%8B%E7%A3%81%E9%93%BE%E4%B8%8E%E7%A3%81%E9%93%BE%E8%A7%82%E6%B5%8B/#sfoc1-toc">返回目录</a></p>
+<h2 id="sfoc1-model">
+<a class="header-anchor" href="#sfoc1-model"></a>
+3. 什么是磁链，电机电压方程从哪里来
+</h2><h3 id="31-磁通与磁链不是同一个词">
+<a class="header-anchor" href="#31-%e7%a3%81%e9%80%9a%e4%b8%8e%e7%a3%81%e9%93%be%e4%b8%8d%e6%98%af%e5%90%8c%e4%b8%80%e4%b8%aa%e8%af%8d"></a>
+3.1 磁通与磁链不是同一个词
+</h3><p>磁通 $\Phi$ 描述穿过某个面的磁场总量，单位 Wb。<strong>磁链</strong> $\psi$ 描述绕组匝数加权后“链住”的磁通；简单绕组可写 $\psi=N\Phi$，单位仍是 Wb，亦等于 V·s。电机控制中的 $\psi_f$ 通常是永磁体在定子绕组上形成的等效磁链，不是拿磁铁表面磁通直接代入。</p>
+<p>对本文的线性 SPMSM，定子总磁链由两部分叠加：电流建立的磁链 $L_s\boldsymbol i$，以及转子永磁体的磁链 $\boldsymbol\psi_f$。在 $\alpha\beta$ 坐标中：</p>
+$$
+\begin{aligned}
+\boldsymbol\psi_s&=L_s\boldsymbol i+\boldsymbol\psi_f,\\
+\boldsymbol\psi_f&=\psi_f
+\begin{bmatrix}\cos\theta_e\\\sin\theta_e\end{bmatrix},
+\quad
+\boldsymbol i=\begin{bmatrix}i_\alpha\\i_\beta\end{bmatrix}.
+\end{aligned}
+$$<p>$L_s$ 是每相等效电感（H），$\psi_f$ 是永磁磁链<strong>幅值</strong>（Wb）。凸极 IPMSM 有 $L_d\ne L_q$，在静止坐标中的电感会随角度变化，不能直接套用这里的常数 $L_s$ 模型。</p>
+<h3 id="32-从法拉第定律到电压模型">
+<a class="header-anchor" href="#32-%e4%bb%8e%e6%b3%95%e6%8b%89%e7%ac%ac%e5%ae%9a%e5%be%8b%e5%88%b0%e7%94%b5%e5%8e%8b%e6%a8%a1%e5%9e%8b"></a>
+3.2 从法拉第定律到电压模型
+</h3><p>绕组端电压要克服电阻压降，并提供磁链变化所需的感应电压。因此在静止坐标下：</p>
+$$
+\boldsymbol v=R_s\boldsymbol i+\frac{\mathrm d\boldsymbol\psi_s}{\mathrm dt}.
+$$<p>把上一节的磁链分解代入，$L_s$ 视为常数，逐项求导：</p>
+$$
+\begin{aligned}
+\boldsymbol v
+&=R_s\boldsymbol i+L_s\dot{\boldsymbol i}
+  +\dot{\boldsymbol\psi}_f,\\
+\dot{\boldsymbol\psi}_f
+&=\psi_f\dot\theta_e
+\begin{bmatrix}-\sin\theta_e\\\cos\theta_e\end{bmatrix}
+=\omega_e\psi_f
+\begin{bmatrix}-\sin\theta_e\\\cos\theta_e\end{bmatrix}.
+\end{aligned}
+$$<p>定义反电动势向量 $\boldsymbol e=\dot{\boldsymbol\psi}_f$，就得到后来三种观测方法共同使用的方程：</p>
+$$
+\boxed{\boldsymbol v=R_s\boldsymbol i+L_s\dot{\boldsymbol i}+\boldsymbol e.}
+$$<p>每一项单位都是 V：$R_si$ 是 V，$L_s\dot i$ 是 H·A/s = V，$\omega_e\psi_f$ 是 rad/s·Wb = V（弧度无量纲）。这一步的单位检查能抓出把 mH 当 H、机械角速度当电角速度的错误。</p>
+<p><a href="/post/%E6%97%A0%E6%84%9Ffoc%E5%85%A5%E9%97%A8%E4%B8%80%E7%94%B5%E6%9C%BA%E6%A8%A1%E5%9E%8B%E7%A3%81%E9%93%BE%E4%B8%8E%E7%A3%81%E9%93%BE%E8%A7%82%E6%B5%8B/#sfoc1-toc">返回目录</a></p>
+<h2 id="sfoc1-emf">
+<a class="header-anchor" href="#sfoc1-emf"></a>
+4. 反电动势、转矩和零速信息边界
+</h2><p>由上式，$\boldsymbol e$ 比永磁磁链向量沿正转方向超前 $90^\circ$。当 $\omega_e>0$ 时：</p>
+$$
+e_\alpha=-\omega_e\psi_f\sin\theta_e,
+\qquad e_\beta=\omega_e\psi_f\cos\theta_e,
+\qquad \lVert\boldsymbol e\rVert=\omega_e\psi_f.
+$$<p>正转且信号可靠时可用 $\theta_e=\operatorname{atan2}(-e_\alpha,e_\beta)$。<strong>反转时不能机械地沿用这条式子</strong>：$\omega_e<0$ 会让反电动势向量整体翻转 $180^\circ$；若已知旋向，应先除以带符号的 $\omega_e\psi_f$，或在角度解算中显式处理方向。第三篇会给出统一写法。</p>
+<p>在幅值不变 Clarke 约定下，电磁功率 $P_e=\tfrac32(e_\alpha i_\alpha+e_\beta i_\beta)$。再用 $P_e=T_e\omega_m$ 和 $\omega_e=p\omega_m$，得到：</p>
+$$
+\begin{aligned}
+P_e&=\frac32\omega_e\psi_f i_q,\\
+T_e&=\frac32 p\psi_f i_q.
+\end{aligned}
+$$<p>这里假设 $\omega_m\ne0$ 做了功率除法；转矩公式可由连续性延伸到零速。它说明 $i_q$ 与转矩的关系，也说明为什么 FOC 必须把 $q$ 轴对准正确方向。</p>
+<p>在<strong>静止</strong>且磁场不被额外激励时，$\omega_e=0$，于是 $\boldsymbol e=0$。仅靠本篇的电压模型/反电动势模型，零速时不能从反电动势方向推断转子角；低速时信号也会被电阻和电压误差淹没。凸极电机的高频注入等方法利用了另一类位置信息，不属于本组反电动势路线。Microchip 的无感启动资料也明确采用对齐、开环加速、稳定后切闭环的过程。<a href="https://www.microchip.com/content/dam/mchp/documents/MCU32/ApplicationNotes/ApplicationNotes/Sensorless-Field-Oriented-Control-for-a-Permanent-Magnet-Synchronous-Motor-Using-Sliding-Mode-DS00004398.pdf">来源：Microchip AN4398</a>。</p>
+<p><a href="/post/%E6%97%A0%E6%84%9Ffoc%E5%85%A5%E9%97%A8%E4%B8%80%E7%94%B5%E6%9C%BA%E6%A8%A1%E5%9E%8B%E7%A3%81%E9%93%BE%E4%B8%8E%E7%A3%81%E9%93%BE%E8%A7%82%E6%B5%8B/#sfoc1-toc">返回目录</a></p>
+<h2 id="sfoc1-observer">
+<a class="header-anchor" href="#sfoc1-observer"></a>
+5. 电压模型磁链观测器：积分后减去电流磁链
+</h2><p>由 $\dot{\boldsymbol\psi}_s=\boldsymbol v-R_s\boldsymbol i$，从初值积分：</p>
+$$
+\boldsymbol\psi_s(t)=\boldsymbol\psi_s(0)
++\int_0^t\bigl[\boldsymbol v(\tau)-R_s\boldsymbol i(\tau)\bigr]\,\mathrm d\tau.
+$$<p>它是<strong>总定子磁链</strong>，方向通常不等于转子方向。要取出永磁磁链，必须减去电流产生的部分：</p>
+$$
+\boxed{\hat{\boldsymbol\psi}_f
+=\hat{\boldsymbol\psi}_s-L_s\boldsymbol i,
+\qquad
+\hat\theta_e=\operatorname{atan2}(\hat\psi_{f\beta},\hat\psi_{f\alpha}).}
+$$<p>若已知 $\psi_f$，还可检查 $\lVert\hat{\boldsymbol\psi}_f\rVert$ 是否接近它。范数明显跳变往往提示积分、采样或参数问题，而不是转子磁体瞬间变强了。MathWorks 的 SPMSM Flux Observer 文档也采用“积分 $v-Ri$ 后减去 $Li$”的结构。<a href="https://www.mathworks.com/help/mcb/ref/fluxobserver.html">来源：MathWorks Flux Observer</a>。</p>
+<p>按采样周期 $T_s$ 做最简单的前向欧拉离散化：</p>
+$$
+\begin{aligned}
+\hat{\boldsymbol\psi}_s[k+1]
+&=\hat{\boldsymbol\psi}_s[k]+T_s
+  \bigl(\boldsymbol v[k]-\hat R_s\boldsymbol i[k]\bigr),\\
+\hat{\boldsymbol\psi}_f[k+1]
+&=\hat{\boldsymbol\psi}_s[k+1]-\hat L_s\boldsymbol i[k+1].
+\end{aligned}
+$$<p>这里把 $v[k]$ 视为第 $k$ 个区间的实际平均电压；实际程序必须对齐电压、电流和 PWM 时序。用 $i[k+1]$ 是为了与更新后的磁链处于相近时刻，不能在中断中把尚未采到的未来值拿来用。实现时可统一在采样时刻 $k$ 更新上一个区间，再用同一时刻的 $i[k]$ 减磁链，必要时补偿计算延时。</p>
+<p><a href="/post/%E6%97%A0%E6%84%9Ffoc%E5%85%A5%E9%97%A8%E4%B8%80%E7%94%B5%E6%9C%BA%E6%A8%A1%E5%9E%8B%E7%A3%81%E9%93%BE%E4%B8%8E%E7%A3%81%E9%93%BE%E8%A7%82%E6%B5%8B/#sfoc1-toc">返回目录</a></p>
+<h2 id="sfoc1-errors">
+<a class="header-anchor" href="#sfoc1-errors"></a>
+6. 理想积分器为什么会漂移，替代方案又损失什么
+</h2><h3 id="61-常值误差会被积分成斜坡">
+<a class="header-anchor" href="#61-%e5%b8%b8%e5%80%bc%e8%af%af%e5%b7%ae%e4%bc%9a%e8%a2%ab%e7%a7%af%e5%88%86%e6%88%90%e6%96%9c%e5%9d%a1"></a>
+6.1 常值误差会被积分成斜坡
+</h3><p>假设观测器输入 $\hat{\boldsymbol v}-\hat R_s\boldsymbol i$ 比真实值多一个常向量 $\boldsymbol b$。积分结果的误差为：</p>
+$$
+\Delta\boldsymbol\psi_s(t)
+=\Delta\boldsymbol\psi_s(0)+\int_0^t\boldsymbol b\,\mathrm d\tau
+=\Delta\boldsymbol\psi_s(0)+\boldsymbol b t.
+$$<p>例如单轴只有 $0.10\,\mathrm V$ 的偏置，$1\,\mathrm s$ 后磁链误差就达到 $0.10\,\mathrm{Wb}$；如果真实 $\psi_f=0.03\,\mathrm{Wb}$，角度早已不可信。电流零漂、电阻温升、母线电压标定及死区都能形成这类误差。</p>
+<h3 id="62-漏积分器能止住漂移但会改相位">
+<a class="header-anchor" href="#62-%e6%bc%8f%e7%a7%af%e5%88%86%e5%99%a8%e8%83%bd%e6%ad%a2%e4%bd%8f%e6%bc%82%e7%a7%bb%e4%bd%86%e4%bc%9a%e6%94%b9%e7%9b%b8%e4%bd%8d"></a>
+6.2 漏积分器能止住漂移，但会改相位
+</h3><p>一种易理解的处理是把积分器 $1/s$ 改成 $1/(s+\omega_c)$，即：</p>
+$$
+\dot{\hat{\boldsymbol\psi}}_s
+=\hat{\boldsymbol v}-\hat R_s\boldsymbol i
+-\omega_c\hat{\boldsymbol\psi}_s.
+$$<p>常值偏置产生的稳态误差不再无限增长，而是约为 $\boldsymbol b/\omega_c$。不过对频率为 $\omega_e>0$ 的正弦输入，漏积分器相对理想积分器的传递函数比值为：</p>
+$$
+\frac{1/(j\omega_e+\omega_c)}{1/(j\omega_e)}
+=\frac{j\omega_e}{\omega_c+j\omega_e}.
+$$<p>因此其幅值是 $\omega_e/\sqrt{\omega_e^2+\omega_c^2}$，相位<strong>超前理想积分结果</strong> $\arctan(\omega_c/\omega_e)$。当 $\omega_e\gg\omega_c$，误差较小；接近截止频率就明显。更关键的是，漏积分得到的总磁链再减去未经同样滤波的 $L_si$，两项的动态不完全匹配；不能把上面的相位公式不加区别地套在最终永磁磁链上。工程实现可用偏置估计、幅值约束、闭环磁链观测等方法，但都要检查参数、相位和低速性能。<a href="https://www.mathworks.com/help/mcb/ref/fluxobserver.html">来源：MathWorks Flux Observer 的低通积分说明</a>。</p>
+<h3 id="63-电阻误差为何在低速更危险">
+<a class="header-anchor" href="#63-%e7%94%b5%e9%98%bb%e8%af%af%e5%b7%ae%e4%b8%ba%e4%bd%95%e5%9c%a8%e4%bd%8e%e9%80%9f%e6%9b%b4%e5%8d%b1%e9%99%a9"></a>
+6.3 电阻误差为何在低速更危险
+</h3><p>把电阻写成 $\hat R_s=R_s+\Delta R$，则观测器所见的电压误差含 $-\Delta R\,\boldsymbol i$。反电动势幅值是 $\lvert\omega_e\rvert\psi_f$。速度降低时，后者趋零，而同一电流下的电阻误差并不会按速度同比例变小。这是“低速无感难”的定量原因之一。</p>
+<p><a href="/post/%E6%97%A0%E6%84%9Ffoc%E5%85%A5%E9%97%A8%E4%B8%80%E7%94%B5%E6%9C%BA%E6%A8%A1%E5%9E%8B%E7%A3%81%E9%93%BE%E4%B8%8E%E7%A3%81%E9%93%BE%E8%A7%82%E6%B5%8B/#sfoc1-toc">返回目录</a></p>
+<h2 id="sfoc1-example">
+<a class="header-anchor" href="#sfoc1-example"></a>
+7. 一组可复算的数值与自测
+</h2><p>设 $p=4$、$R_s=0.40\,\Omega$、$L_s=0.80\,\mathrm{mH}$、$\psi_f=0.030\,\mathrm{Wb}$，机械转速 $n_m=600\,\mathrm{r/min}$，正转。假设 $i_d=0$、$i_q=3.0\,\mathrm A$。</p>
+$$
+\begin{aligned}
+\omega_m&=\frac{2\pi\times600}{60}=62.83\,\mathrm{rad/s},\\
+\omega_e&=4\omega_m=251.33\,\mathrm{rad/s},\\
+\lVert\boldsymbol e\rVert&=\omega_e\psi_f=7.54\,\mathrm V,\\
+T_e&=\frac32\times4\times0.030\times3.0=0.54\,\mathrm{N\,m}.
+\end{aligned}
+$$<p>在 $\theta_e=0$ 的瞬间，$\boldsymbol\psi_f=(0.030,0)\,\mathrm{Wb}$，$\boldsymbol e=(0,7.54)\,\mathrm V$。如果保持上述恒定 $dq$ 电流，$\boldsymbol i=(0,3.0)\,\mathrm A$，但静止坐标里的电流在旋转，$\dot{\boldsymbol i}=(-\omega_e i_q,0)$。代回电压方程可算：</p>
+$$
+\begin{aligned}
+v_\alpha&=L_s(-\omega_e i_q)=-0.603\,\mathrm V,\\
+v_\beta&=R_si_q+e_\beta=1.20+7.54=8.74\,\mathrm V.
+\end{aligned}
+$$<p><strong>自测 1：</strong> 机械转速降到 $60\,\mathrm{r/min}$，反电动势幅值是多少？答案为 $0.754\,\mathrm V$，是原来的十分之一。</p>
+<p><strong>自测 2：</strong> 若 $\hat R_s$ 比真实值大 $0.10\,\Omega$，在 $3\,\mathrm A$ 电流下会多扣多少电压？答案是 $0.30\,\mathrm V$；与 $60\,\mathrm{r/min}$ 的 $0.754\,\mathrm V$ 反电动势相比已不可忽略。</p>
+<p>下一篇会避免直接积分总磁链，改由<strong>电流模型的预测误差</strong>恢复反电动势，分别得到滑模和龙伯格观测器。</p>
+<p><a href="/post/%E6%97%A0%E6%84%9Ffoc%E5%85%A5%E9%97%A8%E4%B8%80%E7%94%B5%E6%9C%BA%E6%A8%A1%E5%9E%8B%E7%A3%81%E9%93%BE%E4%B8%8E%E7%A3%81%E9%93%BE%E8%A7%82%E6%B5%8B/#sfoc1-toc">返回目录</a></p>
+<h2 id="sfoc1-references">
+<a class="header-anchor" href="#sfoc1-references"></a>
+8. 资料与适用范围
+</h2><ul>
+<li><a href="https://ww1.microchip.com/downloads/aemDocuments/documents/MCU32/ApplicationNotes/ApplicationNotes/AN2590-Sensorless-FOC-for-PMSM-Using-Reduced-Order-Luenberger-Observer-DS00002590.pdf">Microchip AN2590：PMSM FOC 的 Clarke/Park 变换与系统框图</a>。</li>
+<li><a href="https://www.mathworks.com/help/mcb/ref/fluxobserver.html">MathWorks：Flux Observer 的 SPMSM 磁链方程与低通积分实现</a>。</li>
+<li><a href="https://www.microchip.com/content/dam/mchp/documents/MCU32/ApplicationNotes/ApplicationNotes/Sensorless-Field-Oriented-Control-for-a-Permanent-Magnet-Synchronous-Motor-Using-Sliding-Mode-DS00004398.pdf">Microchip AN4398：反电动势估算的低速限制与启动过程</a>。</li>
+</ul>
+<p>本文使用的推导以 SPMSM 的 $L_d=L_q=L_s$ 为前提。阅读 IPMSM、弱磁或高频注入资料时，先核对模型和坐标约定，再迁移这里的公式。</p>
+<p><a href="/post/%E6%97%A0%E6%84%9Ffoc%E5%85%A5%E9%97%A8%E4%B8%80%E7%94%B5%E6%9C%BA%E6%A8%A1%E5%9E%8B%E7%A3%81%E9%93%BE%E4%B8%8E%E7%A3%81%E9%93%BE%E8%A7%82%E6%B5%8B/#sfoc1-toc">返回目录</a></p>
+</div>
+    <footer class="article-footer"><ul class="article-category-list"><li class="article-tag-list-item" data-aos="zoom-in">
+    <a
+      class="article-category-link"
+      href="/categories/%e7%94%b5%e6%9c%ba%e6%8e%a7%e5%88%b6"
+      data-aos="zoom-in"
+      >电机控制</a
+    >
+    </li></ul>
+<ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item" data-aos="zoom-in">
+      <a
+        class="article-tag-list-link"
+        href="/tags/foc"
+        rel="tag"
+        >FOC</a
+      >
+    </li><li class="article-tag-list-item" data-aos="zoom-in">
+      <a
+        class="article-tag-list-link"
+        href="/tags/pmsm"
+        rel="tag"
+        >PMSM</a
+      >
+    </li><li class="article-tag-list-item" data-aos="zoom-in">
+      <a
+        class="article-tag-list-link"
+        href="/tags/%e7%a3%81%e9%93%be"
+        rel="tag"
+        >磁链</a
+      >
+    </li><li class="article-tag-list-item" data-aos="zoom-in">
+      <a
+        class="article-tag-list-link"
+        href="/tags/%e6%97%a0%e6%84%9f%e6%8e%a7%e5%88%b6"
+        rel="tag"
+        >无感控制</a
+      >
+    </li></ul>
+</footer>
+  </div><nav
+    id="article-nav"
+    aria-label="Article navigation"
+    data-aos="fade-up"
+  ><div class="article-nav-link-wrap left"><img
+            data-src="/images/cover/%e5%88%9d%e8%a7%81%e7%b4%ab%e7%81%b5.jpg"
+            data-sizes="auto"
+            alt="嵌入式笔试面试高频问答：单片机、FreeRTOS、软件架构与 C 语言"
+            class="lazyload"
+          /><a
+          href="/post/%E5%B5%8C%E5%85%A5%E5%BC%8F%E7%AC%94%E8%AF%95%E9%9D%A2%E8%AF%95%E9%AB%98%E9%A2%91%E9%97%AE%E7%AD%94%E5%8D%95%E7%89%87%E6%9C%BAfreertos%E8%BD%AF%E4%BB%B6%E6%9E%B6%E6%9E%84%E4%B8%8Ec%E8%AF%AD%E8%A8%80/"
+          aria-label="前一篇:嵌入式笔试面试高频问答：单片机、FreeRTOS、软件架构与 C 语言"
+          title="前一篇:嵌入式笔试面试高频问答：单片机、FreeRTOS、软件架构与 C 语言"
+        ></a>
+        <div class="article-nav-caption">前一篇</div>
+        <h3 class="article-nav-title">嵌入式笔试面试高频问答：单片机、FreeRTOS、软件架构与 C 语言</h3>
+      </div><div class="article-nav-link-wrap right"><img
+            data-src="/images/cover/%e5%88%9d%e8%a7%81%e7%b4%ab%e7%81%b5.jpg"
+            data-sizes="auto"
+            alt="无感 FOC 入门（二）：滑模与龙伯格观测器"
+            class="lazyload"
+          /><a
+          href="/post/%E6%97%A0%E6%84%9Ffoc%E5%85%A5%E9%97%A8%E4%BA%8C%E6%BB%91%E6%A8%A1%E4%B8%8E%E9%BE%99%E4%BC%AF%E6%A0%BC%E8%A7%82%E6%B5%8B%E5%99%A8/"
+          aria-label="后一篇:无感 FOC 入门（二）：滑模与龙伯格观测器"
+          title="后一篇:无感 FOC 入门（二）：滑模与龙伯格观测器"
+        ></a>
+        <div class="article-nav-caption">后一篇</div>
+        <h3 class="article-nav-title">无感 FOC 入门（二）：滑模与龙伯格观测器</h3>
+      </div></nav></article></section>
+        </div><footer id="footer" aria-label="Site footer">
+  <div style="width: 100%; overflow: hidden">
+    <div class="footer-line"></div>
+  </div>
+  <div id="footer-info"><div>
+      <span class="icon-copyright"></span>2020-2026<span class="footer-info-sep rotate"></span>云想衣裳花想荣
+    </div><div>
+        <span class="icon-brush"
+          >&nbsp;90.8k</span
+        >
+        &nbsp;|&nbsp;
+        <span class="icon-coffee">&nbsp;03:07</span>
+      </div></div>
+</footer>
+<div id="mask" class="hide"></div>
+      </div><nav id="mobile-nav" aria-label="Mobile navigation">
+  <div class="sidebar-wrap"><div class="sidebar-toc-sidebar"><h3 class="toc-title">文章目录</h3>
+<div class="sidebar-toc-wrapper toc-div-class">
+  <nav id="TableOfContents">
+  <ul>
+    <li><a href="#sfoc1-toc">阅读导航</a></li>
+    <li><a href="#sfoc1-purpose">1. FOC 为什么一定要知道转子角</a></li>
+    <li><a href="#sfoc1-coordinates">2. 从三相到二维：先统一坐标和单位</a>
+      <ul>
+        <li><a href="#21-机械角与电角">2.1 机械角与电角</a></li>
+        <li><a href="#22-为什么可以用--两个数表示三相">2.2 为什么可以用 $\alpha\beta$ 两个数表示三相</a></li>
+      </ul>
+    </li>
+    <li><a href="#sfoc1-model">3. 什么是磁链，电机电压方程从哪里来</a>
+      <ul>
+        <li><a href="#31-磁通与磁链不是同一个词">3.1 磁通与磁链不是同一个词</a></li>
+        <li><a href="#32-从法拉第定律到电压模型">3.2 从法拉第定律到电压模型</a></li>
+      </ul>
+    </li>
+    <li><a href="#sfoc1-emf">4. 反电动势、转矩和零速信息边界</a></li>
+    <li><a href="#sfoc1-observer">5. 电压模型磁链观测器：积分后减去电流磁链</a></li>
+    <li><a href="#sfoc1-errors">6. 理想积分器为什么会漂移，替代方案又损失什么</a>
+      <ul>
+        <li><a href="#61-常值误差会被积分成斜坡">6.1 常值误差会被积分成斜坡</a></li>
+        <li><a href="#62-漏积分器能止住漂移但会改相位">6.2 漏积分器能止住漂移，但会改相位</a></li>
+        <li><a href="#63-电阻误差为何在低速更危险">6.3 电阻误差为何在低速更危险</a></li>
+      </ul>
+    </li>
+    <li><a href="#sfoc1-example">7. 一组可复算的数值与自测</a></li>
+    <li><a href="#sfoc1-references">8. 资料与适用范围</a></li>
+  </ul>
+</nav>
+</div></div>
+        <div class="sidebar-common-sidebar hidden"><div class="sidebar-author">
+  <img
+    data-src="/avatar/avatar.webp"
+    data-sizes="auto"
+    alt="云想衣裳花想荣"
+    class="lazyload"
+  />
+  <div class="sidebar-author-name">云想衣裳花想荣</div>
+  <div class="sidebar-description">嵌入式开发学习笔记，技术分享</div>
+</div>
+<div class="sidebar-state">
+  <div class="sidebar-state-article">
+    <div>文章</div><div class="sidebar-state-number">11</div>
+  </div>
+  <a class="sidebar-state-category" href="/categories/" aria-label="sidebar-state-category-link">
+    <div>分类</div>
+    <div class="sidebar-state-number">
+      8
+    </div>
+  </a>
+  <a class="sidebar-state-tag" href="/tags/" aria-label="sidebar-state-tag-link">
+    <div>标签</div>
+    <div class="sidebar-state-number">34</div>
+  </a>
+</div>
+<div class="sidebar-social" ></div><div class="sidebar-menu"><div class="sidebar-menu-link-wrap">
+      <a
+        class="sidebar-menu-link-dummy"
+        href="/"
+        aria-label="首页"
+      ></a><div class="sidebar-menu-link">首页</div>
+    </div><div class="sidebar-menu-link-wrap">
+      <a
+        class="sidebar-menu-link-dummy"
+        href="/archives"
+        aria-label="归档"
+      ></a><div class="sidebar-menu-link">归档</div>
+    </div><div class="sidebar-menu-link-wrap">
+      <a
+        class="sidebar-menu-link-dummy"
+        href="/about"
+        aria-label="关于"
+      ></a><div class="sidebar-menu-link">关于</div>
+    </div><div class="sidebar-menu-link-wrap">
+      <a
+        class="sidebar-menu-link-dummy"
+        href="/friend"
+        aria-label="友链"
+      ></a><div class="sidebar-menu-link">友链</div>
+    </div></div></div></div><div class="sidebar-btn-wrapper">
+        <div class="sidebar-toc-btn current"></div>
+        <div class="sidebar-common-btn"></div>
+      </div></nav>
+</div><script
+    src="https://npm.webcache.cn/lazysizes@5.3.2/lazysizes.min.js"
+    
+    
+    
+    
+    integrity="sha384-3gT/vsepWkfz/ff7PpWNUeMzeWoH3cDhm/A8jM7ouoAK0/fP/9bcHHR5kHq2nf&#43;e" crossorigin="anonymous"></script><script
+    src="https://npm.webcache.cn/clipboard@2.0.11/dist/clipboard.min.js"
+    
+    
+    
+    
+    integrity="sha384-J08i8An/QeARD9ExYpvphB8BsyOj3Gh2TSh1aLINKO3L0cMSH2dN3E22zFoXEi0Q" crossorigin="anonymous"></script><script
+    src="https://npm.webcache.cn/material-theme@1.0.0/dist/material-theme.umd.js"
+    
+    
+    
+    
+    integrity="sha384-vLev0II0HKFaxkcm&#43;/7kX5IGwVFBASkGchU311wmU/veIj2bB0UcBkQbW6yw2asK" crossorigin="anonymous"></script><script src="/js/main.js"  ></script><script src="/js/aos.js"  ></script><script>
+    var aosInit = () => {
+      AOS.init({
+        duration: 1000,
+        easing: "ease",
+        once: true,
+        offset: 50,
+      });
+    };
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", aosInit);
+    } else {
+      aosInit();
+    }
+  </script><script src="/js/pjax_main.js" data-pjax ></script>
+
+<div id="lazy-script">
+  <div><script data-pjax>
+        window.REIMU_POST = {
+          author: "云想衣裳花想荣",
+          title: "无感 FOC 入门（一）：从电机模型推导磁链观测",
+          url: "http:\/\/localhost:1313\/post\/%E6%97%A0%E6%84%9Ffoc%E5%85%A5%E9%97%A8%E4%B8%80%E7%94%B5%E6%9C%BA%E6%A8%A1%E5%9E%8B%E7%A3%81%E9%93%BE%E4%B8%8E%E7%A3%81%E9%93%BE%E8%A7%82%E6%B5%8B\/",
+          description: "从零建立表贴式永磁同步电机的坐标、磁链和电压模型，逐步推导电压模型磁链观测器及其误差。",
+          cover: "http:\/\/localhost:1313\/images\/cover\/%E5%88%9D%E8%A7%81%E7%B4%AB%E7%81%B5.jpg",
+        };
+      </script><script src="/js/insert_highlight.js" data-pjax ></script><script src="/js/tabs.js" data-pjax defer></script><script type="module" data-pjax>const PhotoSwipeLightbox = (await safeImport("https:\/\/npm.webcache.cn\/photoswipe@5.4.4\/dist\/photoswipe-lightbox.esm.min.js", "sha384-DiL6M\/gG\u002bwmTxmCRZyD1zee6lIhawn5TGvED0FOh7fXcN9B0aZ9dexSF\/N6lrZi\/")).default;const initPswp = (gallery, children) => {
+          if (_$$(`${gallery} ${children}`).length > 0) {
+            new PhotoSwipeLightbox({
+              gallery,
+              children,pswpModule: () => safeImport("https:\/\/npm.webcache.cn\/photoswipe@5.4.4\/dist\/photoswipe.esm.min.js", "sha384-WkkO3GCmgkC3VQWpaV8DqhKJqpzpF9JoByxDmnV8\u002boTJ7m3DfYEWX1fu1scuS4\u002bs")}).init();
+          }
+        }
+        const pswp = () => {
+          initPswp('.article-entry', 'a.article-gallery-item');
+          initPswp('.article-gallery', 'a.article-gallery-item');
+        }
+        pswp()
+      </script><script
+    src="https://npm.webcache.cn/katex@0.16.47/dist/katex.min.js"
+    
+    
+    data-pjax
+    
+    integrity="sha384-CwjPRVHTvLiMBFjEoij&#43;QZViMV5rhTOIp7CJzl24JEqpRDA1sJFHVXXLURktbYYp" crossorigin="anonymous"></script><script
+    src="https://npm.webcache.cn/katex@0.16.47/dist/contrib/auto-render.min.js"
+    
+    
+    data-pjax
+    
+    integrity="sha384-bjyGPfbij8/NDKJhSGZNP/khQVgtHUE5exjm4Ydllo42FwIgYsdLO2lXGmRBf5Mz" crossorigin="anonymous"></script><script data-pjax>
+          var renderMath = () => {
+            if (!window.renderMathInElement) return;
+            window.renderMathInElement(_$("article"), {
+              delimiters: [
+                { left: "$$", right: "$$", display: true },
+                { left: "\\[", right: "\\]", display: true },
+                { left: "$", right: "$", display: false },
+                { left: "\\(", right: "\\)", display: false },
+              ],
+            });
+            window.katexTagOverflowHandler?.();
+          };
+          if (document.readyState === "loading") {
+            document.addEventListener("DOMContentLoaded", renderMath, { once: true });
+          } else {
+            renderMath();
+          }
+        </script></div>
+</div><script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.getRegistrations().then((registrations) => {
+        for (let registration of registrations) {
+          registration.unregister();
+        }
+      });
+    }
+  </script><script>
+  const reimuCopyright = String.raw`
+   ______     ______     __     __    __     __  __    
+  /\  == \   /\  ___\   /\ \   /\ "-./  \   /\ \/\ \   
+  \ \  __<   \ \  __\   \ \ \  \ \ \-./\ \  \ \ \_\ \  
+   \ \_\ \_\  \ \_____\  \ \_\  \ \_\ \ \_\  \ \_____\ 
+    \/_/ /_/   \/_____/   \/_/   \/_/  \/_/   \/_____/ 
+                                                    
+  `;
+  console.log(String.raw`%c ${reimuCopyright}`, "color: #ff5252;");
+  console.log(
+    "%c Theme.Reimu" + " %c https://github.com/D-Sketon/hugo-theme-reimu ",
+    "color: white; background: #ff5252; padding:5px 0;",
+    "padding:4px;border:1px solid #ff5252;",
+  );
+</script><script
+    src="https://npm.webcache.cn/pangu@4.0.7/dist/browser/pangu.min.js"
+    
+    
+    
+    
+    integrity="sha384-HeUHqi0nVsPUm/E0ss7OfnIV/yD96JWB8ehZvUuoVax9DpNHL17jj9pdfXHzqDxm" crossorigin="anonymous"></script><script data-pjax>
+    if (document.readyState === "loading") {
+      document.addEventListener('DOMContentLoaded', () => {
+        pangu?.spacingPage();
+      });
+    } else {
+      pangu?.spacingPage();
+    }
+  </script></body>
+</html>

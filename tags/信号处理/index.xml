@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>信号处理 on 博客首页</title>
+    <link>http://localhost:1313/tags/%E4%BF%A1%E5%8F%B7%E5%A4%84%E7%90%86/</link>
+    <description>Recent content from 博客首页</description>
+    <generator>Hugo</generator>
+    <language>zh-CN</language>
+    
+    <managingEditor>zennaro.zhang@outlook.com (云想衣裳花想荣)</managingEditor>
+    <webMaster>zennaro.zhang@outlook.com (云想衣裳花想荣)</webMaster>
+    
+    <copyright>本博客所有文章除特别声明外，均采用 BY-NC-SA 许可协议。转载请注明出处！</copyright>
+    
+    <lastBuildDate>Fri, 30 Oct 2026 00:00:00 +0800</lastBuildDate>
+    
+    
+    <atom:link href="http://localhost:1313/tags/%E4%BF%A1%E5%8F%B7%E5%A4%84%E7%90%86/index.xml" rel="self" type="application/rss&#43;xml" />
+    
+
+    
+    
+
+    <item>
+      <title>数字滤波器从零设计：FIR、IIR 与常用方法</title>
+      <link>http://localhost:1313/post/%E6%95%B0%E5%AD%97%E6%BB%A4%E6%B3%A2%E5%99%A8%E4%BB%8E%E9%9B%B6%E8%AE%BE%E8%AE%A1firiir%E4%B8%8E%E5%B8%B8%E7%94%A8%E6%96%B9%E6%B3%95/</link>
+      <pubDate>Sun, 24 May 2026 00:00:00 &#43;0800</pubDate>
+      <author>zennaro.zhang@outlook.com (云想衣裳花想荣)</author>
+      <guid>http://localhost:1313/post/%E6%95%B0%E5%AD%97%E6%BB%A4%E6%B3%A2%E5%99%A8%E4%BB%8E%E9%9B%B6%E8%AE%BE%E8%AE%A1firiir%E4%B8%8E%E5%B8%B8%E7%94%A8%E6%96%B9%E6%B3%95/</guid>
+      <description>
+        <![CDATA[<h1>数字滤波器从零设计：FIR、IIR 与常用方法</h1><p>作者：云想衣裳花想荣（zennaro.zhang@outlook.com）</p>
+        
+          <p>传感器数值一跳一跳，直接送进控制器会让输出抖动。把它“变平滑”很容易，但怎样保证真正要看的变化没有被抹掉？这就是数字滤波器设计要解决的问题。</p>
+<p>本文从零开始，不要求读者先学完信号处理课程。读完应能把“保留 50 Hz 以下变化、压低 100 Hz 以上噪声”写成指标，设计 FIR 与 IIR 两种方案，用程序检查频响、延迟和边界，并知道什么时候换用移动平均、中值或陷波器。</p>
+        
+        <hr><p>本文2026-05-24首发于<a href='http://localhost:1313/'>博客首页</a>，最后修改于2026-10-30</p>]]>
+      </description>
+      
+        <category>算法</category>
+      
+    </item>
+    
+  </channel>
+</rss>

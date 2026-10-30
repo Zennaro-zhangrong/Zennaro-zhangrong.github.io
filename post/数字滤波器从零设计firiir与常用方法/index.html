@@ -1,0 +1,900 @@
+<!doctype html>
+<html
+  lang="zh-CN"data-theme-mode="auto"
+>
+  <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8" />
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1, shrink-to-fit=no"
+/><title>
+  数字滤波器从零设计：FIR、IIR 与常用方法 | 云想衣裳花想荣
+</title>
+<meta name="description" content="从采样、频率指标和差分方程入手，用同一组要求设计并验证 FIR 与 IIR 滤波器，再学会选择移动平均、中值和陷波等方法。"/><script>
+  window.siteConfig = JSON.parse("{\"anchor\":{\"auto\":{\"enable\":false,\"length\":60},\"explicit\":{\"enable\":false,\"marker\":\"{#anchor-\",\"prefix\":\"anchor-\"}},\"anchor_icon\":null,\"base\":\"http://localhost:1313/\",\"clipboard\":{\"copyright\":{\"count\":50,\"enable\":false,\"license_type\":\"by-nc-sa\"},\"fail\":{\"en\":\"Copy failed (ﾟ⊿ﾟ)ﾂ\",\"ja\":\"コピー失敗 (ﾟ⊿ﾟ)ﾂ\",\"pt-br\":\"Falha ao copiar (ﾟ⊿ﾟ)ﾂ\",\"zh-cn\":\"复制失败 (ﾟ⊿ﾟ)ﾂ\",\"zh-tw\":\"複製失敗 (ﾟ⊿ﾟ)ﾂ\"},\"success\":{\"en\":\"Copy successfully (*^▽^*)\",\"ja\":\"コピー成功 (*^▽^*)\",\"pt-br\":\"Copiado com sucesso (*^▽^*)\",\"zh-cn\":\"复制成功 (*^▽^*)\",\"zh-tw\":\"複製成功 (*^▽^*)\"}},\"code_block\":{\"expand\":30},\"dark_mode\":{\"button\":true,\"mode\":\"auto\"},\"icon_font\":\"4552607_ex15nbittbh\",\"outdate\":{\"daysago\":180,\"enable\":false,\"message\":{\"en\":\"This article was last updated on {time}. Please note that the content may no longer be applicable.\",\"ja\":\"この記事は最終更新日：{time}。記載内容が現在有効でない可能性がありますのでご注意ください。\",\"pt-br\":\"Este artigo foi atualizado pela última vez em {time}. Observe que o conteúdo pode não ser mais aplicável.\",\"zh-cn\":\"本文最后更新于 {time}，请注意文中内容可能已不适用。\",\"zh-tw\":\"本文最後更新於 {time}，請注意文中內容可能已不適用。\"}}}");
+  
+</script>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+  rel="preload"
+  as="style"
+  href="https://fonts.googleapis.com/css?family=Mulish:400,400italic,700,700italic%7cNoto%20Serif%20SC:400,400italic,700,700italic%7c&amp;display=swap"
+/>
+<link
+  rel="stylesheet"
+  href="https://fonts.googleapis.com/css?family=Mulish:400,400italic,700,700italic%7cNoto%20Serif%20SC:400,400italic,700,700italic%7c&amp;display=swap"
+  media="print"
+  onload="this.media='all'"
+/>
+<link
+    rel="preload"
+    href="//at.alicdn.com/t/c/font_4552607_ex15nbittbh.woff2"
+    as="font"
+    type="font/woff2"
+    crossorigin="anonymous"
+  /><link rel="stylesheet" href="/css/loader.css" /><meta property="og:type" content="website" />
+  <meta property="og:title" content="数字滤波器从零设计：FIR、IIR 与常用方法 | 云想衣裳花想荣" />
+  <meta
+    property="og:description"
+    content="从采样、频率指标和差分方程入手，用同一组要求设计并验证 FIR 与 IIR 滤波器，再学会选择移动平均、中值和陷波等方法。"
+  />
+  <meta property="og:url" content="http://localhost:1313/post/%E6%95%B0%E5%AD%97%E6%BB%A4%E6%B3%A2%E5%99%A8%E4%BB%8E%E9%9B%B6%E8%AE%BE%E8%AE%A1firiir%E4%B8%8E%E5%B8%B8%E7%94%A8%E6%96%B9%E6%B3%95/" />
+  <meta
+    property="og:site_name"
+    content="博客首页"
+  />
+  <meta property="og:image" content="http://localhost:1313/images/cover/%E5%88%9D%E8%A7%81%E7%B4%AB%E7%81%B5.jpg" />
+  <meta property="article:author" content="云想衣裳花想荣" />
+  <meta property="article:published_time" content="2026-05-24T00:00:00&#43;08:00" />
+  <meta property="article:modified_time" content="2026-10-30T00:00:00&#43;08:00" /><meta property="article:tag" content="数字滤波器, FIR, IIR, 信号处理, 嵌入式" /><meta name="twitter:card" content="summary" /><meta name="twitter:image" content="http://localhost:1313/images/cover/%E5%88%9D%E8%A7%81%E7%B4%AB%E7%81%B5.jpg" />
+<link rel="shortcut icon" href="/favicon.ico"><link rel="stylesheet" href="/css/main.css" /><link
+    rel="preload"
+    as="style"
+    href="https://npm.webcache.cn/photoswipe@5.4.4/dist/photoswipe.css"
+    integrity="sha384-IfxC36XL/toUyJ939C73PcgMuRzAZuIzZxE38drsmO5p6jD7ei&#43;Zx/1oA/0l8ysE" crossorigin="anonymous"
+    onload="this.onload=null;this.rel='stylesheet'"
+  /><link
+    rel="preload"
+    as="style"
+    href="https://npm.webcache.cn/katex@0.16.47/dist/katex.min.css"
+    integrity="sha384-nH0MfJ44wi1dd7w6jinlyBgljjS8EJAh2JBoRad8a3VDw2K69vfaaqm4WnR&#43;gXtA" crossorigin="anonymous"
+    onload="this.onload=null;this.rel='stylesheet'"
+  /><script
+    src="https://npm.webcache.cn/pace-js@1.2.4/pace.min.js"
+    
+    
+    
+    
+    integrity="sha384-k6YtvFUEIuEFBdrLKJ3YAUbBki333tj1CSUisai5Cswsg9wcLNaPzsTHDswp4Az8" crossorigin="anonymous"></script><link
+    rel="stylesheet"
+    href="https://npm.webcache.cn/@reimujs/aos@0.1.3/dist/aos.css"
+    integrity="sha384-GMRP93c6Hkz9JVKGAuRR3nTS7M07RwPgTFenXiosjq2VbVgvdDNcz1g6Mkj8AONa" crossorigin="anonymous"/></head>
+  <body><div id='loader'>
+    <div class="loading-left-bg loading-bg"></div>
+    <div class="loading-right-bg loading-bg"></div>
+    <div class="spinner-box">
+      <div class="loading-taichi rotate"><svg width="150" height="150" viewBox="0 0 1024 1024" class="icon" version="1.1" xmlns="https://www.w3.org/2000/svg" shape-rendering="geometricPrecision">
+            <path d="M303.5 432A80 80 0 0 1 291.5 592A80 80 0 0 1 303.5 432z" fill="var(--red-1, #ff5252)" />
+            <path d="M512 65A447 447 0 0 1 512 959L512 929A417 417 0 0 0 512 95A417 417 0 0 0 512 929L512 959A447 447 0 0 1 512 65z 
+          M512 95A417 417 0 0 1 929 512A208.5 208.5 0 0 1 720.5 720.5L720.5 592A80 80 0 0 0 720.5 432A80 80 0 0 0 720.5 592L720.5 720.5A208.5 208.5 0 0 1 512 512A208.5 208.5 0 0 0 303.5 303.5A208.5 208.5 0 0 0 95 512A417 417 0 0 1 512 95z" fill="var(--red-1, #ff5252)" />
+          </svg></div><div class="loading-word">左风右雷，可随心意而动...</div>
+    </div>
+  </div>
+  </div>
+  <script>
+    var time = null;
+    var loaderEl = document.getElementById('loader');
+    var startLoading = () => {
+      time = Date.now();
+      loaderEl.classList.remove("loading");
+    }
+    var hideLoader = () => {
+      document.body.style.overflow = 'auto';
+      loader.classList.add('loading');
+    };
+
+    var endLoading = () => {
+      if (!time) {
+        hideLoader();
+      } else {
+        if (Date.now() - time > 500) {
+          time = null;
+          hideLoader();
+        } else {
+          setTimeout(endLoading, 500 - (Date.now() - time));
+          time = null;
+        }
+      }
+    }
+    window.addEventListener('DOMContentLoaded', endLoading);
+    loaderEl.addEventListener('click', endLoading);
+  </script><div id="copy-tooltip"></div>
+<div id="lang-tooltip">
+本文章没有找到对应的语言版本
+</div>
+<div id="heatmap-tooltip"></div><div id="container">
+      <div id="wrap"><div id="header-nav">
+  <nav id="main-nav" aria-label="Primary navigation"><a class="main-nav-link-wrap" href="/"><span class="main-nav-link">首页</span>
+      </a><a class="main-nav-link-wrap" href="/archives"><span class="main-nav-link">归档</span>
+      </a><a class="main-nav-link-wrap" href="/about"><span class="main-nav-link">关于</span>
+      </a><a class="main-nav-link-wrap" href="/friend"><span class="main-nav-link">友链</span>
+      </a><a id="main-nav-toggle" class="nav-icon" aria-label="Toggle navigation" role="button"></a>
+  </nav>
+  <nav id="sub-nav" aria-label="Secondary navigation"></nav><a href="https://github.com/Zennaro-zhangrong" class="triangle-badge" title="github" target="_blank" rel="noopener nofollow noreferrer">
+      <div class="icon icon-github triangle-badge-icon"></div>
+    </a></div>
+<header id="header" aria-label="Site header"><picture></picture>
+    <img crossorigin="anonymous" fetchpriority="high" src="/images/cover/%e5%88%9d%e8%a7%81%e7%b4%ab%e7%81%b5.jpg" alt="数字滤波器从零设计：FIR、IIR 与常用方法"><div id="header-outer">
+    <div id="header-title"><span id="logo">
+            <h1 data-aos="slide-up">数字滤波器从零设计：FIR、IIR 与常用方法</h1>
+          </span><h2 id="subtitle-wrap" data-aos="slide-down"></h2></div>
+  </div>
+</header><div id="content"
+          aria-label="Page content"
+          class="sidebar-left"
+            ><aside id="sidebar" aria-label="Sidebar"><div class="sidebar-wrapper-container sticky"><div class="sidebar-wrapper">
+    <div
+      class="sidebar-wrap"
+      data-aos="fade-up"
+    ><div class="sidebar-toc-sidebar"><h3 class="toc-title">文章目录</h3>
+<div class="sidebar-toc-wrapper toc-div-class">
+  <nav id="TableOfContents">
+  <ul>
+    <li><a href="#df-toc">阅读导航</a></li>
+    <li><a href="#df-basics">1. 滤波器到底在保留和压低什么</a>
+      <ul>
+        <li><a href="#11-从一段可想象的传感器数据开始">1.1 从一段可想象的传感器数据开始</a></li>
+        <li><a href="#12-幅值相位与延迟都要看">1.2 幅值、相位与延迟都要看</a></li>
+      </ul>
+    </li>
+    <li><a href="#df-specs">2. 先定采样与指标，再谈算法</a></li>
+    <li><a href="#df-equations">3. 从差分方程认识 FIR 与 IIR</a>
+      <ul>
+        <li><a href="#31-fir只看当前和过去的输入">3.1 FIR：只看当前和过去的输入</a></li>
+        <li><a href="#32-iir还使用过去的输出">3.2 IIR：还使用过去的输出</a></li>
+      </ul>
+    </li>
+    <li><a href="#df-choices">4. 先按需求选结构</a></li>
+    <li><a href="#df-fir">5. FIR 怎么设计：从理想低通到可实现系数</a>
+      <ul>
+        <li><a href="#51-理想低通为何需要截断">5.1 理想低通为何需要截断</a></li>
+        <li><a href="#52-用一组指标求一个可检验的设计">5.2 用一组指标求一个可检验的设计</a></li>
+      </ul>
+    </li>
+    <li><a href="#df-iir">6. IIR 怎么设计：模拟原型、数字映射和二阶节</a></li>
+    <li><a href="#df-code">7. 完整 Python 程序：设计、验算、比较</a></li>
+    <li><a href="#df-other">8. 移动平均、中值、陷波与自适应方法怎么用</a>
+      <ul>
+        <li><a href="#81-移动平均与指数平滑">8.1 移动平均与指数平滑</a></li>
+        <li><a href="#82-中值滤波处理孤立尖峰">8.2 中值滤波处理孤立尖峰</a></li>
+        <li><a href="#83-陷波与梳状结构">8.3 陷波与梳状结构</a></li>
+        <li><a href="#84-卡尔曼等状态估计不是万能平滑按钮">8.4 卡尔曼等状态估计不是万能平滑按钮</a></li>
+      </ul>
+    </li>
+    <li><a href="#df-engineering">9. 把滤波器放进实际系统前检查什么</a></li>
+    <li><a href="#df-practice">10. 三道练习，检查是否真正会设计</a></li>
+    <li><a href="#df-references">11. 资料与适用范围</a></li>
+  </ul>
+</nav>
+</div></div>
+          <div class="sidebar-common-sidebar hidden"><div class="sidebar-author">
+  <img
+    data-src="/avatar/avatar.webp"
+    data-sizes="auto"
+    alt="云想衣裳花想荣"
+    class="lazyload"
+  />
+  <div class="sidebar-author-name">云想衣裳花想荣</div>
+  <div class="sidebar-description">嵌入式开发学习笔记，技术分享</div>
+</div>
+<div class="sidebar-state">
+  <div class="sidebar-state-article">
+    <div>文章</div><div class="sidebar-state-number">11</div>
+  </div>
+  <a class="sidebar-state-category" href="/categories/" aria-label="sidebar-state-category-link">
+    <div>分类</div>
+    <div class="sidebar-state-number">
+      8
+    </div>
+  </a>
+  <a class="sidebar-state-tag" href="/tags/" aria-label="sidebar-state-tag-link">
+    <div>标签</div>
+    <div class="sidebar-state-number">34</div>
+  </a>
+</div>
+<div class="sidebar-social" ></div><div class="sidebar-menu"><div class="sidebar-menu-link-wrap">
+      <a
+        class="sidebar-menu-link-dummy"
+        href="/"
+        aria-label="首页"
+      ></a><div class="sidebar-menu-link">首页</div>
+    </div><div class="sidebar-menu-link-wrap">
+      <a
+        class="sidebar-menu-link-dummy"
+        href="/archives"
+        aria-label="归档"
+      ></a><div class="sidebar-menu-link">归档</div>
+    </div><div class="sidebar-menu-link-wrap">
+      <a
+        class="sidebar-menu-link-dummy"
+        href="/about"
+        aria-label="关于"
+      ></a><div class="sidebar-menu-link">关于</div>
+    </div><div class="sidebar-menu-link-wrap">
+      <a
+        class="sidebar-menu-link-dummy"
+        href="/friend"
+        aria-label="友链"
+      ></a><div class="sidebar-menu-link">友链</div>
+    </div></div></div><div class="sidebar-btn-wrapper" style="position:static">
+            <div class="sidebar-toc-btn current"></div>
+            <div class="sidebar-common-btn"></div>
+          </div></div>
+  </div><div class="sidebar-widget"></div></div></aside>
+<section id="main" aria-label="Main content"><article
+  class="h-entry article"
+  itemscope
+  itemtype="https://schema.org/BlogPosting"
+>
+  <div
+    class="article-inner"
+    data-aos="fade-up"
+  >
+    <div class="article-meta"><div class="article-date">
+  <span
+    class="article-date-link icon-calendar"
+    data-aos="zoom-in"
+  >
+    <time datetime="2026-05-24 00:00:00 &#43;0800 CST" itemprop="datePublished"
+      >2026-05-24</time
+    >
+    <time style="display: none;" id="post-update-time"
+      >2026-10-30</time
+    >
+  </span></div>
+</div><div class="hr-line"></div><div class="e-content article-entry" itemprop="articleBody"><p>传感器数值一跳一跳，直接送进控制器会让输出抖动。把它“变平滑”很容易，但怎样保证真正要看的变化没有被抹掉？这就是数字滤波器设计要解决的问题。</p>
+<p>本文从零开始，不要求读者先学完信号处理课程。读完应能把“保留 50 Hz 以下变化、压低 100 Hz 以上噪声”写成指标，设计 FIR 与 IIR 两种方案，用程序检查频响、延迟和边界，并知道什么时候换用移动平均、中值或陷波器。</p>
+<p><strong>学习方法</strong>：第一遍只读第 1～3 节，亲手算一次采样频率和一阶递推；第二遍先猜第 5、6 节哪种方案更省计算，再运行第 7 节代码验证；最后不看正文做第 10 节练习。看懂一条公式后，用“输入什么、输出什么、单位是什么、极限情况怎样”四个问题复述它。</p>
+<h2 id="df-toc">
+<a class="header-anchor" href="#df-toc"></a>
+阅读导航
+</h2><table>
+	<thead>
+			<tr>
+					<th>阶段</th>
+					<th>阅读位置</th>
+					<th>学完能做什么</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td>建立直觉</td>
+					<td><a href="/post/%E6%95%B0%E5%AD%97%E6%BB%A4%E6%B3%A2%E5%99%A8%E4%BB%8E%E9%9B%B6%E8%AE%BE%E8%AE%A1firiir%E4%B8%8E%E5%B8%B8%E7%94%A8%E6%96%B9%E6%B3%95/#df-basics">1. 信号与频率</a>、<a href="/post/%E6%95%B0%E5%AD%97%E6%BB%A4%E6%B3%A2%E5%99%A8%E4%BB%8E%E9%9B%B6%E8%AE%BE%E8%AE%A1firiir%E4%B8%8E%E5%B8%B8%E7%94%A8%E6%96%B9%E6%B3%95/#df-specs">2. 采样与指标</a></td>
+					<td>把需求写成 Hz、dB 和时间</td>
+			</tr>
+			<tr>
+					<td>认识结构</td>
+					<td><a href="/post/%E6%95%B0%E5%AD%97%E6%BB%A4%E6%B3%A2%E5%99%A8%E4%BB%8E%E9%9B%B6%E8%AE%BE%E8%AE%A1firiir%E4%B8%8E%E5%B8%B8%E7%94%A8%E6%96%B9%E6%B3%95/#df-equations">3. 差分方程</a>、<a href="/post/%E6%95%B0%E5%AD%97%E6%BB%A4%E6%B3%A2%E5%99%A8%E4%BB%8E%E9%9B%B6%E8%AE%BE%E8%AE%A1firiir%E4%B8%8E%E5%B8%B8%E7%94%A8%E6%96%B9%E6%B3%95/#df-choices">4. 方法选择</a></td>
+					<td>区分 FIR、IIR 与非线性滤波</td>
+			</tr>
+			<tr>
+					<td>动手设计</td>
+					<td><a href="/post/%E6%95%B0%E5%AD%97%E6%BB%A4%E6%B3%A2%E5%99%A8%E4%BB%8E%E9%9B%B6%E8%AE%BE%E8%AE%A1firiir%E4%B8%8E%E5%B8%B8%E7%94%A8%E6%96%B9%E6%B3%95/#df-fir">5. FIR</a>、<a href="/post/%E6%95%B0%E5%AD%97%E6%BB%A4%E6%B3%A2%E5%99%A8%E4%BB%8E%E9%9B%B6%E8%AE%BE%E8%AE%A1firiir%E4%B8%8E%E5%B8%B8%E7%94%A8%E6%96%B9%E6%B3%95/#df-iir">6. IIR</a>、<a href="/post/%E6%95%B0%E5%AD%97%E6%BB%A4%E6%B3%A2%E5%99%A8%E4%BB%8E%E9%9B%B6%E8%AE%BE%E8%AE%A1firiir%E4%B8%8E%E5%B8%B8%E7%94%A8%E6%96%B9%E6%B3%95/#df-code">7. 完整程序</a></td>
+					<td>生成系数并验收</td>
+			</tr>
+			<tr>
+					<td>走向工程</td>
+					<td><a href="/post/%E6%95%B0%E5%AD%97%E6%BB%A4%E6%B3%A2%E5%99%A8%E4%BB%8E%E9%9B%B6%E8%AE%BE%E8%AE%A1firiir%E4%B8%8E%E5%B8%B8%E7%94%A8%E6%96%B9%E6%B3%95/#df-other">8. 其他方法</a>、<a href="/post/%E6%95%B0%E5%AD%97%E6%BB%A4%E6%B3%A2%E5%99%A8%E4%BB%8E%E9%9B%B6%E8%AE%BE%E8%AE%A1firiir%E4%B8%8E%E5%B8%B8%E7%94%A8%E6%96%B9%E6%B3%95/#df-engineering">9. 实现检查</a>、<a href="/post/%E6%95%B0%E5%AD%97%E6%BB%A4%E6%B3%A2%E5%99%A8%E4%BB%8E%E9%9B%B6%E8%AE%BE%E8%AE%A1firiir%E4%B8%8E%E5%B8%B8%E7%94%A8%E6%96%B9%E6%B3%95/#df-practice">10. 练习</a></td>
+					<td>判断方案是否适合实际采样</td>
+			</tr>
+	</tbody>
+</table>
+<h2 id="df-basics">
+<a class="header-anchor" href="#df-basics"></a>
+1. 滤波器到底在保留和压低什么
+</h2><h3 id="11-从一段可想象的传感器数据开始">
+<a class="header-anchor" href="#11-%e4%bb%8e%e4%b8%80%e6%ae%b5%e5%8f%af%e6%83%b3%e8%b1%a1%e7%9a%84%e4%bc%a0%e6%84%9f%e5%99%a8%e6%95%b0%e6%8d%ae%e5%bc%80%e5%a7%8b"></a>
+1.1 从一段可想象的传感器数据开始
+</h3><p>假设真实温度缓慢变化，测量值还叠加了快速抖动。把测量记作 $x[k]$，滤波结果记作 $y[k]$；$k$ 是第 $k$ 次采样。低通滤波器希望缓慢变化大致通过，快速变化被压低。高通恰好相反；带通保留一段频率；带阻压低一段频率。</p>
+<p>这里的“慢”和“快”要用频率表达。1 Hz 表示每秒重复 1 次，100 Hz 表示每秒重复 100 次。滤波器并不知道哪个波形叫“有用信号”，只按设计出的频率响应处理。因此有用信号和噪声如果占据同一频段，单纯低通无法完美分开。</p>
+<h3 id="12-幅值相位与延迟都要看">
+<a class="header-anchor" href="#12-%e5%b9%85%e5%80%bc%e7%9b%b8%e4%bd%8d%e4%b8%8e%e5%bb%b6%e8%bf%9f%e9%83%bd%e8%a6%81%e7%9c%8b"></a>
+1.2 幅值、相位与延迟都要看
+</h3><p>对频率为 $f$ 的正弦输入，线性时不变滤波器的稳态输出仍是该频率的正弦，只是幅值乘上 $\lvert H(f)\rvert$，相位改变 $\angle H(f)$。增益用分贝表示为</p>
+$$
+G(f)=20\log_{10}\lvert H(f)\rvert\quad(\mathrm{dB}).
+$$<p>$0\,\mathrm{dB}$ 表示幅值不变，$-20\,\mathrm{dB}$ 表示幅值约为原来的 $1/10$，$-40\,\mathrm{dB}$ 约为 $1/100$。当控制系统需要及时响应时，不能只看衰减，还必须看滤波造成的相位变化与时延。</p>
+<p><a href="/post/%E6%95%B0%E5%AD%97%E6%BB%A4%E6%B3%A2%E5%99%A8%E4%BB%8E%E9%9B%B6%E8%AE%BE%E8%AE%A1firiir%E4%B8%8E%E5%B8%B8%E7%94%A8%E6%96%B9%E6%B3%95/#df-toc">返回目录</a></p>
+<h2 id="df-specs">
+<a class="header-anchor" href="#df-specs"></a>
+2. 先定采样与指标，再谈算法
+</h2><p>采样频率 $f_{\mathrm{samp}}$ 单位 Hz，采样间隔 $T_s=1/f_{\mathrm{samp}}$ 单位 s。奈奎斯特频率是 $f_N=f_{\mathrm{samp}}/2$。高于它的输入频率可能折叠到低频，这叫<strong>混叠</strong>；数字滤波器拿到样本后，通常无法再区分折叠后的噪声与原本的低频信号。因此采样前仍需考虑模拟抗混叠滤波。</p>
+<p>下面采用同一份教学需求：</p>
+<table>
+	<thead>
+			<tr>
+					<th>指标</th>
+					<th>数值</th>
+					<th>含义</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td>采样频率 $f_{\mathrm{samp}}$</td>
+					<td>$1000\,\mathrm{Hz}$</td>
+					<td>每 $1\,\mathrm{ms}$ 一点</td>
+			</tr>
+			<tr>
+					<td>通带边缘 $f_p$</td>
+					<td>$50\,\mathrm{Hz}$</td>
+					<td>0～50 Hz 尽量保留</td>
+			</tr>
+			<tr>
+					<td>阻带起点 $f_{\mathrm{stop}}$</td>
+					<td>$100\,\mathrm{Hz}$</td>
+					<td>100～500 Hz 尽量压低</td>
+			</tr>
+			<tr>
+					<td>通带允许偏差 $A_p$</td>
+					<td>$1\,\mathrm{dB}$</td>
+					<td>通带增益处于约 $\pm1\,\mathrm{dB}$ 内</td>
+			</tr>
+			<tr>
+					<td>阻带最小衰减 $A_s$</td>
+					<td>$40\,\mathrm{dB}$</td>
+					<td>幅值至多约 $1/100$</td>
+			</tr>
+	</tbody>
+</table>
+<p>50～100 Hz 是<strong>过渡带</strong>：要求滤波器从“保留”逐渐转向“压低”，这里不规定每个频率的精确增益。过渡带越窄、阻带要求越严，通常越需要更高阶数或更大延迟。不要把通带边缘、阻带边缘和某个软件参数中叫作 <code>cutoff</code> 的频率当成同一个值。</p>
+<p>设计前还应写下最大允许延迟、处理器每秒可执行的乘加次数、可用内存，以及信号是否要求实时单向处理。离线数据能用的前后向滤波，实时系统通常做不到。</p>
+<p><strong>自查</strong>：若采样频率为 1000 Hz，700 Hz 的纯正弦采样后会与 300 Hz 的序列混淆；此时在数字域把 300 Hz 压掉，也会压掉真正的 300 Hz 信号。</p>
+<p><a href="/post/%E6%95%B0%E5%AD%97%E6%BB%A4%E6%B3%A2%E5%99%A8%E4%BB%8E%E9%9B%B6%E8%AE%BE%E8%AE%A1firiir%E4%B8%8E%E5%B8%B8%E7%94%A8%E6%96%B9%E6%B3%95/#df-toc">返回目录</a></p>
+<h2 id="df-equations">
+<a class="header-anchor" href="#df-equations"></a>
+3. 从差分方程认识 FIR 与 IIR
+</h2><h3 id="31-fir只看当前和过去的输入">
+<a class="header-anchor" href="#31-fir%e5%8f%aa%e7%9c%8b%e5%bd%93%e5%89%8d%e5%92%8c%e8%bf%87%e5%8e%bb%e7%9a%84%e8%be%93%e5%85%a5"></a>
+3.1 FIR：只看当前和过去的输入
+</h3><p>一个长度为 $M$ 的 FIR（有限冲激响应）滤波器是</p>
+$$
+y[k]=\sum_{m=0}^{M-1}h[m]x[k-m].
+$$<p>$h[m]$ 是 $M$ 个系数，也叫抽头；滤波器阶数是 $M-1$。每次计算要保存最近的输入。把只在 $k=0$ 等于 1、其余时刻等于 0 的单位脉冲送入，输出就是有限长的 $h[0],\ldots,h[M-1]$，这解释了名字。有限系数的普通 FIR 没有反馈，数值上不会因为内部极点而自激发散。</p>
+<p>最简单的三点移动平均是 $h=[1/3,1/3,1/3]$：</p>
+$$
+y[k]=\frac{x[k]+x[k-1]+x[k-2]}{3}.
+$$<p>若输入是常数 $c$，输出仍是 $c$；若只有一个尖峰，它会被摊到连续三个输出点。这个检查比先背频域公式更容易建立直觉。</p>
+<h3 id="32-iir还使用过去的输出">
+<a class="header-anchor" href="#32-iir%e8%bf%98%e4%bd%bf%e7%94%a8%e8%bf%87%e5%8e%bb%e7%9a%84%e8%be%93%e5%87%ba"></a>
+3.2 IIR：还使用过去的输出
+</h3><p>常见 IIR（无限冲激响应）结构为</p>
+$$
+y[k]=\sum_{m=0}^{M}b_mx[k-m]
+-\sum_{n=1}^{N}a_ny[k-n],\qquad a_0=1.
+$$<p>输出反馈使一个脉冲的影响可以持续很久；少量系数便可能得到较陡的频率选择，但反馈也使稳定性、系数量化与初值更重要。</p>
+<p>例如一阶指数平滑：</p>
+$$
+y[k]=(1-\alpha)y[k-1]+\alpha x[k],\qquad 0<\alpha\le1.
+$$<p>当 $\alpha=1$，直接输出输入；当 $\alpha$ 很小，结果更平滑也更慢。对阶跃输入且 $y[-1]=0$，误差每拍乘 $1-\alpha$，所以</p>
+$$
+y[k]=1-(1-\alpha)^{k+1}.
+$$<p>若从连续时间的一阶低通时间常数 $\tau$ 出发，把每个采样间隔内的输入视为常数，可以选 $\alpha=1-\exp(-T_s/\tau)$。这里 $\tau$ 是秒，不是截止频率；若给定模拟近似 $f_c=1/(2\pi\tau)$，要明确这是由连续模型映射而来，不能不验算就宣称数字域精确达到该 $-3\,\mathrm{dB}$ 点。</p>
+<p><a href="/post/%E6%95%B0%E5%AD%97%E6%BB%A4%E6%B3%A2%E5%99%A8%E4%BB%8E%E9%9B%B6%E8%AE%BE%E8%AE%A1firiir%E4%B8%8E%E5%B8%B8%E7%94%A8%E6%96%B9%E6%B3%95/#df-toc">返回目录</a></p>
+<h2 id="df-choices">
+<a class="header-anchor" href="#df-choices"></a>
+4. 先按需求选结构
+</h2><table>
+	<thead>
+			<tr>
+					<th>方法</th>
+					<th>适合的第一判断</th>
+					<th>主要代价</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td>线性相位 FIR</td>
+					<td>波形形状与固定延迟重要</td>
+					<td>同等频率指标下常需更多抽头</td>
+			</tr>
+			<tr>
+					<td>IIR 低通/带通</td>
+					<td>计算量和内存紧张</td>
+					<td>相位通常不线性，需检查稳定性</td>
+			</tr>
+			<tr>
+					<td>移动平均</td>
+					<td>要快速实现基础平滑</td>
+					<td>频率选择不灵活，可能压低有用频率</td>
+			</tr>
+			<tr>
+					<td>指数平滑</td>
+					<td>只需很低成本的缓慢跟踪</td>
+					<td>过渡不够陡，存在滞后</td>
+			</tr>
+			<tr>
+					<td>中值滤波</td>
+					<td>偶发孤立尖峰</td>
+					<td>非线性，会改变细节，不能用普通频响描述</td>
+			</tr>
+			<tr>
+					<td>陷波器</td>
+					<td>已知窄带干扰，如固定频率嗡声</td>
+					<td>频率漂移时效果变差</td>
+			</tr>
+	</tbody>
+</table>
+<p>FIR 可以设计出<strong>精确线性相位</strong>，此时所有通带频率的群延迟相同；IIR 通常能以较低阶达到相近幅度指标。这是常见取舍，不是说“所有 FIR 都线性相位”或“IIR 一定不稳定”。<a href="https://www.mathworks.com/help/signal/ug/fir-filter-design.html">MathWorks 的 FIR 设计说明</a>和 <a href="https://www.mathworks.com/help/signal/ug/iir-filter-design.html">IIR 设计说明</a>分别展示了这些方法与代价。</p>
+<p><a href="/post/%E6%95%B0%E5%AD%97%E6%BB%A4%E6%B3%A2%E5%99%A8%E4%BB%8E%E9%9B%B6%E8%AE%BE%E8%AE%A1firiir%E4%B8%8E%E5%B8%B8%E7%94%A8%E6%96%B9%E6%B3%95/#df-toc">返回目录</a></p>
+<h2 id="df-fir">
+<a class="header-anchor" href="#df-fir"></a>
+5. FIR 怎么设计：从理想低通到可实现系数
+</h2><h3 id="51-理想低通为何需要截断">
+<a class="header-anchor" href="#51-%e7%90%86%e6%83%b3%e4%bd%8e%e9%80%9a%e4%b8%ba%e4%bd%95%e9%9c%80%e8%a6%81%e6%88%aa%e6%96%ad"></a>
+5.1 理想低通为何需要截断
+</h3><p>把频率写成数字角频率 $\omega=2\pi f/f_{\mathrm{samp}}$，单位 rad/样本。理想低通在 $\lvert\omega\rvert<\omega_c$ 增益为 1，其他频率为 0。它的冲激响应由逆离散时间傅里叶变换得到：</p>
+$$
+h_{\mathrm{ideal}}[n]=
+\begin{cases}
+\dfrac{\sin(\omega_c n)}{\pi n},&n\ne0,\\
+\dfrac{\omega_c}{\pi},&n=0.
+\end{cases}
+$$<p>这条序列向前后无限延伸，不能直接在实时程序中实现。取中心附近有限个样本，再乘一个渐变的<strong>窗函数</strong>减轻硬截断的波纹，得到有限长 FIR。若系数关于中心对称，即 $h[m]=h[M-1-m]$，且 $M$ 为奇数，就有固定群延迟 $(M-1)/2$ 个采样间隔。这个过程、以及等波纹和最小二乘等其他 FIR 设计法，可参见 <a href="https://www.mathworks.com/help/signal/ug/fir-filter-design.html">MathWorks FIR Filter Design</a>。</p>
+<h3 id="52-用一组指标求一个可检验的设计">
+<a class="header-anchor" href="#52-%e7%94%a8%e4%b8%80%e7%bb%84%e6%8c%87%e6%a0%87%e6%b1%82%e4%b8%80%e4%b8%aa%e5%8f%af%e6%a3%80%e9%aa%8c%e7%9a%84%e8%ae%be%e8%ae%a1"></a>
+5.2 用一组指标求一个可检验的设计
+</h3><p>本例以 $f_c=(f_p+f_{\mathrm{stop}})/2=75\,\mathrm{Hz}$ 作为窗函数法的设计中心。采用 Kaiser 窗，目标偏差先设为 $44\,\mathrm{dB}$，过渡宽度是 $50\,\mathrm{Hz}$，相对奈奎斯特频率为 $50/500=0.1$。SciPy 的 <code>kaiserord</code> 会给出一个估计抽头数和窗参数；这是<strong>估计</strong>，最终必须按实际通带和阻带重新验收。<a href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.kaiserord.html">SciPy <code>kaiserord</code> 文档</a>。</p>
+<p>在本文所用的 SciPy 1.17.1 中，把抽头数调整为奇数后得到 $M=53$。因此线性相位延迟是 $26$ 个样本，即 $26\,\mathrm{ms}$。对 <code>firwin</code>，这里的 75 Hz <code>cutoff</code> 约是窗函数设计的<strong>半幅值点（$-6\,\mathrm{dB}$）</strong>，并非通带边缘 50 Hz，也并非自动等于 $-3\,\mathrm{dB}$ 点。<a href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.firwin.html">SciPy <code>firwin</code> 文档</a>。</p>
+<p>若 $26\,\mathrm{ms}$ 延迟对电流环过大，就不能只因幅频指标通过而采用此方案。可以放宽指标、提高采样频率后重设计，或评估 IIR；改变采样频率时，所有以 Hz 表示的指标和处理器负担也要一起重算。</p>
+<p><a href="/post/%E6%95%B0%E5%AD%97%E6%BB%A4%E6%B3%A2%E5%99%A8%E4%BB%8E%E9%9B%B6%E8%AE%BE%E8%AE%A1firiir%E4%B8%8E%E5%B8%B8%E7%94%A8%E6%96%B9%E6%B3%95/#df-toc">返回目录</a></p>
+<h2 id="df-iir">
+<a class="header-anchor" href="#df-iir"></a>
+6. IIR 怎么设计：模拟原型、数字映射和二阶节
+</h2><p>常见 IIR 设计流程是：选择通带与阻带指标 → 选模拟低通原型（Butterworth、Chebyshev、椭圆等）→ 映射成数字滤波器 → 检查实际数字频响。Butterworth 通带平坦；Chebyshev 或椭圆型用允许的纹波换取更陡过渡，具体取舍取决于指标。<a href="https://www.mathworks.com/help/signal/ug/iir-filter-design.html">MathWorks IIR Filter Design</a>。</p>
+<p>一种重要映射是双线性变换，把连续系统变量 $s$ 换成</p>
+$$
+s=\frac{2}{T_s}\frac{1-z^{-1}}{1+z^{-1}}.
+$$<p>它能把稳定的模拟左半平面映射到数字单位圆内，但频率关系是非线性的：</p>
+$$
+\Omega=\frac{2}{T_s}\tan\!\left(\frac{\omega}{2}\right).
+$$<p>$\Omega$ 是模拟角频率（rad/s），$\omega$ 是数字角频率（rad/样本）。靠近奈奎斯特频率时，不能把二者简单视为相等；按目标频率做<strong>预畸变</strong>，或直接用接受 Hz 指标的设计函数。<a href="https://www.mathworks.com/help/signal/ug/special-topics-in-iir-filter-design.html">MathWorks 双线性变换说明</a>。</p>
+<p>本例让 <code>iirdesign</code> 使用相同的 50 Hz、100 Hz、1 dB、40 dB 指标，选择 Butterworth。输出指定为 <code>sos</code>，即串联的<strong>二阶节</strong>，每节有一组三个分子和三个分母系数。本文环境得到 4 节；高阶 IIR 若直接展开成一组大多项式系数，有限精度下更容易出现数值问题，SciPy 也建议通用滤波优先用 SOS。<a href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.butter.html">SciPy <code>butter</code> 文档</a>。</p>
+<p>这里的 IIR 结果没有 FIR 的固定 $26\,\mathrm{ms}$ 群延迟，但“阶数更低”不等于“任何频率都零延迟”。需要在有用频段查看相位或群延迟，并观察阶跃响应。尤其是反馈控制，滤波器相位会改变闭环裕度。</p>
+<p><a href="/post/%E6%95%B0%E5%AD%97%E6%BB%A4%E6%B3%A2%E5%99%A8%E4%BB%8E%E9%9B%B6%E8%AE%BE%E8%AE%A1firiir%E4%B8%8E%E5%B8%B8%E7%94%A8%E6%96%B9%E6%B3%95/#df-toc">返回目录</a></p>
+<h2 id="df-code">
+<a class="header-anchor" href="#df-code"></a>
+7. 完整 Python 程序：设计、验算、比较
+</h2><p>下面是独立可运行程序，需安装 NumPy 和 SciPy。输入是上文频率指标；输出是 FIR 抽头、IIR 二阶节、通带和阻带的测量结果，以及一段合成信号的滤波结果。合成信号仅用于演示；频响验收仍以计算出的频率响应为准。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-python" data-lang="python"><span class="line"><span class="cl"><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+</span></span><span class="line"><span class="cl"><span class="kn">from</span> <span class="nn">scipy</span> <span class="kn">import</span> <span class="n">signal</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">sample_hz</span> <span class="o">=</span> <span class="mf">1000.0</span>
+</span></span><span class="line"><span class="cl"><span class="n">pass_hz</span> <span class="o">=</span> <span class="mf">50.0</span>
+</span></span><span class="line"><span class="cl"><span class="n">stop_hz</span> <span class="o">=</span> <span class="mf">100.0</span>
+</span></span><span class="line"><span class="cl"><span class="n">pass_limit_db</span> <span class="o">=</span> <span class="mf">1.0</span>
+</span></span><span class="line"><span class="cl"><span class="n">stop_limit_db</span> <span class="o">=</span> <span class="mf">40.0</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">assert</span> <span class="mi">0</span> <span class="o">&lt;</span> <span class="n">pass_hz</span> <span class="o">&lt;</span> <span class="n">stop_hz</span> <span class="o">&lt;</span> <span class="n">sample_hz</span> <span class="o">/</span> <span class="mi">2</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># Kaiser 窗先估算，再把抽头数变为奇数以获得整数样本群延迟。</span>
+</span></span><span class="line"><span class="cl"><span class="n">width</span> <span class="o">=</span> <span class="p">(</span><span class="n">stop_hz</span> <span class="o">-</span> <span class="n">pass_hz</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">sample_hz</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">numtaps</span><span class="p">,</span> <span class="n">beta</span> <span class="o">=</span> <span class="n">signal</span><span class="o">.</span><span class="n">kaiserord</span><span class="p">(</span><span class="mf">44.0</span><span class="p">,</span> <span class="n">width</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="k">if</span> <span class="n">numtaps</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+</span></span><span class="line"><span class="cl">    <span class="n">numtaps</span> <span class="o">+=</span> <span class="mi">1</span>
+</span></span><span class="line"><span class="cl"><span class="n">fir</span> <span class="o">=</span> <span class="n">signal</span><span class="o">.</span><span class="n">firwin</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">    <span class="n">numtaps</span><span class="p">,</span> <span class="p">(</span><span class="n">pass_hz</span> <span class="o">+</span> <span class="n">stop_hz</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="n">window</span><span class="o">=</span><span class="p">(</span><span class="s2">&#34;kaiser&#34;</span><span class="p">,</span> <span class="n">beta</span><span class="p">),</span> <span class="n">fs</span><span class="o">=</span><span class="n">sample_hz</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl"><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 根据通带/阻带指标选 Butterworth 阶数，直接输出二阶节。</span>
+</span></span><span class="line"><span class="cl"><span class="n">sos</span> <span class="o">=</span> <span class="n">signal</span><span class="o">.</span><span class="n">iirdesign</span><span class="p">(</span>
+</span></span><span class="line"><span class="cl">    <span class="n">pass_hz</span><span class="p">,</span> <span class="n">stop_hz</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="n">gpass</span><span class="o">=</span><span class="n">pass_limit_db</span><span class="p">,</span> <span class="n">gstop</span><span class="o">=</span><span class="n">stop_limit_db</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">    <span class="n">ftype</span><span class="o">=</span><span class="s2">&#34;butter&#34;</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span><span class="s2">&#34;sos&#34;</span><span class="p">,</span> <span class="n">fs</span><span class="o">=</span><span class="n">sample_hz</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl"><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 高密度频率网格只用于验收，不用于实时滤波。</span>
+</span></span><span class="line"><span class="cl"><span class="n">freq_hz</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">sample_hz</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">200_001</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">_</span><span class="p">,</span> <span class="n">fir_response</span> <span class="o">=</span> <span class="n">signal</span><span class="o">.</span><span class="n">freqz</span><span class="p">(</span><span class="n">fir</span><span class="p">,</span> <span class="n">worN</span><span class="o">=</span><span class="n">freq_hz</span><span class="p">,</span> <span class="n">fs</span><span class="o">=</span><span class="n">sample_hz</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">_</span><span class="p">,</span> <span class="n">iir_response</span> <span class="o">=</span> <span class="n">signal</span><span class="o">.</span><span class="n">freqz_sos</span><span class="p">(</span><span class="n">sos</span><span class="p">,</span> <span class="n">worN</span><span class="o">=</span><span class="n">freq_hz</span><span class="p">,</span> <span class="n">fs</span><span class="o">=</span><span class="n">sample_hz</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="k">def</span> <span class="nf">check_response</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">response</span><span class="p">):</span>
+</span></span><span class="line"><span class="cl">    <span class="n">magnitude</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="n">passband</span> <span class="o">=</span> <span class="n">magnitude</span><span class="p">[</span><span class="n">freq_hz</span> <span class="o">&lt;=</span> <span class="n">pass_hz</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">    <span class="n">stopband</span> <span class="o">=</span> <span class="n">magnitude</span><span class="p">[</span><span class="n">freq_hz</span> <span class="o">&gt;=</span> <span class="n">stop_hz</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">    <span class="n">pass_min_db</span> <span class="o">=</span> <span class="mi">20</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">passband</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">    <span class="n">pass_max_db</span> <span class="o">=</span> <span class="mi">20</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">passband</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">    <span class="n">stop_max_db</span> <span class="o">=</span> <span class="mi">20</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">stopband</span><span class="p">))</span>
+</span></span><span class="line"><span class="cl">    <span class="c1"># 浮点计算在恰好 -1 dB 的边界可能多出 1e-14 dB 的舍入误差。</span>
+</span></span><span class="line"><span class="cl">    <span class="n">tolerance_db</span> <span class="o">=</span> <span class="mf">1e-9</span>
+</span></span><span class="line"><span class="cl">    <span class="n">passed</span> <span class="o">=</span> <span class="p">(</span><span class="n">pass_min_db</span> <span class="o">&gt;=</span> <span class="o">-</span><span class="n">pass_limit_db</span> <span class="o">-</span> <span class="n">tolerance_db</span>
+</span></span><span class="line"><span class="cl">              <span class="ow">and</span> <span class="n">pass_max_db</span> <span class="o">&lt;=</span> <span class="n">pass_limit_db</span> <span class="o">+</span> <span class="n">tolerance_db</span>
+</span></span><span class="line"><span class="cl">              <span class="ow">and</span> <span class="n">stop_max_db</span> <span class="o">&lt;=</span> <span class="o">-</span><span class="n">stop_limit_db</span> <span class="o">+</span> <span class="n">tolerance_db</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&#34;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">: pass=[</span><span class="si">{</span><span class="n">pass_min_db</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">pass_max_db</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">] dB, &#34;</span>
+</span></span><span class="line"><span class="cl">          <span class="sa">f</span><span class="s2">&#34;stop_max=</span><span class="si">{</span><span class="n">stop_max_db</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> dB, passed=</span><span class="si">{</span><span class="n">passed</span><span class="si">}</span><span class="s2">&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="k">assert</span> <span class="n">passed</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&#34;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2"> does not meet the example specifications&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">check_response</span><span class="p">(</span><span class="s2">&#34;FIR&#34;</span><span class="p">,</span> <span class="n">fir_response</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">check_response</span><span class="p">(</span><span class="s2">&#34;IIR&#34;</span><span class="p">,</span> <span class="n">iir_response</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&#34;FIR taps=</span><span class="si">{</span><span class="n">numtaps</span><span class="si">}</span><span class="s2">, delay=</span><span class="si">{</span><span class="p">(</span><span class="n">numtaps</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span> <span class="o">/</span> <span class="n">sample_hz</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2"> s&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&#34;IIR SOS sections=</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">sos</span><span class="p">)</span><span class="si">}</span><span class="s2">&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 10 Hz 是想保留的信号，200 Hz 是示例干扰；前段还存在启动瞬态。</span>
+</span></span><span class="line"><span class="cl"><span class="n">time_s</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span> <span class="o">/</span> <span class="n">sample_hz</span>
+</span></span><span class="line"><span class="cl"><span class="n">samples</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="mi">10</span> <span class="o">*</span> <span class="n">time_s</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">samples</span> <span class="o">+=</span> <span class="mf">0.25</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="mi">200</span> <span class="o">*</span> <span class="n">time_s</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">fir_output</span> <span class="o">=</span> <span class="n">signal</span><span class="o">.</span><span class="n">lfilter</span><span class="p">(</span><span class="n">fir</span><span class="p">,</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">],</span> <span class="n">samples</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="n">iir_output</span> <span class="o">=</span> <span class="n">signal</span><span class="o">.</span><span class="n">sosfilt</span><span class="p">(</span><span class="n">sos</span><span class="p">,</span> <span class="n">samples</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nb">print</span><span class="p">(</span><span class="s2">&#34;last samples:&#34;</span><span class="p">,</span> <span class="n">fir_output</span><span class="p">[</span><span class="o">-</span><span class="mi">3</span><span class="p">:],</span> <span class="n">iir_output</span><span class="p">[</span><span class="o">-</span><span class="mi">3</span><span class="p">:])</span>
+</span></span></code></pre></div><p>在本机 NumPy 2.2.6、SciPy 1.17.1 的密集网格验算中，FIR 通带最小约 $-0.004\,\mathrm{dB}$、最大约 $0.066\,\mathrm{dB}$，阻带最大约 $-44.89\,\mathrm{dB}$；IIR 通带最小 $-1.00\,\mathrm{dB}$、最大约 $0\,\mathrm{dB}$，阻带最大约 $-44.06\,\mathrm{dB}$。两者通过本例幅度要求。这里的数字是<strong>网格上的数值检查</strong>，不能代替部署前对系数量化、实际输入与时间响应的验证。</p>
+<p>想观察现象，可画出 <code>freq_hz</code> 对 $20\log_{10}\lvert H\rvert$ 的曲线，并画 <code>samples</code>、<code>fir_output</code>、<code>iir_output</code> 的时序；纵轴分别标 dB 与采样值。不要只比最后几个样本，也要看启动区间与阶跃输入。</p>
+<p><a href="/post/%E6%95%B0%E5%AD%97%E6%BB%A4%E6%B3%A2%E5%99%A8%E4%BB%8E%E9%9B%B6%E8%AE%BE%E8%AE%A1firiir%E4%B8%8E%E5%B8%B8%E7%94%A8%E6%96%B9%E6%B3%95/#df-toc">返回目录</a></p>
+<h2 id="df-other">
+<a class="header-anchor" href="#df-other"></a>
+8. 移动平均、中值、陷波与自适应方法怎么用
+</h2><h3 id="81-移动平均与指数平滑">
+<a class="header-anchor" href="#81-%e7%a7%bb%e5%8a%a8%e5%b9%b3%e5%9d%87%e4%b8%8e%e6%8c%87%e6%95%b0%e5%b9%b3%e6%bb%91"></a>
+8.1 移动平均与指数平滑
+</h3><p>$M$ 点移动平均系数全为 $1/M$，很容易实现，延迟为 $(M-1)T_s/2$，但它的频率响应有旁瓣和周期性零点。它适合快速去掉某些高频抖动；若有用变化很快，先算出 $M$ 对应的延迟，再决定是否值得。<a href="/post/%E6%95%B0%E5%AD%97%E6%BB%A4%E6%B3%A2%E5%99%A8%E4%BB%8E%E9%9B%B6%E8%AE%BE%E8%AE%A1firiir%E4%B8%8E%E5%B8%B8%E7%94%A8%E6%96%B9%E6%B3%95/#df-equations">第 3 节</a>的指数平滑只保存一个输出状态，计算更省，但一个一阶低通无法像高阶滤波器那样陡峭地区分 50 Hz 与 100 Hz。</p>
+<h3 id="82-中值滤波处理孤立尖峰">
+<a class="header-anchor" href="#82-%e4%b8%ad%e5%80%bc%e6%bb%a4%e6%b3%a2%e5%a4%84%e7%90%86%e5%ad%a4%e7%ab%8b%e5%b0%96%e5%b3%b0"></a>
+8.2 中值滤波处理孤立尖峰
+</h3><p>对奇数长度窗口，把样本排序后取中间值。例如窗口 $[1,1,20,1,1]$ 的中值是 1，同样五点的平均值却为 $4.8$。中值法对这种孤立尖峰有效；但它是<strong>非线性</strong>方法，不能用前文的 $H(f)$、通带波纹和群延迟公式直接定义其整体效果。连续高频干扰或宽脉冲不一定能被它解决，也可能抹掉真正短促的事件。</p>
+<h3 id="83-陷波与梳状结构">
+<a class="header-anchor" href="#83-%e9%99%b7%e6%b3%a2%e4%b8%8e%e6%a2%b3%e7%8a%b6%e7%bb%93%e6%9e%84"></a>
+8.3 陷波与梳状结构
+</h3><p>若干扰集中在已知的 50/60 Hz 或某个机械振动频率，而有用信号主要在其两侧，可以考虑窄带陷波，而不是把该频率以上全部压掉。设计时写清要压掉的中心频率、允许影响的邻近频率和干扰漂移范围；频率会变时，固定陷波可能偏离目标。周期性多频干扰可研究梳状滤波，但它也会在多个频率形成抑制，必须检查是否误伤有用成分。</p>
+<h3 id="84-卡尔曼等状态估计不是万能平滑按钮">
+<a class="header-anchor" href="#84-%e5%8d%a1%e5%b0%94%e6%9b%bc%e7%ad%89%e7%8a%b6%e6%80%81%e4%bc%b0%e8%ae%a1%e4%b8%8d%e6%98%af%e4%b8%87%e8%83%bd%e5%b9%b3%e6%bb%91%e6%8c%89%e9%92%ae"></a>
+8.4 卡尔曼等状态估计不是万能平滑按钮
+</h3><p>当你有运动或电机的状态方程、测量噪声模型，并需要同时估计多个不可直接测的状态时，可以进一步学卡尔曼滤波或观测器。它们依赖模型与噪声假设，调参和验证比单纯低通复杂。若任务只是去掉固定频段噪声，先完成本篇的频率、延迟和数据检查，再决定是否引入状态估计。</p>
+<p><a href="/post/%E6%95%B0%E5%AD%97%E6%BB%A4%E6%B3%A2%E5%99%A8%E4%BB%8E%E9%9B%B6%E8%AE%BE%E8%AE%A1firiir%E4%B8%8E%E5%B8%B8%E7%94%A8%E6%96%B9%E6%B3%95/#df-toc">返回目录</a></p>
+<h2 id="df-engineering">
+<a class="header-anchor" href="#df-engineering"></a>
+9. 把滤波器放进实际系统前检查什么
+</h2><ol>
+<li><strong>先看采样链</strong>：采样率是否稳定、是否有丢样、模拟前端是否防混叠、ADC 码值是否已换算到正确物理量。改变采样率后要重设计系数。</li>
+<li><strong>记录真实数据</strong>：分别收集正常变化、突发干扰、阶跃和最差工况。合成正弦通过，只能说明教学示例通过。</li>
+<li><strong>核对启动状态</strong>：上电时 FIR 历史样本和 IIR 状态若全为零，输出会有启动过程。需要从首样本初始化还是允许渐入，应由应用决定。</li>
+<li><strong>测实际延迟</strong>：FIR 对称系数的 $(M-1)T_s/2$ 是群延迟；IIR 则检查有用频段的相位与阶跃响应。控制环里的额外延迟可能降低稳定裕度。</li>
+<li><strong>考虑数值格式</strong>：定点系数取整、累加器位宽、溢出和饱和都会改变理论结果。IIR 的极点位置尤其需要在目标数值格式下重新验算；优先逐节实现 SOS。</li>
+<li><strong>明确实时边界</strong>：离线的前后向滤波利用未来样本来抵消相位，不能原样放进逐样本实时中断。中断里用预先算好的系数，不在每拍重新设计滤波器。</li>
+</ol>
+<p><strong>排错顺序</strong>：先看原始数据和采样时间戳，再看滤波前后的时序，最后看频谱或频响。若“看起来更平滑”却使控制反应变慢，先检查延迟；若输出有巨大尖峰或发散，先检查 IIR 反馈符号、系数顺序和数值溢出。</p>
+<p><a href="/post/%E6%95%B0%E5%AD%97%E6%BB%A4%E6%B3%A2%E5%99%A8%E4%BB%8E%E9%9B%B6%E8%AE%BE%E8%AE%A1firiir%E4%B8%8E%E5%B8%B8%E7%94%A8%E6%96%B9%E6%B3%95/#df-toc">返回目录</a></p>
+<h2 id="df-practice">
+<a class="header-anchor" href="#df-practice"></a>
+10. 三道练习，检查是否真正会设计
+</h2><ol>
+<li><strong>概念</strong>：1000 Hz 采样的信号里有 600 Hz 干扰。为什么不能只设计一个数字低通，就保证保留全部 400 Hz 以下的真实信号？</li>
+<li><strong>计算</strong>：1000 Hz 采样、对称的 53 抽头 FIR，其阶数和固定群延迟是多少？如果控制环最多容忍 5 ms 延迟，它是否合适？</li>
+<li><strong>选择</strong>：数据偶尔出现单个极大错误值，但正常信号会有短促的真实脉冲。应先试中值滤波还是低通？怎样防止把真实脉冲当成噪声？</li>
+</ol>
+<p><strong>答案与验证方法</strong>：</p>
+<ol>
+<li>600 Hz 会混叠到 400 Hz；数字域已无法仅凭这些样本判断 400 Hz 成分的来源。要从采样前抗混叠与采样率入手。</li>
+<li>阶数 $53-1=52$；延迟 $(53-1)/(2\times1000)=0.026\,\mathrm s=26\,\mathrm{ms}$，超过 5 ms 限制，不能仅因幅频指标达标就采用。</li>
+<li>可先用中值法针对孤立错误值做小窗口实验，同时标记真实脉冲样例，量化误删率和脉冲幅度变化。若真实脉冲与错误尖峰形态重合，仅靠局部窗口无法可靠区分，需要额外的物理约束或传感器信息。</li>
+</ol>
+<p><strong>下一步练习</strong>：把第 7 节的 <code>stop_hz</code> 改为 70 Hz，重新设计并记录抽头数、SOS 节数、验收结果和延迟。先写预测，再运行程序；若性能变化与预测不符，检查你是否把过渡带宽和滤波器阶数联系起来。</p>
+<p><a href="/post/%E6%95%B0%E5%AD%97%E6%BB%A4%E6%B3%A2%E5%99%A8%E4%BB%8E%E9%9B%B6%E8%AE%BE%E8%AE%A1firiir%E4%B8%8E%E5%B8%B8%E7%94%A8%E6%96%B9%E6%B3%95/#df-toc">返回目录</a></p>
+<h2 id="df-references">
+<a class="header-anchor" href="#df-references"></a>
+11. 资料与适用范围
+</h2><ul>
+<li><a href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.firwin.html">SciPy <code>firwin</code>、<code>kaiserord</code>：窗函数 FIR 参数和截止频率定义</a>。</li>
+<li><a href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.signal.butter.html">SciPy <code>butter</code>、<code>freqz_sos</code>、<code>sosfilt</code>：IIR 二阶节设计、频响和逐样本滤波</a>。</li>
+<li><a href="https://www.mathworks.com/help/signal/ug/fir-filter-design.html">MathWorks：FIR 设计方法与线性相位</a>。</li>
+<li><a href="https://www.mathworks.com/help/signal/ug/iir-filter-design.html">MathWorks：IIR 设计方法与双线性变换</a>。</li>
+</ul>
+<p>本文的数值示例是软件浮点设计，目标是教会“需求 → 系数 → 验证”的完整流程。不同库版本、固定点实现或实际采样链可能给出不同系数与误差；以实际部署条件重新验收。</p>
+<p><a href="/post/%E6%95%B0%E5%AD%97%E6%BB%A4%E6%B3%A2%E5%99%A8%E4%BB%8E%E9%9B%B6%E8%AE%BE%E8%AE%A1firiir%E4%B8%8E%E5%B8%B8%E7%94%A8%E6%96%B9%E6%B3%95/#df-toc">返回目录</a></p>
+</div>
+    <footer class="article-footer"><ul class="article-category-list"><li class="article-tag-list-item" data-aos="zoom-in">
+    <a
+      class="article-category-link"
+      href="/categories/%e7%ae%97%e6%b3%95"
+      data-aos="zoom-in"
+      >算法</a
+    >
+    </li></ul>
+<ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item" data-aos="zoom-in">
+      <a
+        class="article-tag-list-link"
+        href="/tags/%e6%95%b0%e5%ad%97%e6%bb%a4%e6%b3%a2%e5%99%a8"
+        rel="tag"
+        >数字滤波器</a
+      >
+    </li><li class="article-tag-list-item" data-aos="zoom-in">
+      <a
+        class="article-tag-list-link"
+        href="/tags/fir"
+        rel="tag"
+        >FIR</a
+      >
+    </li><li class="article-tag-list-item" data-aos="zoom-in">
+      <a
+        class="article-tag-list-link"
+        href="/tags/iir"
+        rel="tag"
+        >IIR</a
+      >
+    </li><li class="article-tag-list-item" data-aos="zoom-in">
+      <a
+        class="article-tag-list-link"
+        href="/tags/%e4%bf%a1%e5%8f%b7%e5%a4%84%e7%90%86"
+        rel="tag"
+        >信号处理</a
+      >
+    </li><li class="article-tag-list-item" data-aos="zoom-in">
+      <a
+        class="article-tag-list-link"
+        href="/tags/%e5%b5%8c%e5%85%a5%e5%bc%8f"
+        rel="tag"
+        >嵌入式</a
+      >
+    </li></ul>
+</footer>
+  </div><nav
+    id="article-nav"
+    aria-label="Article navigation"
+    data-aos="fade-up"
+  ><div class="article-nav-link-wrap left"><img
+            data-src="/images/cover/%e9%9f%a9%e7%ab%8b%e7%bd%91%e5%9b%be%e5%a3%81%e7%ba%b8.jpg"
+            data-sizes="auto"
+            alt="【结构体】探究"
+            class="lazyload"
+          /><a
+          href="/post/%E7%BB%93%E6%9E%84%E4%BD%93%E7%BB%86%E8%8A%82%E6%8E%A2%E7%A9%B6/"
+          aria-label="前一篇:【结构体】探究"
+          title="前一篇:【结构体】探究"
+        ></a>
+        <div class="article-nav-caption">前一篇</div>
+        <h3 class="article-nav-title">【结构体】探究</h3>
+      </div><div class="article-nav-link-wrap right"><img
+            data-src="/images/cover/%e5%88%9d%e8%a7%81%e7%b4%ab%e7%81%b5.jpg"
+            data-sizes="auto"
+            alt="嵌入式笔试面试高频问答：单片机、FreeRTOS、软件架构与 C 语言"
+            class="lazyload"
+          /><a
+          href="/post/%E5%B5%8C%E5%85%A5%E5%BC%8F%E7%AC%94%E8%AF%95%E9%9D%A2%E8%AF%95%E9%AB%98%E9%A2%91%E9%97%AE%E7%AD%94%E5%8D%95%E7%89%87%E6%9C%BAfreertos%E8%BD%AF%E4%BB%B6%E6%9E%B6%E6%9E%84%E4%B8%8Ec%E8%AF%AD%E8%A8%80/"
+          aria-label="后一篇:嵌入式笔试面试高频问答：单片机、FreeRTOS、软件架构与 C 语言"
+          title="后一篇:嵌入式笔试面试高频问答：单片机、FreeRTOS、软件架构与 C 语言"
+        ></a>
+        <div class="article-nav-caption">后一篇</div>
+        <h3 class="article-nav-title">嵌入式笔试面试高频问答：单片机、FreeRTOS、软件架构与 C 语言</h3>
+      </div></nav></article></section>
+        </div><footer id="footer" aria-label="Site footer">
+  <div style="width: 100%; overflow: hidden">
+    <div class="footer-line"></div>
+  </div>
+  <div id="footer-info"><div>
+      <span class="icon-copyright"></span>2020-2026<span class="footer-info-sep rotate"></span>云想衣裳花想荣
+    </div><div>
+        <span class="icon-brush"
+          >&nbsp;90.8k</span
+        >
+        &nbsp;|&nbsp;
+        <span class="icon-coffee">&nbsp;03:07</span>
+      </div></div>
+</footer>
+<div id="mask" class="hide"></div>
+      </div><nav id="mobile-nav" aria-label="Mobile navigation">
+  <div class="sidebar-wrap"><div class="sidebar-toc-sidebar"><h3 class="toc-title">文章目录</h3>
+<div class="sidebar-toc-wrapper toc-div-class">
+  <nav id="TableOfContents">
+  <ul>
+    <li><a href="#df-toc">阅读导航</a></li>
+    <li><a href="#df-basics">1. 滤波器到底在保留和压低什么</a>
+      <ul>
+        <li><a href="#11-从一段可想象的传感器数据开始">1.1 从一段可想象的传感器数据开始</a></li>
+        <li><a href="#12-幅值相位与延迟都要看">1.2 幅值、相位与延迟都要看</a></li>
+      </ul>
+    </li>
+    <li><a href="#df-specs">2. 先定采样与指标，再谈算法</a></li>
+    <li><a href="#df-equations">3. 从差分方程认识 FIR 与 IIR</a>
+      <ul>
+        <li><a href="#31-fir只看当前和过去的输入">3.1 FIR：只看当前和过去的输入</a></li>
+        <li><a href="#32-iir还使用过去的输出">3.2 IIR：还使用过去的输出</a></li>
+      </ul>
+    </li>
+    <li><a href="#df-choices">4. 先按需求选结构</a></li>
+    <li><a href="#df-fir">5. FIR 怎么设计：从理想低通到可实现系数</a>
+      <ul>
+        <li><a href="#51-理想低通为何需要截断">5.1 理想低通为何需要截断</a></li>
+        <li><a href="#52-用一组指标求一个可检验的设计">5.2 用一组指标求一个可检验的设计</a></li>
+      </ul>
+    </li>
+    <li><a href="#df-iir">6. IIR 怎么设计：模拟原型、数字映射和二阶节</a></li>
+    <li><a href="#df-code">7. 完整 Python 程序：设计、验算、比较</a></li>
+    <li><a href="#df-other">8. 移动平均、中值、陷波与自适应方法怎么用</a>
+      <ul>
+        <li><a href="#81-移动平均与指数平滑">8.1 移动平均与指数平滑</a></li>
+        <li><a href="#82-中值滤波处理孤立尖峰">8.2 中值滤波处理孤立尖峰</a></li>
+        <li><a href="#83-陷波与梳状结构">8.3 陷波与梳状结构</a></li>
+        <li><a href="#84-卡尔曼等状态估计不是万能平滑按钮">8.4 卡尔曼等状态估计不是万能平滑按钮</a></li>
+      </ul>
+    </li>
+    <li><a href="#df-engineering">9. 把滤波器放进实际系统前检查什么</a></li>
+    <li><a href="#df-practice">10. 三道练习，检查是否真正会设计</a></li>
+    <li><a href="#df-references">11. 资料与适用范围</a></li>
+  </ul>
+</nav>
+</div></div>
+        <div class="sidebar-common-sidebar hidden"><div class="sidebar-author">
+  <img
+    data-src="/avatar/avatar.webp"
+    data-sizes="auto"
+    alt="云想衣裳花想荣"
+    class="lazyload"
+  />
+  <div class="sidebar-author-name">云想衣裳花想荣</div>
+  <div class="sidebar-description">嵌入式开发学习笔记，技术分享</div>
+</div>
+<div class="sidebar-state">
+  <div class="sidebar-state-article">
+    <div>文章</div><div class="sidebar-state-number">11</div>
+  </div>
+  <a class="sidebar-state-category" href="/categories/" aria-label="sidebar-state-category-link">
+    <div>分类</div>
+    <div class="sidebar-state-number">
+      8
+    </div>
+  </a>
+  <a class="sidebar-state-tag" href="/tags/" aria-label="sidebar-state-tag-link">
+    <div>标签</div>
+    <div class="sidebar-state-number">34</div>
+  </a>
+</div>
+<div class="sidebar-social" ></div><div class="sidebar-menu"><div class="sidebar-menu-link-wrap">
+      <a
+        class="sidebar-menu-link-dummy"
+        href="/"
+        aria-label="首页"
+      ></a><div class="sidebar-menu-link">首页</div>
+    </div><div class="sidebar-menu-link-wrap">
+      <a
+        class="sidebar-menu-link-dummy"
+        href="/archives"
+        aria-label="归档"
+      ></a><div class="sidebar-menu-link">归档</div>
+    </div><div class="sidebar-menu-link-wrap">
+      <a
+        class="sidebar-menu-link-dummy"
+        href="/about"
+        aria-label="关于"
+      ></a><div class="sidebar-menu-link">关于</div>
+    </div><div class="sidebar-menu-link-wrap">
+      <a
+        class="sidebar-menu-link-dummy"
+        href="/friend"
+        aria-label="友链"
+      ></a><div class="sidebar-menu-link">友链</div>
+    </div></div></div></div><div class="sidebar-btn-wrapper">
+        <div class="sidebar-toc-btn current"></div>
+        <div class="sidebar-common-btn"></div>
+      </div></nav>
+</div><script
+    src="https://npm.webcache.cn/lazysizes@5.3.2/lazysizes.min.js"
+    
+    
+    
+    
+    integrity="sha384-3gT/vsepWkfz/ff7PpWNUeMzeWoH3cDhm/A8jM7ouoAK0/fP/9bcHHR5kHq2nf&#43;e" crossorigin="anonymous"></script><script
+    src="https://npm.webcache.cn/clipboard@2.0.11/dist/clipboard.min.js"
+    
+    
+    
+    
+    integrity="sha384-J08i8An/QeARD9ExYpvphB8BsyOj3Gh2TSh1aLINKO3L0cMSH2dN3E22zFoXEi0Q" crossorigin="anonymous"></script><script
+    src="https://npm.webcache.cn/material-theme@1.0.0/dist/material-theme.umd.js"
+    
+    
+    
+    
+    integrity="sha384-vLev0II0HKFaxkcm&#43;/7kX5IGwVFBASkGchU311wmU/veIj2bB0UcBkQbW6yw2asK" crossorigin="anonymous"></script><script src="/js/main.js"  ></script><script src="/js/aos.js"  ></script><script>
+    var aosInit = () => {
+      AOS.init({
+        duration: 1000,
+        easing: "ease",
+        once: true,
+        offset: 50,
+      });
+    };
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", aosInit);
+    } else {
+      aosInit();
+    }
+  </script><script src="/js/pjax_main.js" data-pjax ></script>
+
+<div id="lazy-script">
+  <div><script data-pjax>
+        window.REIMU_POST = {
+          author: "云想衣裳花想荣",
+          title: "数字滤波器从零设计：FIR、IIR 与常用方法",
+          url: "http:\/\/localhost:1313\/post\/%E6%95%B0%E5%AD%97%E6%BB%A4%E6%B3%A2%E5%99%A8%E4%BB%8E%E9%9B%B6%E8%AE%BE%E8%AE%A1firiir%E4%B8%8E%E5%B8%B8%E7%94%A8%E6%96%B9%E6%B3%95\/",
+          description: "从采样、频率指标和差分方程入手，用同一组要求设计并验证 FIR 与 IIR 滤波器，再学会选择移动平均、中值和陷波等方法。",
+          cover: "http:\/\/localhost:1313\/images\/cover\/%E5%88%9D%E8%A7%81%E7%B4%AB%E7%81%B5.jpg",
+        };
+      </script><script src="/js/insert_highlight.js" data-pjax ></script><script src="/js/tabs.js" data-pjax defer></script><script type="module" data-pjax>const PhotoSwipeLightbox = (await safeImport("https:\/\/npm.webcache.cn\/photoswipe@5.4.4\/dist\/photoswipe-lightbox.esm.min.js", "sha384-DiL6M\/gG\u002bwmTxmCRZyD1zee6lIhawn5TGvED0FOh7fXcN9B0aZ9dexSF\/N6lrZi\/")).default;const initPswp = (gallery, children) => {
+          if (_$$(`${gallery} ${children}`).length > 0) {
+            new PhotoSwipeLightbox({
+              gallery,
+              children,pswpModule: () => safeImport("https:\/\/npm.webcache.cn\/photoswipe@5.4.4\/dist\/photoswipe.esm.min.js", "sha384-WkkO3GCmgkC3VQWpaV8DqhKJqpzpF9JoByxDmnV8\u002boTJ7m3DfYEWX1fu1scuS4\u002bs")}).init();
+          }
+        }
+        const pswp = () => {
+          initPswp('.article-entry', 'a.article-gallery-item');
+          initPswp('.article-gallery', 'a.article-gallery-item');
+        }
+        pswp()
+      </script><script
+    src="https://npm.webcache.cn/katex@0.16.47/dist/katex.min.js"
+    
+    
+    data-pjax
+    
+    integrity="sha384-CwjPRVHTvLiMBFjEoij&#43;QZViMV5rhTOIp7CJzl24JEqpRDA1sJFHVXXLURktbYYp" crossorigin="anonymous"></script><script
+    src="https://npm.webcache.cn/katex@0.16.47/dist/contrib/auto-render.min.js"
+    
+    
+    data-pjax
+    
+    integrity="sha384-bjyGPfbij8/NDKJhSGZNP/khQVgtHUE5exjm4Ydllo42FwIgYsdLO2lXGmRBf5Mz" crossorigin="anonymous"></script><script data-pjax>
+          var renderMath = () => {
+            if (!window.renderMathInElement) return;
+            window.renderMathInElement(_$("article"), {
+              delimiters: [
+                { left: "$$", right: "$$", display: true },
+                { left: "\\[", right: "\\]", display: true },
+                { left: "$", right: "$", display: false },
+                { left: "\\(", right: "\\)", display: false },
+              ],
+            });
+            window.katexTagOverflowHandler?.();
+          };
+          if (document.readyState === "loading") {
+            document.addEventListener("DOMContentLoaded", renderMath, { once: true });
+          } else {
+            renderMath();
+          }
+        </script></div>
+</div><script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.getRegistrations().then((registrations) => {
+        for (let registration of registrations) {
+          registration.unregister();
+        }
+      });
+    }
+  </script><script>
+  const reimuCopyright = String.raw`
+   ______     ______     __     __    __     __  __    
+  /\  == \   /\  ___\   /\ \   /\ "-./  \   /\ \/\ \   
+  \ \  __<   \ \  __\   \ \ \  \ \ \-./\ \  \ \ \_\ \  
+   \ \_\ \_\  \ \_____\  \ \_\  \ \_\ \ \_\  \ \_____\ 
+    \/_/ /_/   \/_____/   \/_/   \/_/  \/_/   \/_____/ 
+                                                    
+  `;
+  console.log(String.raw`%c ${reimuCopyright}`, "color: #ff5252;");
+  console.log(
+    "%c Theme.Reimu" + " %c https://github.com/D-Sketon/hugo-theme-reimu ",
+    "color: white; background: #ff5252; padding:5px 0;",
+    "padding:4px;border:1px solid #ff5252;",
+  );
+</script><script
+    src="https://npm.webcache.cn/pangu@4.0.7/dist/browser/pangu.min.js"
+    
+    
+    
+    
+    integrity="sha384-HeUHqi0nVsPUm/E0ss7OfnIV/yD96JWB8ehZvUuoVax9DpNHL17jj9pdfXHzqDxm" crossorigin="anonymous"></script><script data-pjax>
+    if (document.readyState === "loading") {
+      document.addEventListener('DOMContentLoaded', () => {
+        pangu?.spacingPage();
+      });
+    } else {
+      pangu?.spacingPage();
+    }
+  </script></body>
+</html>

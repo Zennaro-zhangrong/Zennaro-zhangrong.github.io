@@ -1,0 +1,775 @@
+<!doctype html>
+<html
+  lang="zh-CN"data-theme-mode="auto"
+>
+  <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8" />
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1, shrink-to-fit=no"
+/><title>
+  无感 FOC 入门（二）：滑模与龙伯格观测器 | 云想衣裳花想荣
+</title>
+<meta name="description" content="从同一个 SPMSM 电流模型出发，推导滑模观测器的趋近条件与等效反电动势，以及龙伯格观测器的误差极点。"/><script>
+  window.siteConfig = JSON.parse("{\"anchor\":{\"auto\":{\"enable\":false,\"length\":60},\"explicit\":{\"enable\":false,\"marker\":\"{#anchor-\",\"prefix\":\"anchor-\"}},\"anchor_icon\":null,\"base\":\"http://localhost:1313/\",\"clipboard\":{\"copyright\":{\"count\":50,\"enable\":false,\"license_type\":\"by-nc-sa\"},\"fail\":{\"en\":\"Copy failed (ﾟ⊿ﾟ)ﾂ\",\"ja\":\"コピー失敗 (ﾟ⊿ﾟ)ﾂ\",\"pt-br\":\"Falha ao copiar (ﾟ⊿ﾟ)ﾂ\",\"zh-cn\":\"复制失败 (ﾟ⊿ﾟ)ﾂ\",\"zh-tw\":\"複製失敗 (ﾟ⊿ﾟ)ﾂ\"},\"success\":{\"en\":\"Copy successfully (*^▽^*)\",\"ja\":\"コピー成功 (*^▽^*)\",\"pt-br\":\"Copiado com sucesso (*^▽^*)\",\"zh-cn\":\"复制成功 (*^▽^*)\",\"zh-tw\":\"複製成功 (*^▽^*)\"}},\"code_block\":{\"expand\":30},\"dark_mode\":{\"button\":true,\"mode\":\"auto\"},\"icon_font\":\"4552607_ex15nbittbh\",\"outdate\":{\"daysago\":180,\"enable\":false,\"message\":{\"en\":\"This article was last updated on {time}. Please note that the content may no longer be applicable.\",\"ja\":\"この記事は最終更新日：{time}。記載内容が現在有効でない可能性がありますのでご注意ください。\",\"pt-br\":\"Este artigo foi atualizado pela última vez em {time}. Observe que o conteúdo pode não ser mais aplicável.\",\"zh-cn\":\"本文最后更新于 {time}，请注意文中内容可能已不适用。\",\"zh-tw\":\"本文最後更新於 {time}，請注意文中內容可能已不適用。\"}}}");
+  
+</script>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+  rel="preload"
+  as="style"
+  href="https://fonts.googleapis.com/css?family=Mulish:400,400italic,700,700italic%7cNoto%20Serif%20SC:400,400italic,700,700italic%7c&amp;display=swap"
+/>
+<link
+  rel="stylesheet"
+  href="https://fonts.googleapis.com/css?family=Mulish:400,400italic,700,700italic%7cNoto%20Serif%20SC:400,400italic,700,700italic%7c&amp;display=swap"
+  media="print"
+  onload="this.media='all'"
+/>
+<link
+    rel="preload"
+    href="//at.alicdn.com/t/c/font_4552607_ex15nbittbh.woff2"
+    as="font"
+    type="font/woff2"
+    crossorigin="anonymous"
+  /><link rel="stylesheet" href="/css/loader.css" /><meta property="og:type" content="website" />
+  <meta property="og:title" content="无感 FOC 入门（二）：滑模与龙伯格观测器 | 云想衣裳花想荣" />
+  <meta
+    property="og:description"
+    content="从同一个 SPMSM 电流模型出发，推导滑模观测器的趋近条件与等效反电动势，以及龙伯格观测器的误差极点。"
+  />
+  <meta property="og:url" content="http://localhost:1313/post/%E6%97%A0%E6%84%9Ffoc%E5%85%A5%E9%97%A8%E4%BA%8C%E6%BB%91%E6%A8%A1%E4%B8%8E%E9%BE%99%E4%BC%AF%E6%A0%BC%E8%A7%82%E6%B5%8B%E5%99%A8/" />
+  <meta
+    property="og:site_name"
+    content="博客首页"
+  />
+  <meta property="og:image" content="http://localhost:1313/images/cover/%E5%88%9D%E8%A7%81%E7%B4%AB%E7%81%B5.jpg" />
+  <meta property="article:author" content="云想衣裳花想荣" />
+  <meta property="article:published_time" content="2026-10-29T00:00:00&#43;08:00" />
+  <meta property="article:modified_time" content="2026-10-29T00:00:00&#43;08:00" /><meta property="article:tag" content="FOC, 滑模观测器, 龙伯格观测器, 反电动势" /><meta name="twitter:card" content="summary" /><meta name="twitter:image" content="http://localhost:1313/images/cover/%E5%88%9D%E8%A7%81%E7%B4%AB%E7%81%B5.jpg" />
+<link rel="shortcut icon" href="/favicon.ico"><link rel="stylesheet" href="/css/main.css" /><link
+    rel="preload"
+    as="style"
+    href="https://npm.webcache.cn/photoswipe@5.4.4/dist/photoswipe.css"
+    integrity="sha384-IfxC36XL/toUyJ939C73PcgMuRzAZuIzZxE38drsmO5p6jD7ei&#43;Zx/1oA/0l8ysE" crossorigin="anonymous"
+    onload="this.onload=null;this.rel='stylesheet'"
+  /><link
+    rel="preload"
+    as="style"
+    href="https://npm.webcache.cn/katex@0.16.47/dist/katex.min.css"
+    integrity="sha384-nH0MfJ44wi1dd7w6jinlyBgljjS8EJAh2JBoRad8a3VDw2K69vfaaqm4WnR&#43;gXtA" crossorigin="anonymous"
+    onload="this.onload=null;this.rel='stylesheet'"
+  /><script
+    src="https://npm.webcache.cn/pace-js@1.2.4/pace.min.js"
+    
+    
+    
+    
+    integrity="sha384-k6YtvFUEIuEFBdrLKJ3YAUbBki333tj1CSUisai5Cswsg9wcLNaPzsTHDswp4Az8" crossorigin="anonymous"></script><link
+    rel="stylesheet"
+    href="https://npm.webcache.cn/@reimujs/aos@0.1.3/dist/aos.css"
+    integrity="sha384-GMRP93c6Hkz9JVKGAuRR3nTS7M07RwPgTFenXiosjq2VbVgvdDNcz1g6Mkj8AONa" crossorigin="anonymous"/></head>
+  <body><div id='loader'>
+    <div class="loading-left-bg loading-bg"></div>
+    <div class="loading-right-bg loading-bg"></div>
+    <div class="spinner-box">
+      <div class="loading-taichi rotate"><svg width="150" height="150" viewBox="0 0 1024 1024" class="icon" version="1.1" xmlns="https://www.w3.org/2000/svg" shape-rendering="geometricPrecision">
+            <path d="M303.5 432A80 80 0 0 1 291.5 592A80 80 0 0 1 303.5 432z" fill="var(--red-1, #ff5252)" />
+            <path d="M512 65A447 447 0 0 1 512 959L512 929A417 417 0 0 0 512 95A417 417 0 0 0 512 929L512 959A447 447 0 0 1 512 65z 
+          M512 95A417 417 0 0 1 929 512A208.5 208.5 0 0 1 720.5 720.5L720.5 592A80 80 0 0 0 720.5 432A80 80 0 0 0 720.5 592L720.5 720.5A208.5 208.5 0 0 1 512 512A208.5 208.5 0 0 0 303.5 303.5A208.5 208.5 0 0 0 95 512A417 417 0 0 1 512 95z" fill="var(--red-1, #ff5252)" />
+          </svg></div><div class="loading-word">左风右雷，可随心意而动...</div>
+    </div>
+  </div>
+  </div>
+  <script>
+    var time = null;
+    var loaderEl = document.getElementById('loader');
+    var startLoading = () => {
+      time = Date.now();
+      loaderEl.classList.remove("loading");
+    }
+    var hideLoader = () => {
+      document.body.style.overflow = 'auto';
+      loader.classList.add('loading');
+    };
+
+    var endLoading = () => {
+      if (!time) {
+        hideLoader();
+      } else {
+        if (Date.now() - time > 500) {
+          time = null;
+          hideLoader();
+        } else {
+          setTimeout(endLoading, 500 - (Date.now() - time));
+          time = null;
+        }
+      }
+    }
+    window.addEventListener('DOMContentLoaded', endLoading);
+    loaderEl.addEventListener('click', endLoading);
+  </script><div id="copy-tooltip"></div>
+<div id="lang-tooltip">
+本文章没有找到对应的语言版本
+</div>
+<div id="heatmap-tooltip"></div><div id="container">
+      <div id="wrap"><div id="header-nav">
+  <nav id="main-nav" aria-label="Primary navigation"><a class="main-nav-link-wrap" href="/"><span class="main-nav-link">首页</span>
+      </a><a class="main-nav-link-wrap" href="/archives"><span class="main-nav-link">归档</span>
+      </a><a class="main-nav-link-wrap" href="/about"><span class="main-nav-link">关于</span>
+      </a><a class="main-nav-link-wrap" href="/friend"><span class="main-nav-link">友链</span>
+      </a><a id="main-nav-toggle" class="nav-icon" aria-label="Toggle navigation" role="button"></a>
+  </nav>
+  <nav id="sub-nav" aria-label="Secondary navigation"></nav><a href="https://github.com/Zennaro-zhangrong" class="triangle-badge" title="github" target="_blank" rel="noopener nofollow noreferrer">
+      <div class="icon icon-github triangle-badge-icon"></div>
+    </a></div>
+<header id="header" aria-label="Site header"><picture></picture>
+    <img crossorigin="anonymous" fetchpriority="high" src="/images/cover/%e5%88%9d%e8%a7%81%e7%b4%ab%e7%81%b5.jpg" alt="无感 FOC 入门（二）：滑模与龙伯格观测器"><div id="header-outer">
+    <div id="header-title"><span id="logo">
+            <h1 data-aos="slide-up">无感 FOC 入门（二）：滑模与龙伯格观测器</h1>
+          </span><h2 id="subtitle-wrap" data-aos="slide-down"></h2></div>
+  </div>
+</header><div id="content"
+          aria-label="Page content"
+          class="sidebar-left"
+            ><aside id="sidebar" aria-label="Sidebar"><div class="sidebar-wrapper-container sticky"><div class="sidebar-wrapper">
+    <div
+      class="sidebar-wrap"
+      data-aos="fade-up"
+    ><div class="sidebar-toc-sidebar"><h3 class="toc-title">文章目录</h3>
+<div class="sidebar-toc-wrapper toc-div-class">
+  <nav id="TableOfContents">
+  <ul>
+    <li><a href="#sfoc2-toc">阅读导航</a></li>
+    <li><a href="#sfoc2-current">1. 先写出所有观测器共享的电流方程</a></li>
+    <li><a href="#sfoc2-smo">2. 滑模观测器：用开关校正电压压住误差</a></li>
+    <li><a href="#sfoc2-reaching">3. 为什么 $K$ 足够大时误差会靠近零</a></li>
+    <li><a href="#sfoc2-smo-implementation">4. 饱和函数、滤波和离散 SMO</a></li>
+    <li><a href="#sfoc2-state">5. 龙伯格观测器：把反电动势也当成状态</a></li>
+    <li><a href="#sfoc2-poles">6. 增益为什么能决定误差衰减速度</a></li>
+    <li><a href="#sfoc2-luenberger-implementation">7. 给一个龙伯格观测器的离散计算例子</a></li>
+    <li><a href="#sfoc2-compare">8. 两种观测器怎么选、怎么验算</a></li>
+    <li><a href="#sfoc2-references">9. 原始资料与模型边界</a></li>
+  </ul>
+</nav>
+</div></div>
+          <div class="sidebar-common-sidebar hidden"><div class="sidebar-author">
+  <img
+    data-src="/avatar/avatar.webp"
+    data-sizes="auto"
+    alt="云想衣裳花想荣"
+    class="lazyload"
+  />
+  <div class="sidebar-author-name">云想衣裳花想荣</div>
+  <div class="sidebar-description">嵌入式开发学习笔记，技术分享</div>
+</div>
+<div class="sidebar-state">
+  <div class="sidebar-state-article">
+    <div>文章</div><div class="sidebar-state-number">11</div>
+  </div>
+  <a class="sidebar-state-category" href="/categories/" aria-label="sidebar-state-category-link">
+    <div>分类</div>
+    <div class="sidebar-state-number">
+      8
+    </div>
+  </a>
+  <a class="sidebar-state-tag" href="/tags/" aria-label="sidebar-state-tag-link">
+    <div>标签</div>
+    <div class="sidebar-state-number">34</div>
+  </a>
+</div>
+<div class="sidebar-social" ></div><div class="sidebar-menu"><div class="sidebar-menu-link-wrap">
+      <a
+        class="sidebar-menu-link-dummy"
+        href="/"
+        aria-label="首页"
+      ></a><div class="sidebar-menu-link">首页</div>
+    </div><div class="sidebar-menu-link-wrap">
+      <a
+        class="sidebar-menu-link-dummy"
+        href="/archives"
+        aria-label="归档"
+      ></a><div class="sidebar-menu-link">归档</div>
+    </div><div class="sidebar-menu-link-wrap">
+      <a
+        class="sidebar-menu-link-dummy"
+        href="/about"
+        aria-label="关于"
+      ></a><div class="sidebar-menu-link">关于</div>
+    </div><div class="sidebar-menu-link-wrap">
+      <a
+        class="sidebar-menu-link-dummy"
+        href="/friend"
+        aria-label="友链"
+      ></a><div class="sidebar-menu-link">友链</div>
+    </div></div></div><div class="sidebar-btn-wrapper" style="position:static">
+            <div class="sidebar-toc-btn current"></div>
+            <div class="sidebar-common-btn"></div>
+          </div></div>
+  </div><div class="sidebar-widget"></div></div></aside>
+<section id="main" aria-label="Main content"><article
+  class="h-entry article"
+  itemscope
+  itemtype="https://schema.org/BlogPosting"
+>
+  <div
+    class="article-inner"
+    data-aos="fade-up"
+  >
+    <div class="article-meta"><div class="article-date">
+  <span
+    class="article-date-link icon-calendar"
+    data-aos="zoom-in"
+  >
+    <time datetime="2026-10-29 00:00:00 &#43;0800 CST" itemprop="datePublished"
+      >2026-10-29</time
+    >
+    <time style="display: none;" id="post-update-time"
+      >2026-10-29</time
+    >
+  </span></div>
+</div><div class="hr-line"></div><div class="e-content article-entry" itemprop="articleBody"><p><a href="http://localhost:1313/post/%E6%97%A0%E6%84%9Ffoc%E5%85%A5%E9%97%A8%E4%B8%80%E7%94%B5%E6%9C%BA%E6%A8%A1%E5%9E%8B%E7%A3%81%E9%93%BE%E4%B8%8E%E7%A3%81%E9%93%BE%E8%A7%82%E6%B5%8B/">上一篇</a>已经得到电机方程 $\boldsymbol v=R_s\boldsymbol i+L_s\dot{\boldsymbol i}+\boldsymbol e$，其中 $\boldsymbol e$ 是转子运动产生的反电动势。本文要回答：<strong>如果不直接积分磁链，能否让“预测电流”和“实测电流”的差自动逼出反电动势？</strong></p>
+<p>会依次构造两种观测器。滑模观测器（SMO）用有界、非线性的校正电压把电流误差压向零；龙伯格观测器（Luenberger observer，也常译作“龙伯格观察器”）用线性误差反馈估计电流和反电动势。两者都依赖电机模型和采样质量，不能在零速凭空获得反电动势方向。最后的角度与速度解算放在<a href="http://localhost:1313/post/%E6%97%A0%E6%84%9Ffoc%E5%85%A5%E9%97%A8%E4%B8%89%E8%BD%AF%E4%BB%B6pll%E4%B8%8E%E7%B3%BB%E7%BB%9F%E8%90%BD%E5%9C%B0/">第三篇</a>。</p>
+<p><strong>建议这样学</strong>：先复述第一篇的电压方程，并自己做一次“预测方程减真实方程”；再分别代入一个正电流误差，检查两种反馈会把误差推向哪边。第 3、6 节的推导先遮住结论独立计算，最后用第 8 节的自测检查符号。这里的增益只是教学模型的起点，上板前还要检查离散延迟、噪声与实际电压。</p>
+<h2 id="sfoc2-toc">
+<a class="header-anchor" href="#sfoc2-toc"></a>
+阅读导航
+</h2><table>
+	<thead>
+			<tr>
+					<th>阶段</th>
+					<th>阅读位置</th>
+					<th>学完能回答</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td>建立共同问题</td>
+					<td><a href="/post/%E6%97%A0%E6%84%9Ffoc%E5%85%A5%E9%97%A8%E4%BA%8C%E6%BB%91%E6%A8%A1%E4%B8%8E%E9%BE%99%E4%BC%AF%E6%A0%BC%E8%A7%82%E6%B5%8B%E5%99%A8/#sfoc2-current">1. 电流预测误差</a></td>
+					<td>观测器为什么能纠正模型？</td>
+			</tr>
+			<tr>
+					<td>滑模</td>
+					<td><a href="/post/%E6%97%A0%E6%84%9Ffoc%E5%85%A5%E9%97%A8%E4%BA%8C%E6%BB%91%E6%A8%A1%E4%B8%8E%E9%BE%99%E4%BC%AF%E6%A0%BC%E8%A7%82%E6%B5%8B%E5%99%A8/#sfoc2-smo">2. SMO 构造</a>、<a href="/post/%E6%97%A0%E6%84%9Ffoc%E5%85%A5%E9%97%A8%E4%BA%8C%E6%BB%91%E6%A8%A1%E4%B8%8E%E9%BE%99%E4%BC%AF%E6%A0%BC%E8%A7%82%E6%B5%8B%E5%99%A8/#sfoc2-reaching">3. 趋近证明</a>、<a href="/post/%E6%97%A0%E6%84%9Ffoc%E5%85%A5%E9%97%A8%E4%BA%8C%E6%BB%91%E6%A8%A1%E4%B8%8E%E9%BE%99%E4%BC%AF%E6%A0%BC%E8%A7%82%E6%B5%8B%E5%99%A8/#sfoc2-smo-implementation">4. 滤波与离散</a></td>
+					<td>开关项为何近似反电动势？</td>
+			</tr>
+			<tr>
+					<td>龙伯格</td>
+					<td><a href="/post/%E6%97%A0%E6%84%9Ffoc%E5%85%A5%E9%97%A8%E4%BA%8C%E6%BB%91%E6%A8%A1%E4%B8%8E%E9%BE%99%E4%BC%AF%E6%A0%BC%E8%A7%82%E6%B5%8B%E5%99%A8/#sfoc2-state">5. 状态空间模型</a>、<a href="/post/%E6%97%A0%E6%84%9Ffoc%E5%85%A5%E9%97%A8%E4%BA%8C%E6%BB%91%E6%A8%A1%E4%B8%8E%E9%BE%99%E4%BC%AF%E6%A0%BC%E8%A7%82%E6%B5%8B%E5%99%A8/#sfoc2-poles">6. 误差极点</a>、<a href="/post/%E6%97%A0%E6%84%9Ffoc%E5%85%A5%E9%97%A8%E4%BA%8C%E6%BB%91%E6%A8%A1%E4%B8%8E%E9%BE%99%E4%BC%AF%E6%A0%BC%E8%A7%82%E6%B5%8B%E5%99%A8/#sfoc2-luenberger-implementation">7. 离散实现</a></td>
+					<td>增益从哪里来？</td>
+			</tr>
+			<tr>
+					<td>对照</td>
+					<td><a href="/post/%E6%97%A0%E6%84%9Ffoc%E5%85%A5%E9%97%A8%E4%BA%8C%E6%BB%91%E6%A8%A1%E4%B8%8E%E9%BE%99%E4%BC%AF%E6%A0%BC%E8%A7%82%E6%B5%8B%E5%99%A8/#sfoc2-compare">8. 选择与验证</a>、<a href="/post/%E6%97%A0%E6%84%9Ffoc%E5%85%A5%E9%97%A8%E4%BA%8C%E6%BB%91%E6%A8%A1%E4%B8%8E%E9%BE%99%E4%BC%AF%E6%A0%BC%E8%A7%82%E6%B5%8B%E5%99%A8/#sfoc2-references">9. 资料</a></td>
+					<td>如何识别输出不可信？</td>
+			</tr>
+	</tbody>
+</table>
+<h2 id="sfoc2-current">
+<a class="header-anchor" href="#sfoc2-current"></a>
+1. 先写出所有观测器共享的电流方程
+</h2><p>本篇沿用第一篇的 SPMSM、幅值不变 Clarke 和 $\alpha\beta$ 静止坐标约定。记 $\boldsymbol i=[i_\alpha,i_\beta]^\mathsf T$，同理定义 $\boldsymbol v,\boldsymbol e$。把电压方程移项并除以 $L_s$：</p>
+$$
+\boxed{\dot{\boldsymbol i}
+=-a\boldsymbol i+\frac1{L_s}(\boldsymbol v-\boldsymbol e),
+\qquad a=\frac{R_s}{L_s}.}
+$$<p>$a$ 单位是 $\mathrm{s}^{-1}$。若知道电压、反电动势和上一时刻电流，就能预测下一时刻电流；真正未知的正是 $\boldsymbol e$。观测器先假设一个 $\hat{\boldsymbol e}$，得到预测电流 $\hat{\boldsymbol i}$，再用实测电流纠偏。</p>
+<p>为避免不同资料的正负号混乱，本篇固定定义：</p>
+$$
+\boldsymbol\varepsilon=\hat{\boldsymbol i}-\boldsymbol i,
+\qquad
+\widetilde{\boldsymbol i}=\boldsymbol i-\hat{\boldsymbol i}=-\boldsymbol\varepsilon.
+$$<p>滑模部分使用 $\boldsymbol\varepsilon$，龙伯格部分用常见的“实测减估计” $\widetilde{\boldsymbol i}$；每次都会显式写出。两个轴的基本方程相同，但 $e_\alpha,e_\beta$ 组成旋转向量。正转时它是 $\omega_e\psi_f(-\sin\theta_e,\cos\theta_e)$。</p>
+<p><a href="/post/%E6%97%A0%E6%84%9Ffoc%E5%85%A5%E9%97%A8%E4%BA%8C%E6%BB%91%E6%A8%A1%E4%B8%8E%E9%BE%99%E4%BC%AF%E6%A0%BC%E8%A7%82%E6%B5%8B%E5%99%A8/#sfoc2-toc">返回目录</a></p>
+<h2 id="sfoc2-smo">
+<a class="header-anchor" href="#sfoc2-smo"></a>
+2. 滑模观测器：用开关校正电压压住误差
+</h2><p>先从一个轴理解。设校正电压为 $z=K\operatorname{sgn}(\varepsilon)$，$K>0$ 的单位是 V。预测器写作：</p>
+$$
+\dot{\hat i}=-a\hat i+\frac{v-z}{L_s}.
+$$<p>真实电机是 $\dot i=-ai+(v-e)/L_s$。两式相减：</p>
+$$
+\boxed{\dot\varepsilon
+=-a\varepsilon+\frac{e-z}{L_s}.}
+$$<p>如果 $\hat i>i$，则 $\varepsilon>0$，$z=+K$，预测器少加一个电压，预测电流下降；若 $\hat i<i$，则 $z=-K$，预测器多加电压，预测电流上升。它像一个总朝误差零点推的“继电器”。二维时逐轴使用：</p>
+$$
+\boldsymbol z=K
+\begin{bmatrix}\operatorname{sgn}(\varepsilon_\alpha)\\
+\operatorname{sgn}(\varepsilon_\beta)\end{bmatrix},
+\qquad
+\dot{\hat{\boldsymbol i}}
+=-a\hat{\boldsymbol i}+\frac{\boldsymbol v-\boldsymbol z}{L_s}.
+$$<p>文献的符号选择可能相反，常见原因是将误差定义为 $i-\hat i$。<strong>判断符号是否正确的方法不是背公式，而是重新相减，检查校正是否把误差推向零。</strong> Microchip AN4398 给出了含饱和滑模函数的电流与反电动势观测框图。<a href="https://www.microchip.com/content/dam/mchp/documents/MCU32/ApplicationNotes/ApplicationNotes/Sensorless-Field-Oriented-Control-for-a-Permanent-Magnet-Synchronous-Motor-Using-Sliding-Mode-DS00004398.pdf">来源：Microchip AN4398</a>。</p>
+<p><a href="/post/%E6%97%A0%E6%84%9Ffoc%E5%85%A5%E9%97%A8%E4%BA%8C%E6%BB%91%E6%A8%A1%E4%B8%8E%E9%BE%99%E4%BC%AF%E6%A0%BC%E8%A7%82%E6%B5%8B%E5%99%A8/#sfoc2-toc">返回目录</a></p>
+<h2 id="sfoc2-reaching">
+<a class="header-anchor" href="#sfoc2-reaching"></a>
+3. 为什么 $K$ 足够大时误差会靠近零
+</h2><p>这是滑模观测器最重要的推导。先假设一个轴的未知反电动势满足 $\lvert e(t)\rvert\le E_{\max}$，电机参数准确，且暂时忽略采样延迟。取非负函数 $V=\tfrac12L_s\varepsilon^2$，可把它理解成电流预测误差对应的“能量量度”。对时间求导：</p>
+$$
+\begin{aligned}
+\dot V
+&=L_s\varepsilon\dot\varepsilon\\
+&=-R_s\varepsilon^2+\varepsilon e-
+K\varepsilon\operatorname{sgn}(\varepsilon)\\
+&=-R_s\varepsilon^2+\varepsilon e-K\lvert\varepsilon\rvert\\
+&\le -R_s\varepsilon^2-(K-E_{\max})\lvert\varepsilon\rvert.
+\end{aligned}
+$$<p>当 $K>E_{\max}$ 且 $\varepsilon\ne0$，$\dot V<0$，所以误差被推向零。实际模型误差、逆变器电压误差可并入需要被 $K$ 覆盖的有界扰动；但 $K$ 也不能无上限增大，因为开关抖动、量化噪声和延迟会更明显。</p>
+<p>进入理想的“滑动”状态后，$\varepsilon\approx0$ 且其<strong>平均变化率</strong>约为零。把它代回误差方程，得到平均或等效校正项：</p>
+$$
+0\approx\frac{e-z_{\mathrm{eq}}}{L_s}
+\quad\Longrightarrow\quad
+\boxed{z_{\mathrm{eq}}\approx e.}
+$$<p>所以开关项的<strong>低频平均</strong>携带反电动势。对本节理想的符号函数，原始 $z$ 在误差非零时只有 $+K$ 或 $-K$；下一节换成饱和函数后，边界层内还会有中间值。两种情况下都不能把未经验证的逐点校正电压直接送入 $\operatorname{atan2}$。</p>
+<p>当 $\omega_e$ 变化、参数失配或滤波器滞后时，等式只是近似。严格的趋近证明基于上述有界扰动和连续时间假设，不自动保证离散系统、低速或大加速度下的角度精度。</p>
+<p><a href="/post/%E6%97%A0%E6%84%9Ffoc%E5%85%A5%E9%97%A8%E4%BA%8C%E6%BB%91%E6%A8%A1%E4%B8%8E%E9%BE%99%E4%BC%AF%E6%A0%BC%E8%A7%82%E6%B5%8B%E5%99%A8/#sfoc2-toc">返回目录</a></p>
+<h2 id="sfoc2-smo-implementation">
+<a class="header-anchor" href="#sfoc2-smo-implementation"></a>
+4. 饱和函数、滤波和离散 SMO
+</h2><p>真实数字系统不可能无限快切换。常将 $\operatorname{sgn}$ 换成带边界层的饱和函数：</p>
+$$
+\operatorname{sat}(x)=
+\begin{cases}
+-1,&x<-1,\\
+x,&-1\le x\le1,\\
+1,&x>1,
+\end{cases}
+\qquad
+z_\nu=K\operatorname{sat}\!\left(\frac{\varepsilon_\nu}{\phi}\right),
+\quad \nu\in\{\alpha,\beta\}.
+$$<p>$\phi$ 是电流误差边界层宽度，单位 A。区间外仍是强校正；区间内变为斜率 $K/\phi$ 的线性校正，减小抖振。代价是误差可能停留在一个小范围，等效反电动势也可能带偏差。</p>
+<p>把 $z$ 经一阶低通得到较平滑的 $\hat e$：</p>
+$$
+\dot{\hat e}_\nu=\omega_f(z_\nu-\hat e_\nu),
+\qquad H(s)=\frac{\omega_f}{s+\omega_f}.
+$$<p>$\omega_f$ 单位 rad/s。对以<strong>带符号</strong>电角速度 $\omega_e$ 旋转的正弦向量，滤波会造成角度滞后 $\delta=\arctan(\omega_e/\omega_f)$；正转时 $\delta>0$，反转时 $\delta<0$。后续角度链应补偿这个动态滞后，不能把角度误差全怪到 PLL。滤波不能太慢，否则加减速时估算跟不上；也不能太快，否则开关纹波残留。</p>
+<p>最简单的逐采样更新，用 $T_s$ 表示采样周期：</p>
+$$
+\begin{aligned}
+\boldsymbol\varepsilon[k]&=\hat{\boldsymbol i}[k]-\boldsymbol i[k],\\
+\boldsymbol z[k]&=K\operatorname{sat}\!\left(\frac{\boldsymbol\varepsilon[k]}{\phi}\right),\\
+\hat{\boldsymbol i}[k+1]&=\hat{\boldsymbol i}[k]
++T_s\left[-a\hat{\boldsymbol i}[k]
++\frac{\boldsymbol v[k]-\boldsymbol z[k]}{L_s}\right],\\
+\hat{\boldsymbol e}[k+1]&=\hat{\boldsymbol e}[k]
++\gamma\bigl(\boldsymbol z[k]-\hat{\boldsymbol e}[k]\bigr).
+\end{aligned}
+$$<p>这里 $\gamma=1-e^{-\omega_fT_s}$ 是把一阶滤波器在采样间隔内按常输入精确离散得到的系数，必在 $(0,1)$；写成 $\gamma\approx\omega_fT_s$ 仅在 $\omega_fT_s\ll1$ 时成立。饱和函数对两个轴逐元素执行。电流预测器用欧拉法时还需检查 $T_sR_s/L_s$ 足够小，并在实际电压、采样延迟和滤波器相位下验证稳定性。</p>
+<p><a href="/post/%E6%97%A0%E6%84%9Ffoc%E5%85%A5%E9%97%A8%E4%BA%8C%E6%BB%91%E6%A8%A1%E4%B8%8E%E9%BE%99%E4%BC%AF%E6%A0%BC%E8%A7%82%E6%B5%8B%E5%99%A8/#sfoc2-toc">返回目录</a></p>
+<h2 id="sfoc2-state">
+<a class="header-anchor" href="#sfoc2-state"></a>
+5. 龙伯格观测器：把反电动势也当成状态
+</h2><p>龙伯格观测器的基本形式是：<strong>模型预测 + 测量残差乘增益</strong>。先从电流之外再加入反电动势状态。若短时间内电角速度近似恒定，$\boldsymbol e=\omega_e\psi_f(-\sin\theta_e,\cos\theta_e)$，继续求导：</p>
+$$
+\dot{\boldsymbol e}=\omega_e J\boldsymbol e,
+\qquad
+J=\begin{bmatrix}0&-1\\1&0\end{bmatrix}.
+$$<p>证明可用 $J(-\sin\theta,\cos\theta)=(-\cos\theta,-\sin\theta)$。若 $\dot\omega_e\ne0$，还会多出与 $\dot\omega_e$ 有关的项；所以“恒速反电动势模型”在急加速时只是局部近似。</p>
+<p>令状态 $\boldsymbol x=[\boldsymbol i^\mathsf T,\boldsymbol e^\mathsf T]^\mathsf T$，输入是电压，输出是电流：</p>
+$$
+\dot{\boldsymbol x}=A\boldsymbol x+B\boldsymbol v,
+\qquad
+\boldsymbol y=C\boldsymbol x=\boldsymbol i,
+$$$$
+A=\begin{bmatrix}-aI&-I/L_s\\0&\omega_e J\end{bmatrix},
+\quad B=\begin{bmatrix}I/L_s\\0\end{bmatrix},
+\quad C=\begin{bmatrix}I&0\end{bmatrix}.
+$$<p>$I$ 是 $2\times2$ 单位矩阵。测不到 $e$，但它会通过 $-e/L_s$ 改变电流的斜率，所以在非零速度且模型可用的条件下，可以用电流残差推断它。ST 的 AN2516 与 Microchip 的 AN2590 分别给出 PMSM 反电动势的龙伯格观测实例。<a href="https://www.st.com/resource/en/application_note/CD00154076-.pdf">ST AN2516</a>、<a href="https://ww1.microchip.com/downloads/aemDocuments/documents/MCU32/ApplicationNotes/ApplicationNotes/AN2590-Sensorless-FOC-for-PMSM-Using-Reduced-Order-Luenberger-Observer-DS00002590.pdf">Microchip AN2590</a>。</p>
+<p><a href="/post/%E6%97%A0%E6%84%9Ffoc%E5%85%A5%E9%97%A8%E4%BA%8C%E6%BB%91%E6%A8%A1%E4%B8%8E%E9%BE%99%E4%BC%AF%E6%A0%BC%E8%A7%82%E6%B5%8B%E5%99%A8/#sfoc2-toc">返回目录</a></p>
+<h2 id="sfoc2-poles">
+<a class="header-anchor" href="#sfoc2-poles"></a>
+6. 增益为什么能决定误差衰减速度
+</h2><p>把残差定义为 $\boldsymbol r=\boldsymbol i-\hat{\boldsymbol i}$。选一类便于教学的增益：</p>
+$$
+\begin{aligned}
+\dot{\hat{\boldsymbol i}}
+&=-a\hat{\boldsymbol i}
++\frac{\boldsymbol v-\hat{\boldsymbol e}}{L_s}
++k_i\boldsymbol r,\\
+\dot{\hat{\boldsymbol e}}
+&=\hat\omega_eJ\hat{\boldsymbol e}+k_e\boldsymbol r.
+\end{aligned}
+$$<p>$k_i$ 单位 $\mathrm{s}^{-1}$，$k_e$ 单位 $\mathrm{V/(A\,s)}$。要看误差如何变化，令 $\widetilde{\boldsymbol i}=\boldsymbol i-\hat{\boldsymbol i}$、$\widetilde{\boldsymbol e}=\boldsymbol e-\hat{\boldsymbol e}$。暂设参数和速度准确，逐式相减：</p>
+$$
+\begin{aligned}
+\dot{\widetilde{\boldsymbol i}}
+&=-(a+k_i)\widetilde{\boldsymbol i}
+-\frac{\widetilde{\boldsymbol e}}{L_s},\\
+\dot{\widetilde{\boldsymbol e}}
+&=\omega_eJ\widetilde{\boldsymbol e}
+-k_e\widetilde{\boldsymbol i}.
+\end{aligned}
+$$<p>先令 $\omega_e=0$，只为了看每个轴的<strong>局部误差极点</strong>。对单轴，误差矩阵是：</p>
+$$
+F=\begin{bmatrix}-(a+k_i)&-1/L_s\\-k_e&0\end{bmatrix}.
+$$<p>特征方程从 $\det(sI-F)=0$ 逐步展开：</p>
+$$
+\begin{aligned}
+\det(sI-F)
+&=\det\begin{bmatrix}s+a+k_i&1/L_s\\k_e&s\end{bmatrix}\\
+&=s(s+a+k_i)-\frac{k_e}{L_s}\\
+&=s^2+(a+k_i)s-\frac{k_e}{L_s}.
+\end{aligned}
+$$<p>若想让这两个局部极点都在 $-\omega_o$，将其匹配为 $(s+\omega_o)^2=s^2+2\omega_os+\omega_o^2$，可得：</p>
+$$
+\boxed{k_i=2\omega_o-a,
+\qquad k_e=-L_s\omega_o^2.}
+$$<p>$k_e$ 出现负号<strong>并非笔误</strong>，它来自 $-e/L_s$ 在电流方程中的符号及我们选的残差 $i-\hat i$。例如真实电流比预测值大时，有可能是预测反电动势过大；负的 $k_e$ 会把 $\hat e$ 往下修。若改用 $\hat i-i$ 作残差，观测器增益的写法会随之翻转。</p>
+<p>这个二阶极点匹配只在简化的单轴、$\omega_e=0$ 误差模型下给出直观初值；实际转动时 $\omega_eJ$ 使两轴耦合，$\hat\omega_e\ne\omega_e$、延时、噪声与离散化还会改变极点。$\omega_o$ 越大，误差收敛可能越快，但测量噪声和电压纹波也会更容易进入 $\hat e$。需要用完整离散模型或仿真、实测检验。</p>
+<p><strong>重要区别：</strong> 在零速时，代数上的 $e$ 状态仍可被“估计”为零；但其方向无定义，不能因此推断转子初始角。数学状态观测器的局部误差收敛与零速转子位置可辨识是两件不同的事。</p>
+<p><a href="/post/%E6%97%A0%E6%84%9Ffoc%E5%85%A5%E9%97%A8%E4%BA%8C%E6%BB%91%E6%A8%A1%E4%B8%8E%E9%BE%99%E4%BC%AF%E6%A0%BC%E8%A7%82%E6%B5%8B%E5%99%A8/#sfoc2-toc">返回目录</a></p>
+<h2 id="sfoc2-luenberger-implementation">
+<a class="header-anchor" href="#sfoc2-luenberger-implementation"></a>
+7. 给一个龙伯格观测器的离散计算例子
+</h2><p>沿用上一篇的 $R_s=0.40\,\Omega$、$L_s=0.00080\,\mathrm H$，故 $a=500\,\mathrm{s}^{-1}$。取演示用 $\omega_o=1000\,\mathrm{s}^{-1}$，得到：</p>
+$$
+k_i=2(1000)-500=1500\,\mathrm{s}^{-1},
+\qquad
+k_e=-0.00080(1000)^2=-800\,\mathrm{V/(A\,s)}.
+$$<p>若 $T_s=100\,\mu\mathrm s$，前向欧拉更新可写：</p>
+$$
+\begin{aligned}
+\boldsymbol r[k]&=\boldsymbol i[k]-\hat{\boldsymbol i}[k],\\
+\hat{\boldsymbol i}[k+1]
+&=\hat{\boldsymbol i}[k]+T_s
+\left[-a\hat{\boldsymbol i}[k]
++\frac{\boldsymbol v[k]-\hat{\boldsymbol e}[k]}{L_s}
++k_i\boldsymbol r[k]\right],\\
+\hat{\boldsymbol e}[k+1]
+&=\hat{\boldsymbol e}[k]+T_s
+\left[\hat\omega_e[k]J\hat{\boldsymbol e}[k]
++k_e\boldsymbol r[k]\right].
+\end{aligned}
+$$<p>它是<strong>解释计算顺序的工程片段公式</strong>，不是已验证可直接烧录的最终算法。这里 $T_s\omega_o=0.1$，简化实极点在欧拉离散后约为 $1-T_s\omega_o=0.9$，说明这一教学例在该局部模型下不会因欧拉法立刻发散；完整旋转模型仍需单独检查。某些实现会采用降阶观测器，只把未测的反电动势或磁链作为动态状态，增益与符号不一定等同于本文这个全阶结构。</p>
+<p><a href="/post/%E6%97%A0%E6%84%9Ffoc%E5%85%A5%E9%97%A8%E4%BA%8C%E6%BB%91%E6%A8%A1%E4%B8%8E%E9%BE%99%E4%BC%AF%E6%A0%BC%E8%A7%82%E6%B5%8B%E5%99%A8/#sfoc2-toc">返回目录</a></p>
+<h2 id="sfoc2-compare">
+<a class="header-anchor" href="#sfoc2-compare"></a>
+8. 两种观测器怎么选、怎么验算
+</h2><table>
+	<thead>
+			<tr>
+					<th>问题</th>
+					<th>滑模观测器</th>
+					<th>龙伯格观测器</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td>校正方式</td>
+					<td>饱和/符号非线性校正</td>
+					<td>电流残差线性反馈</td>
+			</tr>
+			<tr>
+					<td>直接得到</td>
+					<td>校正电压的等效值近似 $e$</td>
+					<td>估计状态 $\hat e$</td>
+			</tr>
+			<tr>
+					<td>主要参数</td>
+					<td>$K$、$\phi$、滤波带宽</td>
+					<td>增益矩阵或误差极点</td>
+			</tr>
+			<tr>
+					<td>常见代价</td>
+					<td>抖振、滤波延迟</td>
+					<td>参数敏感、增益与噪声权衡</td>
+			</tr>
+			<tr>
+					<td>共同边界</td>
+					<td>反电动势小的低速/零速、采样和电压误差</td>
+					<td>同左</td>
+			</tr>
+	</tbody>
+</table>
+<p>调试时先看 $i_\alpha,i_\beta$ 和 $\hat i_\alpha,\hat i_\beta$ 是否方向、幅值一致，再看 $\hat e$ 是否近似正交旋转、幅值随 $\lvert\omega_e\rvert$ 增长。仅凭“电机能转”不能证明角度正确；可在有编码器的实验台上记录估算电角度与编码器电角度，检查稳态误差、加减速滞后与反转时的 $180^\circ$ 跳变。</p>
+<p><strong>自测：</strong> 若把 SMO 的 $z$ 符号反过来，同时仍用 $\varepsilon=\hat i-i$，当 $\hat i>i$ 时预测电压会增加还是减少？答案是增加，会把正误差继续推大。再问：若龙伯格观测器把 $k_e$ 改为正且仍使用本文的残差定义，简化特征方程常数项变成负数，两个实根异号，局部误差不稳定。</p>
+<p>下一篇将把 $\hat e_\alpha,\hat e_\beta$ 变成连续、抗噪的电角度和速度，并解释反转与低速启动。</p>
+<p><a href="/post/%E6%97%A0%E6%84%9Ffoc%E5%85%A5%E9%97%A8%E4%BA%8C%E6%BB%91%E6%A8%A1%E4%B8%8E%E9%BE%99%E4%BC%AF%E6%A0%BC%E8%A7%82%E6%B5%8B%E5%99%A8/#sfoc2-toc">返回目录</a></p>
+<h2 id="sfoc2-references">
+<a class="header-anchor" href="#sfoc2-references"></a>
+9. 原始资料与模型边界
+</h2><ul>
+<li><a href="https://www.microchip.com/content/dam/mchp/documents/MCU32/ApplicationNotes/ApplicationNotes/Sensorless-Field-Oriented-Control-for-a-Permanent-Magnet-Synchronous-Motor-Using-Sliding-Mode-DS00004398.pdf">Microchip AN4398：PMSM 滑模反电动势观测器、饱和函数与开环启动</a>。</li>
+<li><a href="https://www.st.com/resource/en/application_note/CD00154076-.pdf">ST AN2516：PMSM 龙伯格状态观测器</a>。</li>
+<li><a href="https://ww1.microchip.com/downloads/aemDocuments/documents/MCU32/ApplicationNotes/ApplicationNotes/AN2590-Sensorless-FOC-for-PMSM-Using-Reduced-Order-Luenberger-Observer-DS00002590.pdf">Microchip AN2590：降阶龙伯格观测器的无感 FOC 实例</a>。</li>
+</ul>
+<p>本文自行推导的增益公式针对明确写出的<strong>全阶、SPMSM、局部恒速模型</strong>，不是上述厂商实现的参数照抄。不同观测器的误差定义、单位和增益结构要逐式对齐后才可移植。</p>
+<p><a href="/post/%E6%97%A0%E6%84%9Ffoc%E5%85%A5%E9%97%A8%E4%BA%8C%E6%BB%91%E6%A8%A1%E4%B8%8E%E9%BE%99%E4%BC%AF%E6%A0%BC%E8%A7%82%E6%B5%8B%E5%99%A8/#sfoc2-toc">返回目录</a></p>
+</div>
+    <footer class="article-footer"><ul class="article-category-list"><li class="article-tag-list-item" data-aos="zoom-in">
+    <a
+      class="article-category-link"
+      href="/categories/%e7%94%b5%e6%9c%ba%e6%8e%a7%e5%88%b6"
+      data-aos="zoom-in"
+      >电机控制</a
+    >
+    </li></ul>
+<ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item" data-aos="zoom-in">
+      <a
+        class="article-tag-list-link"
+        href="/tags/foc"
+        rel="tag"
+        >FOC</a
+      >
+    </li><li class="article-tag-list-item" data-aos="zoom-in">
+      <a
+        class="article-tag-list-link"
+        href="/tags/%e6%bb%91%e6%a8%a1%e8%a7%82%e6%b5%8b%e5%99%a8"
+        rel="tag"
+        >滑模观测器</a
+      >
+    </li><li class="article-tag-list-item" data-aos="zoom-in">
+      <a
+        class="article-tag-list-link"
+        href="/tags/%e9%be%99%e4%bc%af%e6%a0%bc%e8%a7%82%e6%b5%8b%e5%99%a8"
+        rel="tag"
+        >龙伯格观测器</a
+      >
+    </li><li class="article-tag-list-item" data-aos="zoom-in">
+      <a
+        class="article-tag-list-link"
+        href="/tags/%e5%8f%8d%e7%94%b5%e5%8a%a8%e5%8a%bf"
+        rel="tag"
+        >反电动势</a
+      >
+    </li></ul>
+</footer>
+  </div><nav
+    id="article-nav"
+    aria-label="Article navigation"
+    data-aos="fade-up"
+  ><div class="article-nav-link-wrap left"><img
+            data-src="/images/cover/%e5%88%9d%e8%a7%81%e7%b4%ab%e7%81%b5.jpg"
+            data-sizes="auto"
+            alt="无感 FOC 入门（一）：从电机模型推导磁链观测"
+            class="lazyload"
+          /><a
+          href="/post/%E6%97%A0%E6%84%9Ffoc%E5%85%A5%E9%97%A8%E4%B8%80%E7%94%B5%E6%9C%BA%E6%A8%A1%E5%9E%8B%E7%A3%81%E9%93%BE%E4%B8%8E%E7%A3%81%E9%93%BE%E8%A7%82%E6%B5%8B/"
+          aria-label="前一篇:无感 FOC 入门（一）：从电机模型推导磁链观测"
+          title="前一篇:无感 FOC 入门（一）：从电机模型推导磁链观测"
+        ></a>
+        <div class="article-nav-caption">前一篇</div>
+        <h3 class="article-nav-title">无感 FOC 入门（一）：从电机模型推导磁链观测</h3>
+      </div><div class="article-nav-link-wrap right"><img
+            data-src="/images/cover/%e5%88%9d%e8%a7%81%e7%b4%ab%e7%81%b5.jpg"
+            data-sizes="auto"
+            alt="无感 FOC 入门（三）：软件 PLL、转速估算与系统落地"
+            class="lazyload"
+          /><a
+          href="/post/%E6%97%A0%E6%84%9Ffoc%E5%85%A5%E9%97%A8%E4%B8%89%E8%BD%AF%E4%BB%B6pll%E4%B8%8E%E7%B3%BB%E7%BB%9F%E8%90%BD%E5%9C%B0/"
+          aria-label="后一篇:无感 FOC 入门（三）：软件 PLL、转速估算与系统落地"
+          title="后一篇:无感 FOC 入门（三）：软件 PLL、转速估算与系统落地"
+        ></a>
+        <div class="article-nav-caption">后一篇</div>
+        <h3 class="article-nav-title">无感 FOC 入门（三）：软件 PLL、转速估算与系统落地</h3>
+      </div></nav></article></section>
+        </div><footer id="footer" aria-label="Site footer">
+  <div style="width: 100%; overflow: hidden">
+    <div class="footer-line"></div>
+  </div>
+  <div id="footer-info"><div>
+      <span class="icon-copyright"></span>2020-2026<span class="footer-info-sep rotate"></span>云想衣裳花想荣
+    </div><div>
+        <span class="icon-brush"
+          >&nbsp;90.8k</span
+        >
+        &nbsp;|&nbsp;
+        <span class="icon-coffee">&nbsp;03:07</span>
+      </div></div>
+</footer>
+<div id="mask" class="hide"></div>
+      </div><nav id="mobile-nav" aria-label="Mobile navigation">
+  <div class="sidebar-wrap"><div class="sidebar-toc-sidebar"><h3 class="toc-title">文章目录</h3>
+<div class="sidebar-toc-wrapper toc-div-class">
+  <nav id="TableOfContents">
+  <ul>
+    <li><a href="#sfoc2-toc">阅读导航</a></li>
+    <li><a href="#sfoc2-current">1. 先写出所有观测器共享的电流方程</a></li>
+    <li><a href="#sfoc2-smo">2. 滑模观测器：用开关校正电压压住误差</a></li>
+    <li><a href="#sfoc2-reaching">3. 为什么 $K$ 足够大时误差会靠近零</a></li>
+    <li><a href="#sfoc2-smo-implementation">4. 饱和函数、滤波和离散 SMO</a></li>
+    <li><a href="#sfoc2-state">5. 龙伯格观测器：把反电动势也当成状态</a></li>
+    <li><a href="#sfoc2-poles">6. 增益为什么能决定误差衰减速度</a></li>
+    <li><a href="#sfoc2-luenberger-implementation">7. 给一个龙伯格观测器的离散计算例子</a></li>
+    <li><a href="#sfoc2-compare">8. 两种观测器怎么选、怎么验算</a></li>
+    <li><a href="#sfoc2-references">9. 原始资料与模型边界</a></li>
+  </ul>
+</nav>
+</div></div>
+        <div class="sidebar-common-sidebar hidden"><div class="sidebar-author">
+  <img
+    data-src="/avatar/avatar.webp"
+    data-sizes="auto"
+    alt="云想衣裳花想荣"
+    class="lazyload"
+  />
+  <div class="sidebar-author-name">云想衣裳花想荣</div>
+  <div class="sidebar-description">嵌入式开发学习笔记，技术分享</div>
+</div>
+<div class="sidebar-state">
+  <div class="sidebar-state-article">
+    <div>文章</div><div class="sidebar-state-number">11</div>
+  </div>
+  <a class="sidebar-state-category" href="/categories/" aria-label="sidebar-state-category-link">
+    <div>分类</div>
+    <div class="sidebar-state-number">
+      8
+    </div>
+  </a>
+  <a class="sidebar-state-tag" href="/tags/" aria-label="sidebar-state-tag-link">
+    <div>标签</div>
+    <div class="sidebar-state-number">34</div>
+  </a>
+</div>
+<div class="sidebar-social" ></div><div class="sidebar-menu"><div class="sidebar-menu-link-wrap">
+      <a
+        class="sidebar-menu-link-dummy"
+        href="/"
+        aria-label="首页"
+      ></a><div class="sidebar-menu-link">首页</div>
+    </div><div class="sidebar-menu-link-wrap">
+      <a
+        class="sidebar-menu-link-dummy"
+        href="/archives"
+        aria-label="归档"
+      ></a><div class="sidebar-menu-link">归档</div>
+    </div><div class="sidebar-menu-link-wrap">
+      <a
+        class="sidebar-menu-link-dummy"
+        href="/about"
+        aria-label="关于"
+      ></a><div class="sidebar-menu-link">关于</div>
+    </div><div class="sidebar-menu-link-wrap">
+      <a
+        class="sidebar-menu-link-dummy"
+        href="/friend"
+        aria-label="友链"
+      ></a><div class="sidebar-menu-link">友链</div>
+    </div></div></div></div><div class="sidebar-btn-wrapper">
+        <div class="sidebar-toc-btn current"></div>
+        <div class="sidebar-common-btn"></div>
+      </div></nav>
+</div><script
+    src="https://npm.webcache.cn/lazysizes@5.3.2/lazysizes.min.js"
+    
+    
+    
+    
+    integrity="sha384-3gT/vsepWkfz/ff7PpWNUeMzeWoH3cDhm/A8jM7ouoAK0/fP/9bcHHR5kHq2nf&#43;e" crossorigin="anonymous"></script><script
+    src="https://npm.webcache.cn/clipboard@2.0.11/dist/clipboard.min.js"
+    
+    
+    
+    
+    integrity="sha384-J08i8An/QeARD9ExYpvphB8BsyOj3Gh2TSh1aLINKO3L0cMSH2dN3E22zFoXEi0Q" crossorigin="anonymous"></script><script
+    src="https://npm.webcache.cn/material-theme@1.0.0/dist/material-theme.umd.js"
+    
+    
+    
+    
+    integrity="sha384-vLev0II0HKFaxkcm&#43;/7kX5IGwVFBASkGchU311wmU/veIj2bB0UcBkQbW6yw2asK" crossorigin="anonymous"></script><script src="/js/main.js"  ></script><script src="/js/aos.js"  ></script><script>
+    var aosInit = () => {
+      AOS.init({
+        duration: 1000,
+        easing: "ease",
+        once: true,
+        offset: 50,
+      });
+    };
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", aosInit);
+    } else {
+      aosInit();
+    }
+  </script><script src="/js/pjax_main.js" data-pjax ></script>
+
+<div id="lazy-script">
+  <div><script data-pjax>
+        window.REIMU_POST = {
+          author: "云想衣裳花想荣",
+          title: "无感 FOC 入门（二）：滑模与龙伯格观测器",
+          url: "http:\/\/localhost:1313\/post\/%E6%97%A0%E6%84%9Ffoc%E5%85%A5%E9%97%A8%E4%BA%8C%E6%BB%91%E6%A8%A1%E4%B8%8E%E9%BE%99%E4%BC%AF%E6%A0%BC%E8%A7%82%E6%B5%8B%E5%99%A8\/",
+          description: "从同一个 SPMSM 电流模型出发，推导滑模观测器的趋近条件与等效反电动势，以及龙伯格观测器的误差极点。",
+          cover: "http:\/\/localhost:1313\/images\/cover\/%E5%88%9D%E8%A7%81%E7%B4%AB%E7%81%B5.jpg",
+        };
+      </script><script src="/js/insert_highlight.js" data-pjax ></script><script src="/js/tabs.js" data-pjax defer></script><script type="module" data-pjax>const PhotoSwipeLightbox = (await safeImport("https:\/\/npm.webcache.cn\/photoswipe@5.4.4\/dist\/photoswipe-lightbox.esm.min.js", "sha384-DiL6M\/gG\u002bwmTxmCRZyD1zee6lIhawn5TGvED0FOh7fXcN9B0aZ9dexSF\/N6lrZi\/")).default;const initPswp = (gallery, children) => {
+          if (_$$(`${gallery} ${children}`).length > 0) {
+            new PhotoSwipeLightbox({
+              gallery,
+              children,pswpModule: () => safeImport("https:\/\/npm.webcache.cn\/photoswipe@5.4.4\/dist\/photoswipe.esm.min.js", "sha384-WkkO3GCmgkC3VQWpaV8DqhKJqpzpF9JoByxDmnV8\u002boTJ7m3DfYEWX1fu1scuS4\u002bs")}).init();
+          }
+        }
+        const pswp = () => {
+          initPswp('.article-entry', 'a.article-gallery-item');
+          initPswp('.article-gallery', 'a.article-gallery-item');
+        }
+        pswp()
+      </script><script
+    src="https://npm.webcache.cn/katex@0.16.47/dist/katex.min.js"
+    
+    
+    data-pjax
+    
+    integrity="sha384-CwjPRVHTvLiMBFjEoij&#43;QZViMV5rhTOIp7CJzl24JEqpRDA1sJFHVXXLURktbYYp" crossorigin="anonymous"></script><script
+    src="https://npm.webcache.cn/katex@0.16.47/dist/contrib/auto-render.min.js"
+    
+    
+    data-pjax
+    
+    integrity="sha384-bjyGPfbij8/NDKJhSGZNP/khQVgtHUE5exjm4Ydllo42FwIgYsdLO2lXGmRBf5Mz" crossorigin="anonymous"></script><script data-pjax>
+          var renderMath = () => {
+            if (!window.renderMathInElement) return;
+            window.renderMathInElement(_$("article"), {
+              delimiters: [
+                { left: "$$", right: "$$", display: true },
+                { left: "\\[", right: "\\]", display: true },
+                { left: "$", right: "$", display: false },
+                { left: "\\(", right: "\\)", display: false },
+              ],
+            });
+            window.katexTagOverflowHandler?.();
+          };
+          if (document.readyState === "loading") {
+            document.addEventListener("DOMContentLoaded", renderMath, { once: true });
+          } else {
+            renderMath();
+          }
+        </script></div>
+</div><script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.getRegistrations().then((registrations) => {
+        for (let registration of registrations) {
+          registration.unregister();
+        }
+      });
+    }
+  </script><script>
+  const reimuCopyright = String.raw`
+   ______     ______     __     __    __     __  __    
+  /\  == \   /\  ___\   /\ \   /\ "-./  \   /\ \/\ \   
+  \ \  __<   \ \  __\   \ \ \  \ \ \-./\ \  \ \ \_\ \  
+   \ \_\ \_\  \ \_____\  \ \_\  \ \_\ \ \_\  \ \_____\ 
+    \/_/ /_/   \/_____/   \/_/   \/_/  \/_/   \/_____/ 
+                                                    
+  `;
+  console.log(String.raw`%c ${reimuCopyright}`, "color: #ff5252;");
+  console.log(
+    "%c Theme.Reimu" + " %c https://github.com/D-Sketon/hugo-theme-reimu ",
+    "color: white; background: #ff5252; padding:5px 0;",
+    "padding:4px;border:1px solid #ff5252;",
+  );
+</script><script
+    src="https://npm.webcache.cn/pangu@4.0.7/dist/browser/pangu.min.js"
+    
+    
+    
+    
+    integrity="sha384-HeUHqi0nVsPUm/E0ss7OfnIV/yD96JWB8ehZvUuoVax9DpNHL17jj9pdfXHzqDxm" crossorigin="anonymous"></script><script data-pjax>
+    if (document.readyState === "loading") {
+      document.addEventListener('DOMContentLoaded', () => {
+        pangu?.spacingPage();
+      });
+    } else {
+      pangu?.spacingPage();
+    }
+  </script></body>
+</html>

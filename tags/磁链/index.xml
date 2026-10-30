@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>磁链 on 博客首页</title>
+    <link>http://localhost:1313/tags/%E7%A3%81%E9%93%BE/</link>
+    <description>Recent content from 博客首页</description>
+    <generator>Hugo</generator>
+    <language>zh-CN</language>
+    
+    <managingEditor>zennaro.zhang@outlook.com (云想衣裳花想荣)</managingEditor>
+    <webMaster>zennaro.zhang@outlook.com (云想衣裳花想荣)</webMaster>
+    
+    <copyright>本博客所有文章除特别声明外，均采用 BY-NC-SA 许可协议。转载请注明出处！</copyright>
+    
+    <lastBuildDate>Thu, 29 Oct 2026 00:00:00 +0800</lastBuildDate>
+    
+    
+    <atom:link href="http://localhost:1313/tags/%E7%A3%81%E9%93%BE/index.xml" rel="self" type="application/rss&#43;xml" />
+    
+
+    
+    
+
+    <item>
+      <title>无感 FOC 入门（一）：从电机模型推导磁链观测</title>
+      <link>http://localhost:1313/post/%E6%97%A0%E6%84%9Ffoc%E5%85%A5%E9%97%A8%E4%B8%80%E7%94%B5%E6%9C%BA%E6%A8%A1%E5%9E%8B%E7%A3%81%E9%93%BE%E4%B8%8E%E7%A3%81%E9%93%BE%E8%A7%82%E6%B5%8B/</link>
+      <pubDate>Thu, 29 Oct 2026 00:00:00 &#43;0800</pubDate>
+      <author>zennaro.zhang@outlook.com (云想衣裳花想荣)</author>
+      <guid>http://localhost:1313/post/%E6%97%A0%E6%84%9Ffoc%E5%85%A5%E9%97%A8%E4%B8%80%E7%94%B5%E6%9C%BA%E6%A8%A1%E5%9E%8B%E7%A3%81%E9%93%BE%E4%B8%8E%E7%A3%81%E9%93%BE%E8%A7%82%E6%B5%8B/</guid>
+      <description>
+        <![CDATA[<h1>无感 FOC 入门（一）：从电机模型推导磁链观测</h1><p>作者：云想衣裳花想荣（zennaro.zhang@outlook.com）</p>
+        
+          <p>无位置传感器 FOC 的核心问题是：控制器没有编码器，却仍要知道转子磁场指向哪里。这组教程从最简单的<strong>表贴式永磁同步电机</strong>（SPMSM）出发。第一篇先建立共同的电机模型，再推导磁链观测；<a href="http://localhost:1313/post/%E6%97%A0%E6%84%9Ffoc%E5%85%A5%E9%97%A8%E4%BA%8C%E6%BB%91%E6%A8%A1%E4%B8%8E%E9%BE%99%E4%BC%AF%E6%A0%BC%E8%A7%82%E6%B5%8B%E5%99%A8/">第二篇讲滑模与龙伯格观测器</a>，<a href="http://localhost:1313/post/%E6%97%A0%E6%84%9Ffoc%E5%85%A5%E9%97%A8%E4%B8%89%E8%BD%AF%E4%BB%B6pll%E4%B8%8E%E7%B3%BB%E7%BB%9F%E8%90%BD%E5%9C%B0/">第三篇讲软件 PLL 和完整估算链</a>。</p>
+        
+        <hr><p>本文2026-10-29首发于<a href='http://localhost:1313/'>博客首页</a>，最后修改于2026-10-29</p>]]>
+      </description>
+      
+        <category>电机控制</category>
+      
+    </item>
+    
+  </channel>
+</rss>

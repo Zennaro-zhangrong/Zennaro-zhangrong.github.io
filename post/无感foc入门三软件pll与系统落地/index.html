@@ -1,0 +1,756 @@
+<!doctype html>
+<html
+  lang="zh-CN"data-theme-mode="auto"
+>
+  <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=livereload" data-no-instant defer></script><meta charset="utf-8" />
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1, shrink-to-fit=no"
+/><title>
+  无感 FOC 入门（三）：软件 PLL、转速估算与系统落地 | 云想衣裳花想荣
+</title>
+<meta name="description" content="从反电动势向量构造相位误差，推导 PI 型软件 PLL 的闭环极点、离散更新、反转处理和无感 FOC 启动验证。"/><script>
+  window.siteConfig = JSON.parse("{\"anchor\":{\"auto\":{\"enable\":false,\"length\":60},\"explicit\":{\"enable\":false,\"marker\":\"{#anchor-\",\"prefix\":\"anchor-\"}},\"anchor_icon\":null,\"base\":\"http://localhost:1313/\",\"clipboard\":{\"copyright\":{\"count\":50,\"enable\":false,\"license_type\":\"by-nc-sa\"},\"fail\":{\"en\":\"Copy failed (ﾟ⊿ﾟ)ﾂ\",\"ja\":\"コピー失敗 (ﾟ⊿ﾟ)ﾂ\",\"pt-br\":\"Falha ao copiar (ﾟ⊿ﾟ)ﾂ\",\"zh-cn\":\"复制失败 (ﾟ⊿ﾟ)ﾂ\",\"zh-tw\":\"複製失敗 (ﾟ⊿ﾟ)ﾂ\"},\"success\":{\"en\":\"Copy successfully (*^▽^*)\",\"ja\":\"コピー成功 (*^▽^*)\",\"pt-br\":\"Copiado com sucesso (*^▽^*)\",\"zh-cn\":\"复制成功 (*^▽^*)\",\"zh-tw\":\"複製成功 (*^▽^*)\"}},\"code_block\":{\"expand\":30},\"dark_mode\":{\"button\":true,\"mode\":\"auto\"},\"icon_font\":\"4552607_ex15nbittbh\",\"outdate\":{\"daysago\":180,\"enable\":false,\"message\":{\"en\":\"This article was last updated on {time}. Please note that the content may no longer be applicable.\",\"ja\":\"この記事は最終更新日：{time}。記載内容が現在有効でない可能性がありますのでご注意ください。\",\"pt-br\":\"Este artigo foi atualizado pela última vez em {time}. Observe que o conteúdo pode não ser mais aplicável.\",\"zh-cn\":\"本文最后更新于 {time}，请注意文中内容可能已不适用。\",\"zh-tw\":\"本文最後更新於 {time}，請注意文中內容可能已不適用。\"}}}");
+  
+</script>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+  rel="preload"
+  as="style"
+  href="https://fonts.googleapis.com/css?family=Mulish:400,400italic,700,700italic%7cNoto%20Serif%20SC:400,400italic,700,700italic%7c&amp;display=swap"
+/>
+<link
+  rel="stylesheet"
+  href="https://fonts.googleapis.com/css?family=Mulish:400,400italic,700,700italic%7cNoto%20Serif%20SC:400,400italic,700,700italic%7c&amp;display=swap"
+  media="print"
+  onload="this.media='all'"
+/>
+<link
+    rel="preload"
+    href="//at.alicdn.com/t/c/font_4552607_ex15nbittbh.woff2"
+    as="font"
+    type="font/woff2"
+    crossorigin="anonymous"
+  /><link rel="stylesheet" href="/css/loader.css" /><meta property="og:type" content="website" />
+  <meta property="og:title" content="无感 FOC 入门（三）：软件 PLL、转速估算与系统落地 | 云想衣裳花想荣" />
+  <meta
+    property="og:description"
+    content="从反电动势向量构造相位误差，推导 PI 型软件 PLL 的闭环极点、离散更新、反转处理和无感 FOC 启动验证。"
+  />
+  <meta property="og:url" content="http://localhost:1313/post/%E6%97%A0%E6%84%9Ffoc%E5%85%A5%E9%97%A8%E4%B8%89%E8%BD%AF%E4%BB%B6pll%E4%B8%8E%E7%B3%BB%E7%BB%9F%E8%90%BD%E5%9C%B0/" />
+  <meta
+    property="og:site_name"
+    content="博客首页"
+  />
+  <meta property="og:image" content="http://localhost:1313/images/cover/%E5%88%9D%E8%A7%81%E7%B4%AB%E7%81%B5.jpg" />
+  <meta property="article:author" content="云想衣裳花想荣" />
+  <meta property="article:published_time" content="2026-10-29T15:00:00&#43;08:00" />
+  <meta property="article:modified_time" content="2026-10-29T15:00:00&#43;08:00" /><meta property="article:tag" content="FOC, 软件PLL, 相位锁定, 无感启动" /><meta name="twitter:card" content="summary" /><meta name="twitter:image" content="http://localhost:1313/images/cover/%E5%88%9D%E8%A7%81%E7%B4%AB%E7%81%B5.jpg" />
+<link rel="shortcut icon" href="/favicon.ico"><link rel="stylesheet" href="/css/main.css" /><link
+    rel="preload"
+    as="style"
+    href="https://npm.webcache.cn/photoswipe@5.4.4/dist/photoswipe.css"
+    integrity="sha384-IfxC36XL/toUyJ939C73PcgMuRzAZuIzZxE38drsmO5p6jD7ei&#43;Zx/1oA/0l8ysE" crossorigin="anonymous"
+    onload="this.onload=null;this.rel='stylesheet'"
+  /><link
+    rel="preload"
+    as="style"
+    href="https://npm.webcache.cn/katex@0.16.47/dist/katex.min.css"
+    integrity="sha384-nH0MfJ44wi1dd7w6jinlyBgljjS8EJAh2JBoRad8a3VDw2K69vfaaqm4WnR&#43;gXtA" crossorigin="anonymous"
+    onload="this.onload=null;this.rel='stylesheet'"
+  /><script
+    src="https://npm.webcache.cn/pace-js@1.2.4/pace.min.js"
+    
+    
+    
+    
+    integrity="sha384-k6YtvFUEIuEFBdrLKJ3YAUbBki333tj1CSUisai5Cswsg9wcLNaPzsTHDswp4Az8" crossorigin="anonymous"></script><link
+    rel="stylesheet"
+    href="https://npm.webcache.cn/@reimujs/aos@0.1.3/dist/aos.css"
+    integrity="sha384-GMRP93c6Hkz9JVKGAuRR3nTS7M07RwPgTFenXiosjq2VbVgvdDNcz1g6Mkj8AONa" crossorigin="anonymous"/></head>
+  <body><div id='loader'>
+    <div class="loading-left-bg loading-bg"></div>
+    <div class="loading-right-bg loading-bg"></div>
+    <div class="spinner-box">
+      <div class="loading-taichi rotate"><svg width="150" height="150" viewBox="0 0 1024 1024" class="icon" version="1.1" xmlns="https://www.w3.org/2000/svg" shape-rendering="geometricPrecision">
+            <path d="M303.5 432A80 80 0 0 1 291.5 592A80 80 0 0 1 303.5 432z" fill="var(--red-1, #ff5252)" />
+            <path d="M512 65A447 447 0 0 1 512 959L512 929A417 417 0 0 0 512 95A417 417 0 0 0 512 929L512 959A447 447 0 0 1 512 65z 
+          M512 95A417 417 0 0 1 929 512A208.5 208.5 0 0 1 720.5 720.5L720.5 592A80 80 0 0 0 720.5 432A80 80 0 0 0 720.5 592L720.5 720.5A208.5 208.5 0 0 1 512 512A208.5 208.5 0 0 0 303.5 303.5A208.5 208.5 0 0 0 95 512A417 417 0 0 1 512 95z" fill="var(--red-1, #ff5252)" />
+          </svg></div><div class="loading-word">左风右雷，可随心意而动...</div>
+    </div>
+  </div>
+  </div>
+  <script>
+    var time = null;
+    var loaderEl = document.getElementById('loader');
+    var startLoading = () => {
+      time = Date.now();
+      loaderEl.classList.remove("loading");
+    }
+    var hideLoader = () => {
+      document.body.style.overflow = 'auto';
+      loader.classList.add('loading');
+    };
+
+    var endLoading = () => {
+      if (!time) {
+        hideLoader();
+      } else {
+        if (Date.now() - time > 500) {
+          time = null;
+          hideLoader();
+        } else {
+          setTimeout(endLoading, 500 - (Date.now() - time));
+          time = null;
+        }
+      }
+    }
+    window.addEventListener('DOMContentLoaded', endLoading);
+    loaderEl.addEventListener('click', endLoading);
+  </script><div id="copy-tooltip"></div>
+<div id="lang-tooltip">
+本文章没有找到对应的语言版本
+</div>
+<div id="heatmap-tooltip"></div><div id="container">
+      <div id="wrap"><div id="header-nav">
+  <nav id="main-nav" aria-label="Primary navigation"><a class="main-nav-link-wrap" href="/"><span class="main-nav-link">首页</span>
+      </a><a class="main-nav-link-wrap" href="/archives"><span class="main-nav-link">归档</span>
+      </a><a class="main-nav-link-wrap" href="/about"><span class="main-nav-link">关于</span>
+      </a><a class="main-nav-link-wrap" href="/friend"><span class="main-nav-link">友链</span>
+      </a><a id="main-nav-toggle" class="nav-icon" aria-label="Toggle navigation" role="button"></a>
+  </nav>
+  <nav id="sub-nav" aria-label="Secondary navigation"></nav><a href="https://github.com/Zennaro-zhangrong" class="triangle-badge" title="github" target="_blank" rel="noopener nofollow noreferrer">
+      <div class="icon icon-github triangle-badge-icon"></div>
+    </a></div>
+<header id="header" aria-label="Site header"><picture></picture>
+    <img crossorigin="anonymous" fetchpriority="high" src="/images/cover/%e5%88%9d%e8%a7%81%e7%b4%ab%e7%81%b5.jpg" alt="无感 FOC 入门（三）：软件 PLL、转速估算与系统落地"><div id="header-outer">
+    <div id="header-title"><span id="logo">
+            <h1 data-aos="slide-up">无感 FOC 入门（三）：软件 PLL、转速估算与系统落地</h1>
+          </span><h2 id="subtitle-wrap" data-aos="slide-down"></h2></div>
+  </div>
+</header><div id="content"
+          aria-label="Page content"
+          class="sidebar-left"
+            ><aside id="sidebar" aria-label="Sidebar"><div class="sidebar-wrapper-container sticky"><div class="sidebar-wrapper">
+    <div
+      class="sidebar-wrap"
+      data-aos="fade-up"
+    ><div class="sidebar-toc-sidebar"><h3 class="toc-title">文章目录</h3>
+<div class="sidebar-toc-wrapper toc-div-class">
+  <nav id="TableOfContents">
+  <ul>
+    <li><a href="#sfoc3-toc">阅读导航</a></li>
+    <li><a href="#sfoc3-phase">1. 反电动势方向与转子方向差了什么</a></li>
+    <li><a href="#sfoc3-detector">2. 相位鉴别器：怎样只用乘法得到角度误差</a></li>
+    <li><a href="#sfoc3-loop">3. 软件 PLL 的三个方程</a></li>
+    <li><a href="#sfoc3-design">4. 从期望响应反推 $K_p$ 和 $K_i$</a></li>
+    <li><a href="#sfoc3-discrete">5. 离散更新、角度环绕和积分限幅</a></li>
+    <li><a href="#sfoc3-delay">6. 观测器滤波相位与计算时序</a></li>
+    <li><a href="#sfoc3-start">7. 从静止到闭环：无感系统必须有状态机</a></li>
+    <li><a href="#sfoc3-check">8. 一套从模型到波形的验证顺序</a>
+      <ul>
+        <li><a href="#81-先用已知角度验证坐标约定">8.1 先用已知角度验证坐标约定</a></li>
+        <li><a href="#82-再逐级检查信息链">8.2 再逐级检查信息链</a></li>
+        <li><a href="#83-三道自测题">8.3 三道自测题</a></li>
+      </ul>
+    </li>
+    <li><a href="#sfoc3-references">9. 原始资料与本文边界</a></li>
+  </ul>
+</nav>
+</div></div>
+          <div class="sidebar-common-sidebar hidden"><div class="sidebar-author">
+  <img
+    data-src="/avatar/avatar.webp"
+    data-sizes="auto"
+    alt="云想衣裳花想荣"
+    class="lazyload"
+  />
+  <div class="sidebar-author-name">云想衣裳花想荣</div>
+  <div class="sidebar-description">嵌入式开发学习笔记，技术分享</div>
+</div>
+<div class="sidebar-state">
+  <div class="sidebar-state-article">
+    <div>文章</div><div class="sidebar-state-number">11</div>
+  </div>
+  <a class="sidebar-state-category" href="/categories/" aria-label="sidebar-state-category-link">
+    <div>分类</div>
+    <div class="sidebar-state-number">
+      8
+    </div>
+  </a>
+  <a class="sidebar-state-tag" href="/tags/" aria-label="sidebar-state-tag-link">
+    <div>标签</div>
+    <div class="sidebar-state-number">34</div>
+  </a>
+</div>
+<div class="sidebar-social" ></div><div class="sidebar-menu"><div class="sidebar-menu-link-wrap">
+      <a
+        class="sidebar-menu-link-dummy"
+        href="/"
+        aria-label="首页"
+      ></a><div class="sidebar-menu-link">首页</div>
+    </div><div class="sidebar-menu-link-wrap">
+      <a
+        class="sidebar-menu-link-dummy"
+        href="/archives"
+        aria-label="归档"
+      ></a><div class="sidebar-menu-link">归档</div>
+    </div><div class="sidebar-menu-link-wrap">
+      <a
+        class="sidebar-menu-link-dummy"
+        href="/about"
+        aria-label="关于"
+      ></a><div class="sidebar-menu-link">关于</div>
+    </div><div class="sidebar-menu-link-wrap">
+      <a
+        class="sidebar-menu-link-dummy"
+        href="/friend"
+        aria-label="友链"
+      ></a><div class="sidebar-menu-link">友链</div>
+    </div></div></div><div class="sidebar-btn-wrapper" style="position:static">
+            <div class="sidebar-toc-btn current"></div>
+            <div class="sidebar-common-btn"></div>
+          </div></div>
+  </div><div class="sidebar-widget"></div></div></aside>
+<section id="main" aria-label="Main content"><article
+  class="h-entry article"
+  itemscope
+  itemtype="https://schema.org/BlogPosting"
+>
+  <div
+    class="article-inner"
+    data-aos="fade-up"
+  >
+    <div class="article-meta"><div class="article-date">
+  <span
+    class="article-date-link icon-calendar"
+    data-aos="zoom-in"
+  >
+    <time datetime="2026-10-29 15:00:00 &#43;0800 CST" itemprop="datePublished"
+      >2026-10-29</time
+    >
+    <time style="display: none;" id="post-update-time"
+      >2026-10-29</time
+    >
+  </span></div>
+</div><div class="hr-line"></div><div class="e-content article-entry" itemprop="articleBody"><p><a href="http://localhost:1313/post/%E6%97%A0%E6%84%9Ffoc%E5%85%A5%E9%97%A8%E4%B8%80%E7%94%B5%E6%9C%BA%E6%A8%A1%E5%9E%8B%E7%A3%81%E9%93%BE%E4%B8%8E%E7%A3%81%E9%93%BE%E8%A7%82%E6%B5%8B/">第一篇</a>得到转子磁链和反电动势的方向关系；<a href="http://localhost:1313/post/%E6%97%A0%E6%84%9Ffoc%E5%85%A5%E9%97%A8%E4%BA%8C%E6%BB%91%E6%A8%A1%E4%B8%8E%E9%BE%99%E4%BC%AF%E6%A0%BC%E8%A7%82%E6%B5%8B%E5%99%A8/">第二篇</a>用电流误差估计反电动势。本篇解决最后一段：把带噪、可能滞后的二维向量变成连续的电角度 $\hat\theta_e$ 和电角速度 $\hat\omega_e$，再交给 FOC。</p>
+<p><strong>软件 PLL（phase-locked loop，相位锁定环）不是另一种反电动势来源。</strong> 它接收前面观测器给出的“方向证据”，运行一个内部旋转角，把内部角与证据之间的相位差压向零。其两个输出正好是 FOC 需要的角度与速度。</p>
+<p>本文仍以线性 SPMSM 和幅值不变 Clarke 变换为前提；反电动势法在静止时没有方向信息，因此启动和低速边界必须单独处理。</p>
+<p><strong>建议这样学</strong>：先画出转子磁链与正反转反电动势向量，手算第 1 节的旋转关系；再给相位误差一个小正值，预测 PLL 会怎样调整速度；最后按第 8 节从采样量逐级检查。把第 5 节视作需要接入工程的伪代码，不要跳过旋向、有效性判断和启动状态机直接上板。</p>
+<h2 id="sfoc3-toc">
+<a class="header-anchor" href="#sfoc3-toc"></a>
+阅读导航
+</h2><table>
+	<thead>
+			<tr>
+					<th>阶段</th>
+					<th>阅读位置</th>
+					<th>学完能做什么</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td>方向</td>
+					<td><a href="/post/%E6%97%A0%E6%84%9Ffoc%E5%85%A5%E9%97%A8%E4%B8%89%E8%BD%AF%E4%BB%B6pll%E4%B8%8E%E7%B3%BB%E7%BB%9F%E8%90%BD%E5%9C%B0/#sfoc3-phase">1. 从反电动势恢复转子方向</a>、<a href="/post/%E6%97%A0%E6%84%9Ffoc%E5%85%A5%E9%97%A8%E4%B8%89%E8%BD%AF%E4%BB%B6pll%E4%B8%8E%E7%B3%BB%E7%BB%9F%E8%90%BD%E5%9C%B0/#sfoc3-detector">2. 相位鉴别器</a></td>
+					<td>理解正反转和误差信号</td>
+			</tr>
+			<tr>
+					<td>闭环</td>
+					<td><a href="/post/%E6%97%A0%E6%84%9Ffoc%E5%85%A5%E9%97%A8%E4%B8%89%E8%BD%AF%E4%BB%B6pll%E4%B8%8E%E7%B3%BB%E7%BB%9F%E8%90%BD%E5%9C%B0/#sfoc3-loop">3. PLL 方程</a>、<a href="/post/%E6%97%A0%E6%84%9Ffoc%E5%85%A5%E9%97%A8%E4%B8%89%E8%BD%AF%E4%BB%B6pll%E4%B8%8E%E7%B3%BB%E7%BB%9F%E8%90%BD%E5%9C%B0/#sfoc3-design">4. 增益设计</a></td>
+					<td>从带宽和阻尼计算 PI 增益</td>
+			</tr>
+			<tr>
+					<td>软件</td>
+					<td><a href="/post/%E6%97%A0%E6%84%9Ffoc%E5%85%A5%E9%97%A8%E4%B8%89%E8%BD%AF%E4%BB%B6pll%E4%B8%8E%E7%B3%BB%E7%BB%9F%E8%90%BD%E5%9C%B0/#sfoc3-discrete">5. 离散实现</a>、<a href="/post/%E6%97%A0%E6%84%9Ffoc%E5%85%A5%E9%97%A8%E4%B8%89%E8%BD%AF%E4%BB%B6pll%E4%B8%8E%E7%B3%BB%E7%BB%9F%E8%90%BD%E5%9C%B0/#sfoc3-delay">6. 滤波相位与时序</a></td>
+					<td>避免角度跳变和延迟</td>
+			</tr>
+			<tr>
+					<td>系统</td>
+					<td><a href="/post/%E6%97%A0%E6%84%9Ffoc%E5%85%A5%E9%97%A8%E4%B8%89%E8%BD%AF%E4%BB%B6pll%E4%B8%8E%E7%B3%BB%E7%BB%9F%E8%90%BD%E5%9C%B0/#sfoc3-start">7. 启动与切换</a>、<a href="/post/%E6%97%A0%E6%84%9Ffoc%E5%85%A5%E9%97%A8%E4%B8%89%E8%BD%AF%E4%BB%B6pll%E4%B8%8E%E7%B3%BB%E7%BB%9F%E8%90%BD%E5%9C%B0/#sfoc3-check">8. 验证与排错</a>、<a href="/post/%E6%97%A0%E6%84%9Ffoc%E5%85%A5%E9%97%A8%E4%B8%89%E8%BD%AF%E4%BB%B6pll%E4%B8%8E%E7%B3%BB%E7%BB%9F%E8%90%BD%E5%9C%B0/#sfoc3-references">9. 资料</a></td>
+					<td>判断闭环是否可信</td>
+			</tr>
+	</tbody>
+</table>
+<h2 id="sfoc3-phase">
+<a class="header-anchor" href="#sfoc3-phase"></a>
+1. 反电动势方向与转子方向差了什么
+</h2><p>沿用前文约定，永磁磁链方向是 $\boldsymbol r=(\cos\theta_e,\sin\theta_e)$，而反电动势为：</p>
+$$
+\boldsymbol e=\omega_e\psi_f
+\begin{bmatrix}-\sin\theta_e\\\cos\theta_e\end{bmatrix}.
+$$<p>因此 $\boldsymbol e$ 指向转子磁链沿<strong>带符号旋转方向</strong>的法线。若已知 $\omega_e$ 的符号，令 $E_s=\omega_e\psi_f$，就能从反电动势恢复转子单位方向：</p>
+$$
+\boxed{\boldsymbol r
+=\begin{bmatrix}e_\beta/E_s\\-e_\alpha/E_s\end{bmatrix},
+\qquad E_s\ne0.}
+$$<p>验证很直接：代入 $e_\beta=E_s\cos\theta_e$、$e_\alpha=-E_s\sin\theta_e$，得到 $(\cos\theta_e,\sin\theta_e)$。实际中不必依赖准确的 $\psi_f$ 幅值，可用当前已知旋向 $\sigma=\operatorname{sgn}(\omega_e)$ 和向量模长归一化：</p>
+$$
+\boldsymbol r_m
+=\sigma\frac{1}{\sqrt{\hat e_\alpha^2+\hat e_\beta^2}}
+\begin{bmatrix}\hat e_\beta\\-\hat e_\alpha\end{bmatrix}.
+$$<p>$\boldsymbol r_m$ 是“由反电动势测得的转子方向”。要先确保 $\lVert\hat{\boldsymbol e}\rVert$ 高于可靠阈值；接近零时不能除以极小数。<strong>旋向 $\sigma$ 不是从一个瞬时向量自动判出来的</strong>：正转的 $(\theta_e,\omega_e)$ 与反转的 $(\theta_e+\pi,-\omega_e)$ 可产生同一个瞬时反电动势向量。启动状态机、上一时刻连续轨迹或额外信息必须消除这个歧义。</p>
+<p>如果输入直接是磁链观测器的 $\hat{\boldsymbol\psi}_f$，则方向可写成 $\boldsymbol r_m=\hat{\boldsymbol\psi}_f/\lVert\hat{\boldsymbol\psi}_f\rVert$，不需要反电动势的 $90^\circ$ 旋转和旋向符号；但仍要面对第一篇的积分漂移。</p>
+<p><a href="/post/%E6%97%A0%E6%84%9Ffoc%E5%85%A5%E9%97%A8%E4%B8%89%E8%BD%AF%E4%BB%B6pll%E4%B8%8E%E7%B3%BB%E7%BB%9F%E8%90%BD%E5%9C%B0/#sfoc3-toc">返回目录</a></p>
+<h2 id="sfoc3-detector">
+<a class="header-anchor" href="#sfoc3-detector"></a>
+2. 相位鉴别器：怎样只用乘法得到角度误差
+</h2><p>PLL 内部有一个估算角 $\hat\theta_e$，内部单位方向为 $\hat{\boldsymbol r}=(\cos\hat\theta_e,\sin\hat\theta_e)$。把两个单位向量做二维叉积，定义误差：</p>
+$$
+\begin{aligned}
+\epsilon_\theta
+&=r_{m\beta}\cos\hat\theta_e
+-r_{m\alpha}\sin\hat\theta_e\\
+&=\sin\theta_e\cos\hat\theta_e
+-\cos\theta_e\sin\hat\theta_e\\
+&=\sin(\theta_e-\hat\theta_e).
+\end{aligned}
+$$<p>所以当估算角落后真实角一个小正角度时，$\epsilon_\theta>0$，PLL 应加速追上；反过来则减速。在 $\lvert\theta_e-\hat\theta_e\rvert\ll1\,\mathrm{rad}$ 附近，$\sin\Delta\theta\approx\Delta\theta$，误差信号的单位可按弧度理解。若不归一化，误差信号会再乘 $\lVert\boldsymbol e\rVert$，PLL 的有效增益随转速改变，设计公式也要随之重算。</p>
+<p>另一种常见写法把估算反电动势转到估算的 $dq$ 坐标：</p>
+$$
+\hat e_d=\hat e_\alpha\cos\hat\theta_e
++\hat e_\beta\sin\hat\theta_e
+=-E_s\sin(\theta_e-\hat\theta_e).
+$$<p>于是 $\epsilon_\theta=-\hat e_d/E_s$。这解释了很多资料说的“锁定时 $d$ 轴反电动势等于零”。注意分母是<strong>带符号</strong>的 $E_s$；若只除以正的幅值，反转时反馈符号会反。Microchip 的 PLL 型 PMSM 估算说明也以稳态 $d$ 轴反电动势为零建立闭环。<a href="https://onlinedocs.microchip.com/oxy/GUID-AAAF8F97-D139-4A93-A154-AA3C6EE6BB22-en-US-1/GUID-138615DD-48FD-4E16-ABE9-74208FD88F9C.html">来源：Microchip PLL Type Estimator</a>。</p>
+<p><strong>锁定范围提醒：</strong> $\sin\Delta\theta$ 不会告诉你误差究竟是 $0$ 还是 $\pi$，二者都是零点。$\Delta\theta=0$ 是期望锁定点，$\Delta\theta=\pi$ 是易受扰动的错误平衡点；启动初角太远、反向符号错误都可能导致追踪失败。用 $\operatorname{atan2}$ 计算完整的向量夹角也可以，但归一化与低速可信度问题仍在。</p>
+<p><a href="/post/%E6%97%A0%E6%84%9Ffoc%E5%85%A5%E9%97%A8%E4%B8%89%E8%BD%AF%E4%BB%B6pll%E4%B8%8E%E7%B3%BB%E7%BB%9F%E8%90%BD%E5%9C%B0/#sfoc3-toc">返回目录</a></p>
+<h2 id="sfoc3-loop">
+<a class="header-anchor" href="#sfoc3-loop"></a>
+3. 软件 PLL 的三个方程
+</h2><p>最基本的 PI 型 PLL 设积分状态 $\xi$，可选一个已知的前馈速度 $\omega_{\mathrm{ff}}$：</p>
+$$
+\boxed{\begin{aligned}
+\dot\xi&=\epsilon_\theta,\\
+\hat\omega_e&=\omega_{\mathrm{ff}}+K_p\epsilon_\theta+K_i\xi,\\
+\dot{\hat\theta}_e&=\hat\omega_e.
+\end{aligned}}
+$$<p>第一行累计相位误差；第二行用比例项立刻调整速度，用积分项消除持续速度偏差；第三行积分速度得到角度。$K_p$ 的单位是 $\mathrm{s}^{-1}$，$K_i$ 是 $\mathrm{s}^{-2}$，因为 $\epsilon_\theta$ 与 $\xi$ 分别可视为 rad 与 rad·s，而弧度在量纲计算中视为无量纲。</p>
+<p>稳态锁定时 $\epsilon_\theta=0$，$\hat\omega_e$ 应等于真实电角速度。速度输出不能简单靠对 $\operatorname{atan2}$ 的角度做相邻差分得到：角度在 $2\pi$ 处跳变，而且测量噪声经差分会被放大。PLL 的内部速度状态是更平滑的估计，但也必须按可接受的动态与噪声水平调节。</p>
+<p>NXP 的无感 PMSM 设计手册将反电动势观测后的相位追踪器实现为 PI 补偿的 PLL 结构。<a href="https://community.nxp.com/pwmxy87654/attachments/pwmxy87654/motor-control-and-smart-energy/1195/1/DRM148%28sensorlessPMSM%29.pdf">来源：NXP DRM148</a>。</p>
+<p><a href="/post/%E6%97%A0%E6%84%9Ffoc%E5%85%A5%E9%97%A8%E4%B8%89%E8%BD%AF%E4%BB%B6pll%E4%B8%8E%E7%B3%BB%E7%BB%9F%E8%90%BD%E5%9C%B0/#sfoc3-toc">返回目录</a></p>
+<h2 id="sfoc3-design">
+<a class="header-anchor" href="#sfoc3-design"></a>
+4. 从期望响应反推 $K_p$ 和 $K_i$
+</h2><p>先假设反电动势方向正确、没有测量与计算延迟，且已接近锁定。令 $\Delta\theta=\theta_e-\hat\theta_e$，于是 $\epsilon_\theta\approx\Delta\theta$。对真实速度短时恒定的情形，$\dot\theta_e=\omega_e$。由 PLL 方程：</p>
+$$
+\begin{aligned}
+\dot{\Delta\theta}
+&=\omega_e-\omega_{\mathrm{ff}}
+-K_p\Delta\theta-K_i\xi,\\
+\dot\xi&=\Delta\theta.
+\end{aligned}
+$$<p>对第一式再求导，若 $\omega_e-\omega_{\mathrm{ff}}$ 不变，则常值项消失：</p>
+$$
+\ddot{\Delta\theta}
++K_p\dot{\Delta\theta}
++K_i\Delta\theta=0.
+$$<p>特征多项式为 $s^2+K_ps+K_i$。把它与标准二阶形式 $s^2+2\zeta\omega_ns+\omega_n^2$ 对比：</p>
+$$
+\boxed{K_p=2\zeta\omega_n,
+\qquad K_i=\omega_n^2.}
+$$<p>$\omega_n$ 是设计用的自然角频率（rad/s），$\zeta$ 是无量纲阻尼比；它们不是直接等于电机运行电角速度。若选 $f_n=20\,\mathrm{Hz}$，即 $\omega_n=2\pi f_n=125.66\,\mathrm{s}^{-1}$，$\zeta=0.707$，则：</p>
+$$
+\begin{aligned}
+K_p&=2(0.707)(125.66)=177.7\,\mathrm{s}^{-1},\\
+K_i&=(125.66)^2=1.579\times10^4\,\mathrm{s}^{-2}.
+\end{aligned}
+$$<p>这只是<strong>理想小信号起点</strong>。若观测器输出先经过低通、反电动势受 PWM 纹波影响，或采样/计算延迟明显，环路实际相位裕度会下降；需要把 PLL 速度调低并用闭环记录验证。也不要把“$20\,\mathrm{Hz}$ 自然频率”直接叫作精确的闭环 $-3\,\mathrm{dB}$ 带宽；二者定义不同。</p>
+<p><a href="/post/%E6%97%A0%E6%84%9Ffoc%E5%85%A5%E9%97%A8%E4%B8%89%E8%BD%AF%E4%BB%B6pll%E4%B8%8E%E7%B3%BB%E7%BB%9F%E8%90%BD%E5%9C%B0/#sfoc3-toc">返回目录</a></p>
+<h2 id="sfoc3-discrete">
+<a class="header-anchor" href="#sfoc3-discrete"></a>
+5. 离散更新、角度环绕和积分限幅
+</h2><p>下面是每个电流采样周期执行一次的<strong>伪代码</strong>。输入是当前时刻对齐后的 $\hat e_\alpha,\hat e_\beta$（V）、已确定的旋向 $\sigma\in\{-1,+1\}$、周期 $T_s$（s）；输出是电角度（rad）和电角速度（rad/s）。<code>clamp</code> 与 <code>wrap_2pi</code> 需在目标平台实现。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-text" data-lang="text"><span class="line"><span class="cl">emag = hypot(e_alpha, e_beta)
+</span></span><span class="line"><span class="cl">if emag &lt; emf_valid_threshold:
+</span></span><span class="line"><span class="cl">    # 角度观测无效：使用启动/降级状态机，不更新相位误差
+</span></span><span class="line"><span class="cl">    estimator_valid = false
+</span></span><span class="line"><span class="cl">else:
+</span></span><span class="line"><span class="cl">    r_alpha = sigma * e_beta / emag
+</span></span><span class="line"><span class="cl">    r_beta  = sigma * (-e_alpha) / emag
+</span></span><span class="line"><span class="cl">    phase_error = r_beta * cos(theta_hat) - r_alpha * sin(theta_hat)
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    xi_candidate = clamp(xi + Ts * phase_error, xi_min, xi_max)
+</span></span><span class="line"><span class="cl">    omega_candidate = omega_feedforward + Kp * phase_error + Ki * xi_candidate
+</span></span><span class="line"><span class="cl">    omega_hat = clamp(omega_candidate, omega_min, omega_max)
+</span></span><span class="line"><span class="cl">    # 若速度已限幅且误差仍推动它继续越界，则暂停或回算积分
+</span></span><span class="line"><span class="cl">    xi = anti_windup_update(xi, xi_candidate, omega_candidate, omega_hat)
+</span></span><span class="line"><span class="cl">    theta_hat = wrap_2pi(theta_hat + Ts * omega_hat)
+</span></span><span class="line"><span class="cl">    estimator_valid = true
+</span></span></code></pre></div><p><code>omega_min</code> 通常是负值，允许反转。角度环绕只改变表示范围，不应改变速度状态。限幅解决电角速度在启动错误、瞬时尖峰下跑飞的问题；抗积分饱和防止恢复有效信号后仍长时间被累积误差拖住。失效时不能直接输出“刚算出的随机角度”给 Park 变换，应该由状态机决定继续开环、保持上一可用状态还是关断驱动。</p>
+<p>若 $T_s=100\,\mu\mathrm s$，上一节的 $K_pT_s=0.0178$，一拍内比例修正幅度较小；这并不单独证明稳定，还需看观测器滤波和总延迟。运行频率若与电流环不同，所有积分项应使用<strong>该算法实际执行的周期</strong>。</p>
+<p><a href="/post/%E6%97%A0%E6%84%9Ffoc%E5%85%A5%E9%97%A8%E4%B8%89%E8%BD%AF%E4%BB%B6pll%E4%B8%8E%E7%B3%BB%E7%BB%9F%E8%90%BD%E5%9C%B0/#sfoc3-toc">返回目录</a></p>
+<h2 id="sfoc3-delay">
+<a class="header-anchor" href="#sfoc3-delay"></a>
+6. 观测器滤波相位与计算时序
+</h2><p>第二篇的滑模开关项常用 $H(s)=\omega_f/(s+\omega_f)$ 低通。若真实反电动势以带符号速度 $\omega_e$ 旋转，滤波器在稳态使向量方向滞后：</p>
+$$
+\delta_f=\arctan\!\left(\frac{\omega_e}{\omega_f}\right),
+\qquad
+\theta_{\mathrm{filtered}}
+\approx\theta_e-\delta_f.
+$$<p>所以可以对方向测量补偿 $+\delta_f$，或把相同补偿加到最终角度上。对反转，$\delta_f$ 为负，公式自动翻转符号。这个推导只针对稳态单频一阶低通；变速、非线性饱和和多级滤波时，补偿需要仿真与实测，不能靠一个常数。</p>
+<p>还要区分<strong>滤波相位</strong>和<strong>时序延迟</strong>。若观测器使用的是 $t_k$ 的采样，控制 PWM 真正施加角度是在 $t_k+T_d$，常速近似下预测角度：</p>
+$$
+\theta_{\mathrm{act}}
+\approx\operatorname{wrap}_{2\pi}
+\bigl(\hat\theta_e(t_k)+\hat\omega_eT_d\bigr).
+$$<p>$T_d$ 应由 ADC 采样点、软件执行和 PWM 更新机制确定，不能随意填一个采样周期。错把机械速度用于这个电角预测，会差 $p$ 倍。若先把经过滤波的 $\hat e$ 送入 PLL，PLL 的小信号整定也必须考虑该低通；外加角度补偿不能代替稳定性验证。</p>
+<p><a href="/post/%E6%97%A0%E6%84%9Ffoc%E5%85%A5%E9%97%A8%E4%B8%89%E8%BD%AF%E4%BB%B6pll%E4%B8%8E%E7%B3%BB%E7%BB%9F%E8%90%BD%E5%9C%B0/#sfoc3-toc">返回目录</a></p>
+<h2 id="sfoc3-start">
+<a class="header-anchor" href="#sfoc3-start"></a>
+7. 从静止到闭环：无感系统必须有状态机
+</h2><p>反电动势幅值 $\lVert e\rVert=\lvert\omega_e\rvert\psi_f$。电机静止时它为零，以上观测器和 PLL 没有可靠的方向输入。实际反电动势无感 FOC 通常按阶段工作：</p>
+<ol>
+<li><strong>对齐或确定初始方向。</strong> 用受限电流建立已知定子磁场；需考虑负载、允许的转动和安全限制。</li>
+<li><strong>开环加速。</strong> 使用给定电角轨迹 $\theta_{\mathrm{ol}}$ 与电流指令让转子跟随，逐渐建立足够反电动势。</li>
+<li><strong>判断估算可信。</strong> 结合 $\lVert\hat e\rVert$、电流预测残差、估算速度连续性，以及 $\hat\theta_e-\theta_{\mathrm{ol}}$ 是否保持在可接受范围，持续一段时间而非只看单点。</li>
+<li><strong>平滑切换。</strong> 以开环角初始化 PLL 内部角和速度，并在有限时间内切换 Park 变换使用的角度；观察 $i_d,i_q$ 是否有突跳。</li>
+<li><strong>闭环与失锁处理。</strong> 有效性下降时按驱动需求降扭、退回开环或关断，不继续信任失锁角。</li>
+</ol>
+<p>这是控制逻辑顺序，阈值、时间和电流大小必须依电机与负载实测确定，不能从文章直接抄到硬件。Microchip AN4398 给出了对齐、开环爬坡、稳定、闭环的典型流程。<a href="https://www.microchip.com/content/dam/mchp/documents/MCU32/ApplicationNotes/ApplicationNotes/Sensorless-Field-Oriented-Control-for-a-Permanent-Magnet-Synchronous-Motor-Using-Sliding-Mode-DS00004398.pdf">来源：Microchip AN4398</a>。</p>
+<p>一个经常漏掉的限制是<strong>静止反向启动</strong>：先前的旋向标志不一定正确。反转命令应经过转速接近零的专用切换逻辑，重新确认方向与可信度；否则反电动势向量可能给 PLL 一个 $180^\circ$ 错角。</p>
+<p><a href="/post/%E6%97%A0%E6%84%9Ffoc%E5%85%A5%E9%97%A8%E4%B8%89%E8%BD%AF%E4%BB%B6pll%E4%B8%8E%E7%B3%BB%E7%BB%9F%E8%90%BD%E5%9C%B0/#sfoc3-toc">返回目录</a></p>
+<h2 id="sfoc3-check">
+<a class="header-anchor" href="#sfoc3-check"></a>
+8. 一套从模型到波形的验证顺序
+</h2><h3 id="81-先用已知角度验证坐标约定">
+<a class="header-anchor" href="#81-%e5%85%88%e7%94%a8%e5%b7%b2%e7%9f%a5%e8%a7%92%e5%ba%a6%e9%aa%8c%e8%af%81%e5%9d%90%e6%a0%87%e7%ba%a6%e5%ae%9a"></a>
+8.1 先用已知角度验证坐标约定
+</h3><p>在有编码器的测试条件下，用编码器电角度做 Park 变换，检查 $i_d/i_q$ 的方向、相序、极对数和角度零位。之后再比较估算角。若三相相序或 Clarke/Park 符号错了，换更复杂的观测器也不会修复。</p>
+<h3 id="82-再逐级检查信息链">
+<a class="header-anchor" href="#82-%e5%86%8d%e9%80%90%e7%ba%a7%e6%a3%80%e6%9f%a5%e4%bf%a1%e6%81%af%e9%93%be"></a>
+8.2 再逐级检查信息链
+</h3><table>
+	<thead>
+			<tr>
+					<th>观察量</th>
+					<th>正常趋势</th>
+					<th>异常时先查</th>
+			</tr>
+	</thead>
+	<tbody>
+			<tr>
+					<td>$v_{\alpha\beta}$、$i_{\alpha\beta}$</td>
+					<td>时序对应，单位 V/A</td>
+					<td>母线标定、采样点、死区</td>
+			</tr>
+			<tr>
+					<td>$\hat i-i$</td>
+					<td>有界，不持续偏向单侧</td>
+					<td>$R_s,L_s$、符号、延迟</td>
+			</tr>
+			<tr>
+					<td>$\hat e_{\alpha\beta}$</td>
+					<td>两轴近似正交，幅值随速度变化</td>
+					<td>滤波、相序、增益</td>
+			</tr>
+			<tr>
+					<td>PLL 相位误差</td>
+					<td>锁定后围绕零小幅波动</td>
+					<td>旋向、$90^\circ$ 转换、相位补偿</td>
+			</tr>
+			<tr>
+					<td>$\hat\omega_e$</td>
+					<td>与 $p\omega_m$ 同号且量级相近</td>
+					<td>极对数、rad/s 与 r/min 换算</td>
+			</tr>
+			<tr>
+					<td>$\hat\theta_e$ 与编码器角</td>
+					<td>角差连续、无失锁跳变</td>
+					<td>零位、延迟、启动切换</td>
+			</tr>
+	</tbody>
+</table>
+<p>在一定速度区间分别记录稳态、加速、减速和反转。检查角差时用环绕差 $\operatorname{wrap}_{-\pi,\pi}(\hat\theta_e-\theta_{e,\mathrm{encoder}})$，否则跨越 $2\pi$ 时会出现假的巨大误差。若角差随速度近似线性增长，优先怀疑固定时序延迟；若低速恶化明显，优先检查电阻、电压偏置与反电动势信噪比；若始终相差约 $90^\circ$ 或 $180^\circ$，先检查向量定义和旋向。</p>
+<h3 id="83-三道自测题">
+<a class="header-anchor" href="#83-%e4%b8%89%e9%81%93%e8%87%aa%e6%b5%8b%e9%a2%98"></a>
+8.3 三道自测题
+</h3><ol>
+<li><strong>四对极电机以 $300\,\mathrm{r/min}$ 正转，电角速度多少？</strong> $\omega_e=4(2\pi\times300/60)=125.66\,\mathrm{rad/s}$。</li>
+<li><strong>$\hat e=(-2,0)\,\mathrm V$、已知正转，转子方向是什么？</strong> $\boldsymbol r_m=(0,1)$，即 $\theta_e=\pi/2$。若已知反转，则是 $(0,-1)$。</li>
+<li><strong>PLL 的相位鉴别器给出正的小误差，估算角落后还是超前？</strong> 因 $\epsilon_\theta\approx\theta_e-\hat\theta_e>0$，估算角落后，比例项应增加估算速度。</li>
+</ol>
+<p>到这里三篇形成完整链条：<strong>电机电压与磁链模型 → 磁链或反电动势观测 → 相位跟踪 → FOC 坐标变换</strong>。真正移植时从采样、电压重构和符号约定开始逐段核对，别只看最终转速能否跟随。</p>
+<p><a href="/post/%E6%97%A0%E6%84%9Ffoc%E5%85%A5%E9%97%A8%E4%B8%89%E8%BD%AF%E4%BB%B6pll%E4%B8%8E%E7%B3%BB%E7%BB%9F%E8%90%BD%E5%9C%B0/#sfoc3-toc">返回目录</a></p>
+<h2 id="sfoc3-references">
+<a class="header-anchor" href="#sfoc3-references"></a>
+9. 原始资料与本文边界
+</h2><ul>
+<li><a href="https://onlinedocs.microchip.com/oxy/GUID-AAAF8F97-D139-4A93-A154-AA3C6EE6BB22-en-US-1/GUID-138615DD-48FD-4E16-ABE9-74208FD88F9C.html">Microchip：PLL Type Estimator，基于 $d$ 轴反电动势的估算思想</a>。</li>
+<li><a href="https://community.nxp.com/pwmxy87654/attachments/pwmxy87654/motor-control-and-smart-energy/1195/1/DRM148%28sensorlessPMSM%29.pdf">NXP DRM148：无感 PMSM FOC 中的相位追踪 PLL</a>。</li>
+<li><a href="https://www.microchip.com/content/dam/mchp/documents/MCU32/ApplicationNotes/ApplicationNotes/Sensorless-Field-Oriented-Control-for-a-Permanent-Magnet-Synchronous-Motor-Using-Sliding-Mode-DS00004398.pdf">Microchip AN4398：反电动势无感启动和滑模估算</a>。</li>
+</ul>
+<p>本文的 PLL 增益推导针对<strong>单位幅值相位鉴别器、小角度误差、理想连续环路</strong>。若采用未归一化 $e_d$、不同误差符号或不同 PI 结构，不能直接套 $K_p=2\zeta\omega_n$ 和 $K_i=\omega_n^2$；须重新写闭环方程。</p>
+<p><a href="/post/%E6%97%A0%E6%84%9Ffoc%E5%85%A5%E9%97%A8%E4%B8%89%E8%BD%AF%E4%BB%B6pll%E4%B8%8E%E7%B3%BB%E7%BB%9F%E8%90%BD%E5%9C%B0/#sfoc3-toc">返回目录</a></p>
+</div>
+    <footer class="article-footer"><ul class="article-category-list"><li class="article-tag-list-item" data-aos="zoom-in">
+    <a
+      class="article-category-link"
+      href="/categories/%e7%94%b5%e6%9c%ba%e6%8e%a7%e5%88%b6"
+      data-aos="zoom-in"
+      >电机控制</a
+    >
+    </li></ul>
+<ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item" data-aos="zoom-in">
+      <a
+        class="article-tag-list-link"
+        href="/tags/foc"
+        rel="tag"
+        >FOC</a
+      >
+    </li><li class="article-tag-list-item" data-aos="zoom-in">
+      <a
+        class="article-tag-list-link"
+        href="/tags/%e8%bd%af%e4%bb%b6pll"
+        rel="tag"
+        >软件PLL</a
+      >
+    </li><li class="article-tag-list-item" data-aos="zoom-in">
+      <a
+        class="article-tag-list-link"
+        href="/tags/%e7%9b%b8%e4%bd%8d%e9%94%81%e5%ae%9a"
+        rel="tag"
+        >相位锁定</a
+      >
+    </li><li class="article-tag-list-item" data-aos="zoom-in">
+      <a
+        class="article-tag-list-link"
+        href="/tags/%e6%97%a0%e6%84%9f%e5%90%af%e5%8a%a8"
+        rel="tag"
+        >无感启动</a
+      >
+    </li></ul>
+</footer>
+  </div><nav
+    id="article-nav"
+    aria-label="Article navigation"
+    data-aos="fade-up"
+  ><div class="article-nav-link-wrap left"><img
+            data-src="/images/cover/%e5%88%9d%e8%a7%81%e7%b4%ab%e7%81%b5.jpg"
+            data-sizes="auto"
+            alt="无感 FOC 入门（二）：滑模与龙伯格观测器"
+            class="lazyload"
+          /><a
+          href="/post/%E6%97%A0%E6%84%9Ffoc%E5%85%A5%E9%97%A8%E4%BA%8C%E6%BB%91%E6%A8%A1%E4%B8%8E%E9%BE%99%E4%BC%AF%E6%A0%BC%E8%A7%82%E6%B5%8B%E5%99%A8/"
+          aria-label="前一篇:无感 FOC 入门（二）：滑模与龙伯格观测器"
+          title="前一篇:无感 FOC 入门（二）：滑模与龙伯格观测器"
+        ></a>
+        <div class="article-nav-caption">前一篇</div>
+        <h3 class="article-nav-title">无感 FOC 入门（二）：滑模与龙伯格观测器</h3>
+      </div></nav></article></section>
+        </div><footer id="footer" aria-label="Site footer">
+  <div style="width: 100%; overflow: hidden">
+    <div class="footer-line"></div>
+  </div>
+  <div id="footer-info"><div>
+      <span class="icon-copyright"></span>2020-2026<span class="footer-info-sep rotate"></span>云想衣裳花想荣
+    </div><div>
+        <span class="icon-brush"
+          >&nbsp;90.8k</span
+        >
+        &nbsp;|&nbsp;
+        <span class="icon-coffee">&nbsp;03:07</span>
+      </div></div>
+</footer>
+<div id="mask" class="hide"></div>
+      </div><nav id="mobile-nav" aria-label="Mobile navigation">
+  <div class="sidebar-wrap"><div class="sidebar-toc-sidebar"><h3 class="toc-title">文章目录</h3>
+<div class="sidebar-toc-wrapper toc-div-class">
+  <nav id="TableOfContents">
+  <ul>
+    <li><a href="#sfoc3-toc">阅读导航</a></li>
+    <li><a href="#sfoc3-phase">1. 反电动势方向与转子方向差了什么</a></li>
+    <li><a href="#sfoc3-detector">2. 相位鉴别器：怎样只用乘法得到角度误差</a></li>
+    <li><a href="#sfoc3-loop">3. 软件 PLL 的三个方程</a></li>
+    <li><a href="#sfoc3-design">4. 从期望响应反推 $K_p$ 和 $K_i$</a></li>
+    <li><a href="#sfoc3-discrete">5. 离散更新、角度环绕和积分限幅</a></li>
+    <li><a href="#sfoc3-delay">6. 观测器滤波相位与计算时序</a></li>
+    <li><a href="#sfoc3-start">7. 从静止到闭环：无感系统必须有状态机</a></li>
+    <li><a href="#sfoc3-check">8. 一套从模型到波形的验证顺序</a>
+      <ul>
+        <li><a href="#81-先用已知角度验证坐标约定">8.1 先用已知角度验证坐标约定</a></li>
+        <li><a href="#82-再逐级检查信息链">8.2 再逐级检查信息链</a></li>
+        <li><a href="#83-三道自测题">8.3 三道自测题</a></li>
+      </ul>
+    </li>
+    <li><a href="#sfoc3-references">9. 原始资料与本文边界</a></li>
+  </ul>
+</nav>
+</div></div>
+        <div class="sidebar-common-sidebar hidden"><div class="sidebar-author">
+  <img
+    data-src="/avatar/avatar.webp"
+    data-sizes="auto"
+    alt="云想衣裳花想荣"
+    class="lazyload"
+  />
+  <div class="sidebar-author-name">云想衣裳花想荣</div>
+  <div class="sidebar-description">嵌入式开发学习笔记，技术分享</div>
+</div>
+<div class="sidebar-state">
+  <div class="sidebar-state-article">
+    <div>文章</div><div class="sidebar-state-number">11</div>
+  </div>
+  <a class="sidebar-state-category" href="/categories/" aria-label="sidebar-state-category-link">
+    <div>分类</div>
+    <div class="sidebar-state-number">
+      8
+    </div>
+  </a>
+  <a class="sidebar-state-tag" href="/tags/" aria-label="sidebar-state-tag-link">
+    <div>标签</div>
+    <div class="sidebar-state-number">34</div>
+  </a>
+</div>
+<div class="sidebar-social" ></div><div class="sidebar-menu"><div class="sidebar-menu-link-wrap">
+      <a
+        class="sidebar-menu-link-dummy"
+        href="/"
+        aria-label="首页"
+      ></a><div class="sidebar-menu-link">首页</div>
+    </div><div class="sidebar-menu-link-wrap">
+      <a
+        class="sidebar-menu-link-dummy"
+        href="/archives"
+        aria-label="归档"
+      ></a><div class="sidebar-menu-link">归档</div>
+    </div><div class="sidebar-menu-link-wrap">
+      <a
+        class="sidebar-menu-link-dummy"
+        href="/about"
+        aria-label="关于"
+      ></a><div class="sidebar-menu-link">关于</div>
+    </div><div class="sidebar-menu-link-wrap">
+      <a
+        class="sidebar-menu-link-dummy"
+        href="/friend"
+        aria-label="友链"
+      ></a><div class="sidebar-menu-link">友链</div>
+    </div></div></div></div><div class="sidebar-btn-wrapper">
+        <div class="sidebar-toc-btn current"></div>
+        <div class="sidebar-common-btn"></div>
+      </div></nav>
+</div><script
+    src="https://npm.webcache.cn/lazysizes@5.3.2/lazysizes.min.js"
+    
+    
+    
+    
+    integrity="sha384-3gT/vsepWkfz/ff7PpWNUeMzeWoH3cDhm/A8jM7ouoAK0/fP/9bcHHR5kHq2nf&#43;e" crossorigin="anonymous"></script><script
+    src="https://npm.webcache.cn/clipboard@2.0.11/dist/clipboard.min.js"
+    
+    
+    
+    
+    integrity="sha384-J08i8An/QeARD9ExYpvphB8BsyOj3Gh2TSh1aLINKO3L0cMSH2dN3E22zFoXEi0Q" crossorigin="anonymous"></script><script
+    src="https://npm.webcache.cn/material-theme@1.0.0/dist/material-theme.umd.js"
+    
+    
+    
+    
+    integrity="sha384-vLev0II0HKFaxkcm&#43;/7kX5IGwVFBASkGchU311wmU/veIj2bB0UcBkQbW6yw2asK" crossorigin="anonymous"></script><script src="/js/main.js"  ></script><script src="/js/aos.js"  ></script><script>
+    var aosInit = () => {
+      AOS.init({
+        duration: 1000,
+        easing: "ease",
+        once: true,
+        offset: 50,
+      });
+    };
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", aosInit);
+    } else {
+      aosInit();
+    }
+  </script><script src="/js/pjax_main.js" data-pjax ></script>
+
+<div id="lazy-script">
+  <div><script data-pjax>
+        window.REIMU_POST = {
+          author: "云想衣裳花想荣",
+          title: "无感 FOC 入门（三）：软件 PLL、转速估算与系统落地",
+          url: "http:\/\/localhost:1313\/post\/%E6%97%A0%E6%84%9Ffoc%E5%85%A5%E9%97%A8%E4%B8%89%E8%BD%AF%E4%BB%B6pll%E4%B8%8E%E7%B3%BB%E7%BB%9F%E8%90%BD%E5%9C%B0\/",
+          description: "从反电动势向量构造相位误差，推导 PI 型软件 PLL 的闭环极点、离散更新、反转处理和无感 FOC 启动验证。",
+          cover: "http:\/\/localhost:1313\/images\/cover\/%E5%88%9D%E8%A7%81%E7%B4%AB%E7%81%B5.jpg",
+        };
+      </script><script src="/js/insert_highlight.js" data-pjax ></script><script src="/js/tabs.js" data-pjax defer></script><script type="module" data-pjax>const PhotoSwipeLightbox = (await safeImport("https:\/\/npm.webcache.cn\/photoswipe@5.4.4\/dist\/photoswipe-lightbox.esm.min.js", "sha384-DiL6M\/gG\u002bwmTxmCRZyD1zee6lIhawn5TGvED0FOh7fXcN9B0aZ9dexSF\/N6lrZi\/")).default;const initPswp = (gallery, children) => {
+          if (_$$(`${gallery} ${children}`).length > 0) {
+            new PhotoSwipeLightbox({
+              gallery,
+              children,pswpModule: () => safeImport("https:\/\/npm.webcache.cn\/photoswipe@5.4.4\/dist\/photoswipe.esm.min.js", "sha384-WkkO3GCmgkC3VQWpaV8DqhKJqpzpF9JoByxDmnV8\u002boTJ7m3DfYEWX1fu1scuS4\u002bs")}).init();
+          }
+        }
+        const pswp = () => {
+          initPswp('.article-entry', 'a.article-gallery-item');
+          initPswp('.article-gallery', 'a.article-gallery-item');
+        }
+        pswp()
+      </script><script
+    src="https://npm.webcache.cn/katex@0.16.47/dist/katex.min.js"
+    
+    
+    data-pjax
+    
+    integrity="sha384-CwjPRVHTvLiMBFjEoij&#43;QZViMV5rhTOIp7CJzl24JEqpRDA1sJFHVXXLURktbYYp" crossorigin="anonymous"></script><script
+    src="https://npm.webcache.cn/katex@0.16.47/dist/contrib/auto-render.min.js"
+    
+    
+    data-pjax
+    
+    integrity="sha384-bjyGPfbij8/NDKJhSGZNP/khQVgtHUE5exjm4Ydllo42FwIgYsdLO2lXGmRBf5Mz" crossorigin="anonymous"></script><script data-pjax>
+          var renderMath = () => {
+            if (!window.renderMathInElement) return;
+            window.renderMathInElement(_$("article"), {
+              delimiters: [
+                { left: "$$", right: "$$", display: true },
+                { left: "\\[", right: "\\]", display: true },
+                { left: "$", right: "$", display: false },
+                { left: "\\(", right: "\\)", display: false },
+              ],
+            });
+            window.katexTagOverflowHandler?.();
+          };
+          if (document.readyState === "loading") {
+            document.addEventListener("DOMContentLoaded", renderMath, { once: true });
+          } else {
+            renderMath();
+          }
+        </script></div>
+</div><script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.getRegistrations().then((registrations) => {
+        for (let registration of registrations) {
+          registration.unregister();
+        }
+      });
+    }
+  </script><script>
+  const reimuCopyright = String.raw`
+   ______     ______     __     __    __     __  __    
+  /\  == \   /\  ___\   /\ \   /\ "-./  \   /\ \/\ \   
+  \ \  __<   \ \  __\   \ \ \  \ \ \-./\ \  \ \ \_\ \  
+   \ \_\ \_\  \ \_____\  \ \_\  \ \_\ \ \_\  \ \_____\ 
+    \/_/ /_/   \/_____/   \/_/   \/_/  \/_/   \/_____/ 
+                                                    
+  `;
+  console.log(String.raw`%c ${reimuCopyright}`, "color: #ff5252;");
+  console.log(
+    "%c Theme.Reimu" + " %c https://github.com/D-Sketon/hugo-theme-reimu ",
+    "color: white; background: #ff5252; padding:5px 0;",
+    "padding:4px;border:1px solid #ff5252;",
+  );
+</script><script
+    src="https://npm.webcache.cn/pangu@4.0.7/dist/browser/pangu.min.js"
+    
+    
+    
+    
+    integrity="sha384-HeUHqi0nVsPUm/E0ss7OfnIV/yD96JWB8ehZvUuoVax9DpNHL17jj9pdfXHzqDxm" crossorigin="anonymous"></script><script data-pjax>
+    if (document.readyState === "loading") {
+      document.addEventListener('DOMContentLoaded', () => {
+        pangu?.spacingPage();
+      });
+    } else {
+      pangu?.spacingPage();
+    }
+  </script></body>
+</html>

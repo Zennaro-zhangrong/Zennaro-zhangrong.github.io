@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>反电动势 on 博客首页</title>
+    <link>http://localhost:1313/tags/%E5%8F%8D%E7%94%B5%E5%8A%A8%E5%8A%BF/</link>
+    <description>Recent content from 博客首页</description>
+    <generator>Hugo</generator>
+    <language>zh-CN</language>
+    
+    <managingEditor>zennaro.zhang@outlook.com (云想衣裳花想荣)</managingEditor>
+    <webMaster>zennaro.zhang@outlook.com (云想衣裳花想荣)</webMaster>
+    
+    <copyright>本博客所有文章除特别声明外，均采用 BY-NC-SA 许可协议。转载请注明出处！</copyright>
+    
+    <lastBuildDate>Thu, 29 Oct 2026 00:00:00 +0800</lastBuildDate>
+    
+    
+    <atom:link href="http://localhost:1313/tags/%E5%8F%8D%E7%94%B5%E5%8A%A8%E5%8A%BF/index.xml" rel="self" type="application/rss&#43;xml" />
+    
+
+    
+    
+
+    <item>
+      <title>无感 FOC 入门（二）：滑模与龙伯格观测器</title>
+      <link>http://localhost:1313/post/%E6%97%A0%E6%84%9Ffoc%E5%85%A5%E9%97%A8%E4%BA%8C%E6%BB%91%E6%A8%A1%E4%B8%8E%E9%BE%99%E4%BC%AF%E6%A0%BC%E8%A7%82%E6%B5%8B%E5%99%A8/</link>
+      <pubDate>Thu, 29 Oct 2026 00:00:00 &#43;0800</pubDate>
+      <author>zennaro.zhang@outlook.com (云想衣裳花想荣)</author>
+      <guid>http://localhost:1313/post/%E6%97%A0%E6%84%9Ffoc%E5%85%A5%E9%97%A8%E4%BA%8C%E6%BB%91%E6%A8%A1%E4%B8%8E%E9%BE%99%E4%BC%AF%E6%A0%BC%E8%A7%82%E6%B5%8B%E5%99%A8/</guid>
+      <description>
+        <![CDATA[<h1>无感 FOC 入门（二）：滑模与龙伯格观测器</h1><p>作者：云想衣裳花想荣（zennaro.zhang@outlook.com）</p>
+        
+          <p><a href="http://localhost:1313/post/%E6%97%A0%E6%84%9Ffoc%E5%85%A5%E9%97%A8%E4%B8%80%E7%94%B5%E6%9C%BA%E6%A8%A1%E5%9E%8B%E7%A3%81%E9%93%BE%E4%B8%8E%E7%A3%81%E9%93%BE%E8%A7%82%E6%B5%8B/">上一篇</a>已经得到电机方程 $\boldsymbol v=R_s\boldsymbol i+L_s\dot{\boldsymbol i}+\boldsymbol e$，其中 $\boldsymbol e$ 是转子运动产生的反电动势。本文要回答：<strong>如果不直接积分磁链，能否让“预测电流”和“实测电流”的差自动逼出反电动势？</strong></p>
+<p>会依次构造两种观测器。滑模观测器（SMO）用有界、非线性的校正电压把电流误差压向零；龙伯格观测器（Luenberger observer，也常译作“龙伯格观察器”）用线性误差反馈估计电流和反电动势。两者都依赖电机模型和采样质量，不能在零速凭空获得反电动势方向。最后的角度与速度解算放在<a href="http://localhost:1313/post/%E6%97%A0%E6%84%9Ffoc%E5%85%A5%E9%97%A8%E4%B8%89%E8%BD%AF%E4%BB%B6pll%E4%B8%8E%E7%B3%BB%E7%BB%9F%E8%90%BD%E5%9C%B0/">第三篇</a>。</p>
+        
+        <hr><p>本文2026-10-29首发于<a href='http://localhost:1313/'>博客首页</a>，最后修改于2026-10-29</p>]]>
+      </description>
+      
+        <category>电机控制</category>
+      
+    </item>
+    
+  </channel>
+</rss>
